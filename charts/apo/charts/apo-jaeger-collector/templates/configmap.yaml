@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "apo-jaeger-collector.fullname" . }}-config
+  labels:
+    {{- include "apo-jaeger-collector.labels" . | nindent 4 }}
+data:
+  config.yaml: |-
+    address: {{ tpl .Values.config.clickhouseUrl . }}
+    username: {{ tpl .Values.config.clickhouseUsername . }}
+    password: {{ tpl .Values.config.clickhousePassword . }}
+    database: apo
+    spans_table:
+    spans_index_table:
+    operations_table:
+    ttl: 7
+    metrics_endpoint: localhost:9101

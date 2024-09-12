@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apo-otel-collector.fullname" . }}-svc
+  labels:
+    {{- include "apo-otel-collector.labels" . | nindent 4 }}
+spec:
+  ports:
+  {{- $serviceType := .Values.service.type -}}
+  {{- range .Values.service.ports }}
+  - name: {{ tpl .name $ }}
+    port: {{ tpl (toString .port) $ }}
+    targetPort: {{ tpl (toString .targetPort) $ }}
+    {{- if and (eq $serviceType "NodePort") (.nodePort) }}
+    nodePort: {{ tpl (toString .nodePort) $ }}
+    {{- end }}
+    protocol: {{ tpl .protocol $ }}
+  {{- end }}
+  selector:
+    {{- include "apo-otel-collector.selectorLabels" . | nindent 4 }}
+  type: "{{ .Values.service.type }}"

@@ -1,0 +1,59 @@
+service:
+  ports:
+  - name: query
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - name: metric
+    protocol: TCP
+    port: 9500
+    targetPort: 9500
+  - name: otlpgrpc
+    protocol: TCP
+    port: 4317
+    targetPort: 4317
+  - name: otlphttp
+    protocol: TCP
+    port: 4318
+    targetPort: 4318
+  - name: sk-receiver
+    protocol: TCP
+    port: 11800
+    targetPort: 11800
+  type: ClusterIP
+
+rbac:
+  create: false
+
+nameOverride: ""
+replicas: "1"
+podAnnotations: {}
+hostNetwork: "false"
+dnsPolicy: "ClusterFirst"
+podSecurityContext: {}
+image:
+  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/custom-otlp-collector
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+nodeSelector: {}
+serviceAccount:
+  name: apo-otel-collector
+
+config:
+  apoBackendUrl: "{{ .Values.global.apoServerIP }}"
+  apoBackendPort: "{{ .Values.global.apoBackendPort }}"
+  apoOtelCollectorGatewayURL: "{{ .Values.global.apoServerIP }}"
+  apoOtelCollectorGatewayGRPCPort: "{{ .Values.global.apoOtelCollectorGatewayGRPCPort }}"
+  apoOtelCollectorGatewayK8SPort: "{{ .Values.global.apoOtelCollectorGatewayK8SPort }}"

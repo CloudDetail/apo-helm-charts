@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apo-nginx-proxy.fullname" . }}
+  labels:
+    {{- include "apo-nginx-proxy.labels" . | nindent 4 }}
+spec:
+  replicas: {{ tpl (toString .Values.replicas) . }}
+  selector:
+    matchLabels:
+      {{- include "apo-nginx-proxy.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "apo-nginx-proxy.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      hostNetwork: {{ tpl (toString .Values.hostNetwork) . }}
+      dnsPolicy: {{ tpl .Values.dnsPolicy . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: nginx
+        image: "{{ tpl .Values.image.repository . }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ tpl .Values.image.pullPolicy . }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+          - name: apo-nginx-proxy
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: apo-nginx-proxy
+        configMap:
+          name: {{ include "apo-nginx-proxy.fullname" . }}-config

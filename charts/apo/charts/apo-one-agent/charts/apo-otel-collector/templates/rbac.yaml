@@ -1,0 +1,62 @@
+{{- if .Values.rbac.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "apo-otel-collector.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "apo-otel-collector.labels" . | nindent 4 }}
+    app.kubernetes.io/component: rbac
+    {{- with .Values.serviceAccount.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+
+---
+
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "apo-otel-collector.fullname" . }}
+  labels:
+    {{- include "apo-otel-collector.labels" . | nindent 4 }}
+    app.kubernetes.io/component: rbac
+rules:
+  # Rules which allow discovery.kubernetes to function.
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - pods
+      - services
+      - events
+    verbs:
+      - get
+      - list
+      - watch
+{{- end }}
+
+---
+
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "apo-otel-collector.fullname" . }}
+  labels:
+    {{- include "apo-otel-collector.labels" . | nindent 4 }}
+    app.kubernetes.io/component: rbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "apo-otel-collector.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "apo-otel-collector.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

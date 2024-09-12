@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apo-jaeger-collector.fullname" . }}
+  labels:
+    {{- include "apo-jaeger-collector.labels" . | nindent 4 }}
+spec:
+  replicas: {{ tpl (toString .Values.replicas) . }}
+  selector:
+    matchLabels:
+      {{- include "apo-jaeger-collector.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "apo-jaeger-collector.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      hostNetwork: {{ tpl (toString .Values.hostNetwork) . }}
+      dnsPolicy: {{ tpl .Values.dnsPolicy . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: check-clickhouse-ready
+        image: "{{ tpl .Values.initImage.repository . }}:{{ tpl .Values.initImage.tag . }}"
+        imagePullPolicy: {{ tpl .Values.initImage.pullPolicy . }}
+        env:
+        - name: CLICKHOUSE_URL
+          value: {{ tpl .Values.global.clickhouseUrl . }}
+        command:
+        - sh
+        - -c
+        - |
+          CLICKHOUSE_HOST=$(echo $CLICKHOUSE_URL | cut -d ':' -f 1)
+          CLICKHOUSE_PORT=$(echo $CLICKHOUSE_URL | cut -d ':' -f 2)
+          echo "等待 ${CLICKHOUSE_HOST}:${CLICKHOUSE_PORT} clickhouse启动..."
+          while ! nc -z ${CLICKHOUSE_HOST} ${CLICKHOUSE_PORT}; do
+            echo "INFO: ClickHouse 还未启动成功。 将在5s后重新检查"
+            sleep 5
+          done
+          echo "INFO: ClickHouse 启动成功"
+      containers:
+        - name: remote-storage
+          image: "{{ tpl .Values.remoteStorage.image.repository . }}:{{ tpl (toString (default .Chart.AppVersion .Values.remoteStorage.image.tag)) . }}"
+          imagePullPolicy: {{ tpl .Values.remoteStorage.image.pullPolicy . }}
+          ports:
+            - containerPort: 17271
+              protocol: TCP
+          env:
+            - name: CLICKHOUSE_CONFIG
+              value: /app/config.yaml
+          resources:
+            {{- toYaml .Values.remoteStorage.resources | nindent 12 }}
+          volumeMounts:
+            - name: remote-storage-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+        - name: jaeger-query
+          image: "{{ tpl .Values.jaegerQuery.image.repository . }}:{{ tpl (toString .Values.jaegerQuery.image.tag) . }}"
+          imagePullPolicy: {{ tpl .Values.jaegerQuery.image.pullPolicy . }}
+          ports:
+            - containerPort: 16686
+              protocol: TCP
+          env:
+            - name: SPAN_STORAGE_TYPE
+              value: grpc
+            - name: GRPC_STORAGE_SERVER
+              value: localhost:17271
+            - name: QUERY_BASE_PATH
+              value: /jaeger
+          resources:
+            {{- toYaml .Values.jaegerQuery.resources | nindent 12 }}
+        - name: jaeger-collector
+          image: "{{ tpl .Values.jaegerCollector.image.repository . }}:{{ tpl (toString .Values.jaegerCollector.image.tag) . }}"
+          imagePullPolicy: {{ tpl .Values.jaegerCollector.image.pullPolicy . }}
+          ports:
+            - name: grpc
+              containerPort: 4317
+              protocol: TCP
+            - name: http
+              containerPort: 4318
+              protocol: TCP
+          env:
+            - name: COLLECTOR_OTLP_ENABLED
+              value: 'true'
+            - name: SPAN_STORAGE_TYPE
+              value: grpc
+            - name: GRPC_STORAGE_SERVER
+              value: localhost:17271
+          resources:
+            {{- toYaml .Values.jaegerCollector.resources | nindent 12 }}
+      volumes:
+        - name: remote-storage-config
+          configMap:
+            name: {{ include "apo-jaeger-collector.fullname" . }}-config
+            defaultMode: 420

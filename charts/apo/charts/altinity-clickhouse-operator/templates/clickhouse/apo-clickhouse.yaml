@@ -1,0 +1,68 @@
+apiVersion: "clickhouse.altinity.com/v1"
+kind: "ClickHouseInstallation"
+metadata:
+  name: "apo"
+spec:
+  configuration:
+    users:
+      # admin use has 'password_sha256_hex' so actual password value is not published
+      admin/password: "{{ tpl .Values.clickhouse.password . }}"
+      admin/networks/ip: "::/0"
+    clusters:
+      - name: "clickhouse"
+        templates:
+          podTemplate: apo-clickhouse
+        layout:
+          shardsCount: 1
+          replicasCount: 1
+{{- if .Values.clickhouse.persistence.enabled  }}
+  templates:
+    podTemplates:
+      - name: apo-clickhouse
+        spec:
+          containers:
+            - name: clickhouse
+              image: "{{ tpl .Values.clickhouse.image.repository . }}:23.8"
+              volumeMounts:
+                - name: apo-clickhouse-init-apo-sql
+                  mountPath: /docker-entrypoint-initdb.d
+                - name: data-storage-vc-template
+                  mountPath: /var/lib/clickhouse
+                - name: log-storage-vc-template
+                  mountPath: /var/log/clickhouse-server
+          volumes:
+            - name: apo-clickhouse-init-apo-sql
+              configMap:
+                name: apo-clickhouse-init-apo-sql
+
+    volumeClaimTemplates:
+      - name: data-storage-vc-template
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 16Gi
+      - name: log-storage-vc-template
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+{{- else }}
+  templates:
+    podTemplates:
+      - name: apo-clickhouse
+        spec:
+          containers:
+            - name: clickhouse
+              image: "{{ tpl .Values.clickhouse.image.repository . }}:23.8"
+              volumeMounts:
+                - name: apo-clickhouse-init-apo-sql
+                  mountPath: /docker-entrypoint-initdb.d
+          volumes:
+            - name: apo-clickhouse-init-apo-sql
+              configMap:
+                name: apo-clickhouse-init-apo-sql
+{{- end }}

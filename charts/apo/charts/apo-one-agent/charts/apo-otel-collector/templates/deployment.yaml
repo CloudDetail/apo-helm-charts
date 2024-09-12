@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apo-otel-collector.fullname" . }}
+  labels:
+    {{- include "apo-otel-collector.labels" . | nindent 4 }}
+spec:
+  replicas: {{ tpl (toString .Values.replicas) . }}
+  selector:
+    matchLabels:
+      {{- include "apo-otel-collector.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "apo-otel-collector.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      hostNetwork: {{ tpl (toString .Values.hostNetwork) . }}
+      dnsPolicy: {{ tpl .Values.dnsPolicy . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ include "apo-otel-collector.serviceAccountName" . }}
+      {{- end }}
+      containers:
+      - name: otel-collector
+        image: "{{ tpl .Values.image.repository . }}:{{ tpl (toString (default .Chart.AppVersion .Values.image.tag)) . }}"
+        imagePullPolicy: {{ tpl .Values.image.pullPolicy . }}
+        command:
+          - ./otelcol
+          - '--config'
+          - /app/conf/otelcol-config.yaml
+        args:
+          - >-
+            --feature-gates=receiver.prometheusreceiver.RemoveLegacyResourceAttributes
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+          - name: collector-conf
+            mountPath: /app/conf
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: collector-conf
+        configMap:
+          name: {{ include "apo-otel-collector.fullname" . }}-config

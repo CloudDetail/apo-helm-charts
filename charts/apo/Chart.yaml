@@ -1,0 +1,38 @@
+apiVersion: v2
+name: apo
+version: "0.3.001"
+appVersion: "0.3.1"
+type: application
+description: apo deployment charts
+
+dependencies:
+  - name: altinity-clickhouse-operator
+    condition: altinity-clickhouse-operator.enabled
+    repository: "file://dep/altinity-clickhouse-operator"
+  - name: apo-backend
+    condition: apo-backend.enabled
+    repository: "file://dep/apo-backend"
+  - name: apo-collector
+    condition: apo-collector.enabled
+    repository: "file://dep/apo-collector"
+  - name: apo-one-agent
+    condition: apo-one-agent.enabled
+    repository: "file://dep/apo-one-agent"
+  - name: apo-front
+    condition: apo-front.enabled
+    repository: "file://dep/apo-front"
+  - name: apo-jaeger-collector
+    condition: apo-jaeger-collector.enabled
+    repository: "file://dep/apo-jaeger-collector"
+  - name: apo-otel-collector-gateway
+    condition: apo-otel-collector-gateway.enabled
+    repository: "file://dep/apo-otel-collector-gateway"
+  - name: grafana
+    condition: grafana.enabled
+    repository: "file://dep/grafana"
+  - name: victoria-metrics-alert
+    condition: victoria-metrics-alert.enabled
+    repository: "file://dep/victoria-metrics-alert"
+  - name: victoria-metrics-single
+    condition: victoria-metrics-single.enabled
+    repository: "file://dep/victoria-metrics-single"

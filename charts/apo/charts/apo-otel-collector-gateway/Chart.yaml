@@ -1,0 +1,5 @@
+apiVersion: v2
+name: apo-otel-collector-gateway
+version: "0.1.0"
+type: application
+description: apo-otel-collector-gateway deployment charts

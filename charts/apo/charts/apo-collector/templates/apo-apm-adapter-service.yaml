@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apo-apm-adapter-svc
+  labels:
+    {{- include "apo-collector.labels" . | nindent 4 }}
+spec:
+  ports:
+  - name: http
+    port: {{ tpl (toString .Values.apoApmAdapter.service.port) . }}
+    protocol: TCP
+    targetPort: {{ tpl (toString .Values.apoApmAdapter.service.port) . }}
+  selector:
+    {{- include "apo-collector.selectorLabels" . | nindent 4 }}
+  type: ClusterIP

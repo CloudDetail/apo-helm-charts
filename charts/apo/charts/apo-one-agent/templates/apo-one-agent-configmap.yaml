@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "apo-one-agent.fullname" . }}-config
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+data:
+  camera-agent-config.yml: |
+    analyzers:
+      cpuanalyzer:
+        # segment_size defines how many segments(seconds) can be cached to wait for sending.
+        # The elder segments will be overwritten by the newer ones, so don't set it too low.
+        segment_size: 40
+        # edge_events_window_size is the size of the duration window that seats the edge events.
+        # The unit is second. The greater it is, the more data will be stored.
+        edge_events_window_size: 2
+      traceidanalyzer:
+        enable_red_metrics: false
+        # open_java_trace_sampling is the switch for whether to use Java-Trace to trigger sampling.
+        open_java_trace_sampling: true
+        # Set Slow Time Threshold(ms).
+        java_trace_slow_time: 100
+        # Set the max wait time(s) for traceId.
+        java_trace_wait_second: 300
+    processors:
+      sampleprocessor:
+        enable: false
+        # 是否将hasException数据打标为Error，默认关闭.
+        exception_as_error: true
+        # Options: ["tailbase", "single"].
+        sampler: tailbase
+        # Collect one normal sample trace between [0 ~ N] seconds window. If set 0, normal trace will not collect.
+        # 展示窗口时间，即每N秒内采集一条正常Trace数据.
+        display_window: 300
+        # 是否入口全链路采样. If set false, 每个正常节点都会通知其他节点全链路采集.
+        normal_top_sample: false
+        # 同一URL正常全链路采样周期，被错慢正常链路采样后动态更新该值. If set 0, 正常全链路数据不会采样.
+        normal_sample_wait_time: 60
+        # open_slow_sampling is the switch for whether to collect slow traces.
+        # 提供慢请求采样开关，关闭则不采集慢请求
+        open_slow_sampling: true
+        # open_error_sampling is the switch for whether to collect error trace for diff.
+        open_error_sampling: true
+        # 是否开启保存全链路profiling数据，仅对慢链路有效，默认为false
+        enable_tail_base_profiling: true
+        # sample_trace_repeat_num is the times of recheck trace is sampled.
+        sample_trace_repeat_num: 5
+        # Set the max wait time for sampled traceIds.
+        sample_trace_wait_time: 60
+        # Ignore trace whose duration is less than the threshold(ms).
+        sample_trace_ignore_threshold: 2
+        # Set period for save trace after hit same url.
+        # 同一URL的静默窗口期 (原参数为sample_url_hit_duration).
+        silent_period: 5
+        # Set counts for save trace after hit same url.
+        # 设置静默窗口期内最大采样的次数.
+        silent_count: 1
+        # Options: ["window", "wait"].
+        silent_mode: window
+        # Set the query interval(s) for get sampled traceids.
+        query_profile_interval: 2
+        # Set the query interval(s) for update slow threshold.
+        query_slow_threshold_interval: 30
+    # formerly named Receiver
+    controller:
+      # enable the controller to receive configuration.
+      enable: true
+      host: {{ tpl .Values.apoOneAgent.config.apoCollectorUrl . }}
+      port: {{ tpl .Values.apoOneAgent.config.apoCollectorPort . }}
+      # whether to fetch ebpf file from controller.
+      enable_fetch_ebpf_file: true
+      # Connect center API server via HTTP if true, otherwise connect receiver via gRPC.
+      center_direct: false
+    exporters:
+      cameraexporter:
+        # Options: ["elasticsearch", "grpc", "noop", "file"]
+        storage: grpc
+        # Effective when storage is "file"
+        file_config:
+          base_path: /tmp/kindling/data/
+        # Effective when storage is "elasticsearch"
+        es_config:
+          es_host: http://elasticsearch-master:9200
+          index_suffix: originx
+      metricexporter:
+        # Options: ["log", "prometheus"]
+        type: prometheus
+        prometheus:
+          # victoria metrics or prometheus histogram
+          # Options: ["pm", "vm"]
+          format: vm
+          port: 9500
+    notifier:
+      enable: false
+  log4rs.yml: |
+    refresh_rate: 30 seconds
+    appenders:
+      stdout:
+        kind: console
+      file:
+        kind: file
+        path: "log/originx-agent.log"
+        encoder:
+          pattern: "{d} - {m}{n}"
+    root:
+      level: info
+      appenders:
+        - stdout
+        - file
+    loggers:
+      camera_agent::cpu_analyzer:
+        level: info
+      camera_agent::time_aggregate:
+        level: info

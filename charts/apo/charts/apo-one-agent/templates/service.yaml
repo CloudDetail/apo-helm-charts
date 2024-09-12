@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apo-one-agent.fullname" . }}-svc
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 9500
+      targetPort: 9500
+    - name: pinger-metrics
+      protocol: TCP
+      port: 9408
+      targetPort: 9408
+    - name: ilogtail-metrics
+      protocol: TCP
+      port: 9499
+      targetPort: 9499
+  selector:
+    {{- include "apo-one-agent.selectorLabels" . | nindent 4 }}
+  type: ClusterIP

@@ -1,0 +1,68 @@
+nameOverride: ""
+replicas: "1"
+podAnnotations: {}
+hostNetwork: "false"
+dnsPolicy: "ClusterFirst"
+
+initImage:
+  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/busybox
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "1.36.1"
+
+remoteStorage:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/originx/jaeger-remote-storage
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+jaegerQuery:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/originx/jaeger-query
+    pullPolicy: IfNotPresent
+    tag: 1.58
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+jaegerCollector:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/originx/jaeger-collector
+    pullPolicy: IfNotPresent
+    tag: 1.59-latest
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+config:
+  clickhouseUrl: "tcp://apo-clickhouse-svc:9000"
+  clickhouseUsername: "admin"
+  clickhousePassword: "Apo@123456"

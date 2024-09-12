@@ -1,0 +1,50 @@
+{{- if and .Values.server.enabled .Values.server.ingress.enabled  }}
+{{- $ingressApiIsStable := eq (include "vmalert.ingress.isStable" .) "true" -}}
+{{- $ingressSupportsIngressClassName := eq (include "vmalert.ingress.supportsIngressClassName" .) "true" -}}
+{{- $ingressSupportsPathType := eq (include "vmalert.ingress.supportsPathType" .) "true" -}}
+{{- $servicePort := .Values.server.service.servicePort -}}
+{{- $ingressPathType := .Values.server.ingress.pathType -}}
+apiVersion: {{ include "vmalert.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+{{- with .Values.server.ingress.annotations }}
+  annotations:
+{{ toYaml .| indent 4 }}
+{{- end }}
+  labels:
+  {{- include "vmalert.server.labels" . | nindent 4 }}
+  {{ with .Values.server.ingress.extraLabels }}
+{{ toYaml . | indent 4 }}
+  {{ end }}
+  name: {{ template "vmalert.server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{- if and $ingressSupportsIngressClassName .Values.server.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.server.ingress.ingressClassName }}
+  {{- end }}
+  rules:
+  {{- $serviceName := include "vmalert.server.fullname" . }}
+  {{- range .Values.server.ingress.hosts }}
+  - host: {{ .name }}
+    http:
+      paths:
+        - path: {{ .path }}
+          {{- if $ingressSupportsPathType }}
+          pathType: {{ $ingressPathType }}
+          {{- end }}
+          backend:
+            {{- if $ingressApiIsStable }}
+            service:
+              name: {{ $serviceName }}
+              port:
+                number: {{ $servicePort }}
+            {{- else }}
+            serviceName: {{ $serviceName }}
+            servicePort: {{ .port | default "http"}}
+            {{- end }}
+  {{- end -}}
+{{- with .Values.server.ingress.tls }}
+  tls:
+{{ toYaml . | indent 4 }}
+{{- end -}}
+{{- end -}}

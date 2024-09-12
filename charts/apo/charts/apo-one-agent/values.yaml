@@ -1,0 +1,244 @@
+global:
+  image:
+    # kindlingx official mirror repository: registry.cn-hangzhou.aliyuncs.com/kindlingx
+    repository: "registry.cn-hangzhou.aliyuncs.com/kindlingx"
+    pullPolicy: "Always"
+  apoServerIP: ""
+  apoProxyUrl: apo-nginx-proxy-svc
+  apoBackendPort: 31363
+  apoProxyPort: 29090
+  apoCollectorPort: 30044
+  apoOtelCollectorGatewayGRPCPort: 30317
+  apoOtelCollectorGatewayK8SPort: 30319
+
+nameOverride: ""
+podAnnotations: {}
+dnsPolicy: "ClusterFirstWithHostNet"
+podSecurityContext: {}
+
+apoOneAgent:
+  enabled: true
+  image:
+    repository: "{{ .Values.global.image.repository }}/ebpf-agent"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v1.6.2"
+  resources: 
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  config:
+    apoCollectorUrl: "{{ .Values.global.apoProxyUrl }}"
+    apoCollectorPort: "{{ .Values.global.apoProxyPort }}"
+    javaAgentType: "opentelemetry"
+
+apoNodeAgent:
+  image:
+    repository: "{{ .Values.global.image.repository }}/node-agent"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v1.6.1"
+  resources:
+    limits:
+      cpu: 200m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  apoOtelCollectorUrl: "apo-otel-collector-svc.apo:8080"
+  
+
+apoIlogtail:
+  image:
+    repository: "{{ .Values.global.image.repository }}/ilogtail"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v1.5.0"
+  # resources: 
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.apo:4317"
+
+apoGoSdkAuto:
+  image:
+    repository: "{{ .Values.global.image.repository }}/sdk-auto"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v1.1.0"
+  # resources: 
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  apoOtelCollectorUrl: "http://localhost:4318"
+
+grafanaAlloy:
+  image:
+    repository: "{{ .Values.global.image.repository }}/grafana-alloy"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v1.2.1"
+  # resources: 
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  config:
+    apoOtelCollectorGrpcUrl: "apo-otel-collector-svc:4317"
+    apoOtelCollectorHttpUrl: "apo-otel-collector-svc:4318"
+
+odiglet:
+  image:
+    repository: "{{ .Values.global.image.repository }}/apo-odiglet"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    tag: "v0.3.0"
+  # resources:
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 10m
+  #     memory: 64Mi
+  apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.apo:4317"
+  apoOtelCollectorHttpUrl: "apo-otel-collector-svc.apo:4318"
+  apoOtelCollectorSkywalkingUrl: "apo-otel-collector-svc.apo:11800"
+
+apoOtelCollectorAgent:
+  image:
+    repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    tag: "v0.3.1"
+  # resources: 
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  config:
+    apoCollectorUrl: "{{ .Values.global.apoProxyUrl }}"
+    apoCollectorPort: "{{ .Values.global.apoProxyPort }}"
+    apoOtelCollectorUrl: "apo-otel-collector-svc"
+    apoOtelCollectorGRPCPort: "4317"
+
+odigos:
+  enabled: true
+  instrumentor:
+    image:
+      repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
+      imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v0.3.0"
+    # resources:
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 10m
+    #     memory: 64Mi
+    # targetNamespace 
+    # name：目标命名空间
+    # value：
+    #   enabled: 注入现有的所有服务,但不注入后续新增应用
+    #   enabledFuture: 注入现在以及后续的所有服务
+    #   disabled: 不注入指定namespace下的服务,用于在instrument-all-namespace时忽略特定的Namespace
+    targetNamespace:
+    - name: default
+      value: disabled
+    # instrument-all-namespace 是否注入所有namespace
+    # 等价于设置所有namespace的enabledFuture
+    # 但如果已经设置了ns或者workload的disabled将不会注入
+    instrumentAllNamespace: false
+    # force-instrument-all-namespace 是否强制注入所有namespace
+    # 和instrument-all-namespace类似,所有ns设置enabledFuture
+    # 并忽略所有disabled设置
+    forceInstrumentAllNamespace: false
+  config:
+    apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.apo:4317"
+    apoOtelCollectorHttpUrl: "apo-otel-collector-svc.apo:4318"
+    apoOtelCollectorSkywalkingUrl: "apo-otel-collector-svc.apo:11800"
+    javaAgentType: "opentelemetry"
+
+apo-nginx-proxy:
+  enabled: true
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/nginx
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "stable-alpine3.20"
+  # resources:
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 10m
+  #     memory: 64Mi
+  # targetNamespace 
+  # name：目标命名空间
+  config:
+    apoCollectorUrl: "{{ .Values.global.apoServerIP }}"
+    apoCollectorPort: "{{ .Values.global.apoCollectorPort }}"
+
+apo-otel-collector:
+  enabled: true
+  image:
+    repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v0.3.1"
+  config:
+    apoBackendUrl: "{{ .Values.global.apoServerIP }}"
+    apoBackendPort: "{{ .Values.global.apoBackendPort }}"
+    apoOtelCollectorGatewayURL: "{{ .Values.global.apoServerIP }}"
+    apoOtelCollectorGatewayGRPCPort: "{{ .Values.global.apoOtelCollectorGatewayGRPCPort }}"
+    apoOtelCollectorGatewayK8SPort: "{{ .Values.global.apoOtelCollectorGatewayK8SPort }}"
+  service:
+    ports:
+    - name: query
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: metric
+      protocol: TCP
+      port: 9500
+      targetPort: 9500
+    - name: otlpgrpc
+      protocol: TCP
+      port: 4317
+      targetPort: 4317
+    - name: otlphttp
+      protocol: TCP
+      port: 4318
+      targetPort: 4318
+    - name: sk-receiver
+      protocol: TCP
+      port: 11800
+      targetPort: 11800
+    type: ClusterIP
+  # resources: 
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  rbac:
+    create: true
+
+serviceAccount:
+  name: null
+  additionalLabels: {}
+  # -- Annotations to add to the created service account.
+  annotations: {}
+  # -- The name of the existing service account to use when
+  # serviceAccount.create is false.a

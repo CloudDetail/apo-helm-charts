@@ -1,0 +1,515 @@
+global:
+  podAntiAffinityLabelSelector: []
+  podAntiAffinityTermLabelSelector: []
+  podAffinityLabelSelector: []
+  podAffinityTermLabelSelector: []
+  nodeAffinityLabelSelector: []
+  nodeAffinityTermLabelSelector: []
+  image:
+    # kindlingx official mirror repository: registry.cn-hangzhou.aliyuncs.com/kindlingx
+    repository: "registry.cn-hangzhou.aliyuncs.com/kindlingx"
+    pullPolicy: "Always"
+  clickhouseUrl: "apo-clickhouse-svc:9000"
+  victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
+  # Need to modify the variable clickhouse.auth.username/password synchronously
+  clickhouseRootUsername: admin
+  clickhouseRootPassword: "WPKf-e9U.X)K)ezTDo9#"
+
+apo-backend:
+  enabled: true
+  initImage:
+    repository: "{{ .Values.global.image.repository }}/busybox"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.36.1"
+  apoBackend:
+    image:
+      repository: "{{ .Values.global.image.repository }}/query-service"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v0.3.0"
+    # resources:
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+  apoPolarisAnalyzer:
+    image:
+      repository: "{{ .Values.global.image.repository }}/polaris-analyzer"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v0.1.1"
+    # resources:
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+  service:
+    type: NodePort
+    nodePort: 31363
+  config:
+    victoriaMetricsUrl: "{{ .Values.global.victoriaMetricsUrl }}"
+    clickhouseUrl: "{{ .Values.global.clickhouseUrl }}"
+    clickhouseUsername: "{{ .Values.global.clickhouseRootUsername }}"
+    clickhousePassword: "{{ .Values.global.clickhouseRootPassword }}"
+  persistence:
+    enabled: false
+    storageClass: ""
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+
+apo-collector:
+  enabled: true
+  initImage:
+    repository: "{{ .Values.global.image.repository }}/busybox"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.36.1"
+  apoCollector:
+    image:
+      repository: "{{ .Values.global.image.repository }}/apo-collector"
+      pullPolicy: IfNotPresent
+      tag: "v1.5.2"
+    # resources: 
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    service:
+      type: NodePort
+      port: 29090
+      targetPort: 29090
+      nodePortGrpc: 30044
+      nodePortHttp: 30090
+    config:
+      victoriaMetricsUrl: "{{ .Values.global.victoriaMetricsUrl }}"
+      clickhouseUrl: "{{ .Values.global.clickhouseUrl }}"
+      clickhouseUsername: "{{ .Values.global.clickhouseRootUsername }}"
+      clickhousePassword: "{{ .Values.global.clickhouseRootPassword }}"
+      apmAdapterUrl: "apo-apm-adapter-svc:8079"
+      apoBackendUrl: "http://apo-backend-svc:8080"
+
+  apoApmAdapter:
+    image:
+      repository: "{{ .Values.global.image.repository }}/apm-adapter"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.6.0"
+    # resources: 
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    service:
+      port: 8079
+    config:
+      skywalkingAddress: ""
+      jaegerCollectorUrl: "apo-jaeger-collector-svc:16686"
+      pinpointAddress: ""
+
+apo-front:
+  enabled: true
+  image:
+    repository: "{{ .Values.global.image.repository }}/apo-front"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v0.3.0"
+  # resources: 
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  service:
+    type: NodePort
+    nodePort: 31364
+  config:
+    apoJaegerCollectorUrl: "http://apo-jaeger-collector-svc:16686"
+    apoGrafanaUrl: "http://apo-grafana-svc:80"
+    apoBackendUrl: "http://apo-backend-svc:8080" 
+
+apo-jaeger-collector:
+  enabled: true
+  initImage:
+    repository: "{{ .Values.global.image.repository }}/busybox"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.36.1"
+  remoteStorage:
+    image:
+      repository: "{{ .Values.global.image.repository }}/jaeger-remote-storage"
+      pullPolicy: IfNotPresent
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v0.1.0"
+    # resources: 
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+
+  jaegerQuery:
+    image:
+      repository: "{{ .Values.global.image.repository }}/jaeger-query"
+      tag: 1.58
+    # resources: 
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+
+  jaegerCollector:
+    image:
+      repository: "{{ .Values.global.image.repository }}/jaeger-collector"
+      tag: "1.59-latest"
+    # resources: 
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+  config:
+    clickhouseUrl: "{{ .Values.global.clickhouseUrl }}"
+    clickhouseUsername: "{{ .Values.global.clickhouseRootUsername }}"
+    clickhousePassword: "{{ .Values.global.clickhouseRootPassword }}"
+
+apo-one-agent:
+  enabled: false
+  apoOneAgent:
+    image:
+      repository: "{{ .Values.global.image.repository }}/ebpf-agent"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v1.6.2"
+    # resources: 
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    config:
+      apoCollectorUrl: apo-collector-svc.apo
+      apoCollectorPort: "29090"
+      javaAgentType: "opentelemetry"
+
+  apoNodeAgent:
+    image:
+      repository: "{{ .Values.global.image.repository }}/node-agent"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v1.6.1"
+    # resources:
+    #   limits:
+    #     cpu: 200m
+    #     memory: 128Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    apoOtelCollectorUrl: "apo-otel-collector-gateway-svc:8080"
+    
+
+  apoIlogtail:
+    image:
+      repository: "{{ .Values.global.image.repository }}/ilogtail"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v1.5.0"
+    # resources: 
+    #   limits:
+    #     cpu: 100m
+    #     memory: 128Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc:4315"
+
+  apoGoSdkAuto:
+    image:
+      repository: "{{ .Values.global.image.repository }}/sdk-auto"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v1.1.0"
+    # resources: 
+    #   limits:
+    #     cpu: 100m
+    #     memory: 128Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    apoOtelCollectorUrl: "http://localhost:4318"
+
+  grafanaAlloy:
+    image:
+      repository: "{{ .Values.global.image.repository }}/grafana-alloy"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v1.2.1"
+    # resources: 
+    #   limits:
+    #     cpu: 100m
+    #     memory: 128Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    config:
+      apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc:4315"
+      apoOtelCollectorHttpUrl: "apo-otel-collector-gateway-svc:4316"
+
+  odiglet:
+    image:
+      repository: "{{ .Values.global.image.repository }}/apo-odiglet"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v0.3.0"
+    # resources:
+    #   limits:
+    #     cpu: 500m
+    #     memory: 128Mi
+    #   requests:
+    #     cpu: 10m
+    #     memory: 64Mi
+    apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.apo:4317"
+    apoOtelCollectorHttpUrl: "apo-otel-collector-svc.apo:4318"
+    apoOtelCollectorSkywalkingUrl: "apo-otel-collector-svc.apo:11800"
+
+  apoOtelCollectorAgent:
+    image:
+      repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v0.3.1"
+    # resources: 
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    config:
+      apoCollectorUrl: "apo-collector-svc"
+      apoCollectorPort: "29090"
+      apoOtelCollectorUrl: "apo-otel-collector-gateway-svc"
+      apoOtelCollectorGRPCPort: "4315"
+
+  odigos:
+    enabled: true
+    instrumentor:
+      image:
+        repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
+        imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
+        tag: "v0.3.0"
+      # resources:
+      #   limits:
+      #     cpu: 500m
+      #     memory: 128Mi
+      #   requests:
+      #     cpu: 10m
+      #     memory: 64Mi
+      # targetNamespace 
+      # name：目标命名空间
+      # value：
+      #   enabled: 注入现有的所有服务,但不注入后续新增应用
+      #   enabledFuture: 注入现在以及后续的所有服务
+      #   disabled: 不注入指定namespace下的服务,用于在instrument-all-namespace时忽略特定的Namespace
+      targetNamespace:
+      - name: default
+        value: enabledFuture
+      # instrument-all-namespace 是否注入所有namespace
+      # 等价于设置所有namespace的enabledFuture
+      # 但如果已经设置了ns或者workload的disabled将不会注入
+      instrumentAllNamespace: false
+      # force-instrument-all-namespace 是否强制注入所有namespace
+      # 和instrument-all-namespace类似,所有ns设置enabledFuture
+      # 并忽略所有disabled设置
+      forceInstrumentAllNamespace: false
+    config:
+      apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc.apo:4315"
+      apoOtelCollectorHttpUrl: "apo-otel-collector-gateway-svc.apo:4316"
+      apoOtelCollectorSkywalkingUrl: "apo-otel-collector-gateway-svc.apo:11800"
+      javaAgentType: "opentelemetry"
+  
+  apo-nginx-proxy:
+    enabled: false
+
+  apo-otel-collector:
+    enabled: false
+
+apo-otel-collector-gateway:
+  enabled: true
+  initImage:
+    repository: "{{ .Values.global.image.repository }}/busybox"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.36.1"
+  image:
+    repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v0.3.1"
+  config:
+    apoBackendUrl: "apo-backend-svc"
+    apoBackendPort: "8080"
+    jaegerCollectorUrl: "http://apo-jaeger-collector-svc:4317"
+    victoriaMetricsUrl: "{{ .Values.global.victoriaMetricsUrl }}"
+    clickhouseUrl: "{{ .Values.global.clickhouseUrl }}"
+    clickhouseUsername: "{{ .Values.global.clickhouseRootUsername }}"
+    clickhousePassword: "{{ .Values.global.clickhouseRootPassword }}"
+  serviceNodePort:
+    ports:
+    - name: otlpgrpc
+      protocol: TCP
+      port: 4317
+      targetPort: 4317
+      nodePort: 30317
+    - name: otlpk8s
+      protocol: TCP
+      port: 4319
+      targetPort: 4319
+      nodePort: 30319
+    type: NodePort
+  # resources: 
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  rbac:
+    create: true
+
+altinity-clickhouse-operator:
+  enabled: true
+  operator:
+    image:
+      # operator.image.repository -- image repository
+      repository: "{{ .Values.global.image.repository }}/clickhouse-operator"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+  metrics:
+    enabled: true
+    image:
+      # metrics.image.repository -- image repository
+      repository: "{{ .Values.global.image.repository }}/metrics-exporter"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+  clickhouse:
+    image:
+      repository: "{{ .Values.global.image.repository }}/clickhouse-server"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    username: "{{ .Values.global.clickhouseRootUsername }}"
+    password: "{{ .Values.global.clickhouseRootPassword }}"
+    persistence:
+      enabled: false
+
+grafana:
+  enabled: true
+  image:
+    registry: "{{ .Values.global.image.repository }}"
+    # -- Docker image repository
+    repository: grafana
+    # Overrides the Grafana image tag whose default is the chart appVersion
+    tag: ""
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+  downloadDashboardsImage:
+    # -- The Docker registry
+    registry: "{{ .Values.global.image.repository }}"
+    repository: curlimagescurl
+    tag: 7.85.0
+    sha: ""
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+  datasources: 
+    datasources.yaml:
+      apiVersion: 1
+      datasources: 
+      - name: APO-VictoriaMetric
+        type: prometheus
+        url: "{{ .Values.global.victoriaMetricsUrl }}"
+        access: proxy
+        isDefault: true
+        uid: APO-VictoriaMetric
+  grafana.ini:
+    server:
+      domain: "localhost"
+  # resources: 
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  rbac:
+    create: false
+
+victoria-metrics-alert:
+  enabled: true
+  server:
+    image:
+      repository: "{{ .Values.global.image.repository }}/vmalert"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: ""
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    datasource:
+      url: "{{ .Values.global.victoriaMetricsUrl }}"
+    # resources:
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1024Mi
+    #   requests:
+    #     cpu: 500m
+    #     memory: 512Mi
+  alertmanager:
+    enabled: true
+    image: "{{ .Values.global.image.repository }}/alertmanager"
+    tag: v0.25.0
+    config:
+      global:
+        resolve_timeout: 5m
+      receivers:
+      - name: alert-collector
+        webhook_configs:
+        - url: http://apo-backend-svc:8080/api/alerts/inputs/alertmanager
+      route:
+        group_by:
+        - alertname
+        group_interval: 10s
+        group_wait: 30s
+        receiver: alert-collector
+        repeat_interval: 1m
+  rbac:
+    create: false
+
+victoria-metrics-single:
+  enabled: true
+  server:
+    image:
+      repository: "{{ .Values.global.image.repository }}/victoria-metrics"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "v1.101.0"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # persistentVolume:
+    #   enabled: "{{ .Values.global.persistentVolume.enabled }}"
+    service:
+      type: ClusterIP
+      # nodePort: 30428
+    persistentVolume:
+      enabled: false
+    # resources:
+    #   limits:
+    #     cpu: 2000m
+    #     memory: 2048Mi
+    #   requests:
+    #     cpu: 500m
+    #     memory: 512Mi
+  rbac:
+    create: false
+  

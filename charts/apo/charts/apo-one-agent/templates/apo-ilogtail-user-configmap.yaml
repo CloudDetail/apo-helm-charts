@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-ilogtail-user-config
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+data:
+  pod_stdout_file.yaml: |
+    enable: true
+    inputs: 
+      - Type: service_docker_stdout
+        ExcludeK8sLabel:
+          app.kubernetes.io/instance: apo
+    processors:
+      - Type: processor_log_to_prom_metric
+        PromPort: ":9499"
+      - Type: processor_wait_for_signal
+        ContentsRename:
+          "__tag__:_container_id_": "_container_id_"
+          "__tag__:__path__": "_source_"
+    flushers:
+      # - Type: flusher_stdout    # 标准输出流输出类型
+      #   OnlyStdout: true
+      - Type: flusher_otlp
+        Logs:
+          Endpoint: {{ tpl .Values.apoIlogtail.apoOtelCollectorGrpcUrl . }}

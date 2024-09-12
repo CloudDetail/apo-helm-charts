@@ -1,0 +1,5 @@
+apiVersion: v2
+name: apo-nginx-proxy
+version: "0.1.0"
+type: application
+description: apo-nginx-proxy deployment charts

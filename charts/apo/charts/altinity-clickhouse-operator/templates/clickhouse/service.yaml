@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apo-clickhouse-svc
+spec:
+  ports:
+  {{- $serviceType := .Values.clickhouse.service.type -}}
+  {{- range .Values.clickhouse.service.ports }}
+  - name: {{ tpl .name $ }}
+    port: {{ tpl (toString .port) $ }}
+    targetPort: {{ tpl (toString .targetPort) $ }}
+    protocol: {{ tpl .protocol $ }}
+  {{- end }}
+  selector:
+    clickhouse.altinity.com/app: chop
+    clickhouse.altinity.com/chi: apo
+    clickhouse.altinity.com/cluster: clickhouse
+    clickhouse.altinity.com/namespace: apo
+    clickhouse.altinity.com/replica: '0'
+    clickhouse.altinity.com/shard: '0'
+  type: "{{ .Values.clickhouse.service.type }}"

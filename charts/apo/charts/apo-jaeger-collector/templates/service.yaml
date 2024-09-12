@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apo-jaeger-collector.fullname" . }}-svc
+  labels:
+    {{- include "apo-jaeger-collector.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: otlp-http
+      protocol: TCP
+      port: 4318
+      targetPort: 4318
+    - name: otlp-grpc
+      protocol: TCP
+      port: 4317
+      targetPort: 4317
+    - name: collector-http
+      protocol: TCP
+      port: 14250
+      targetPort: 14250
+    - name: ui
+      protocol: TCP
+      port: 16686
+      targetPort: 16686
+  selector:
+    {{- include "apo-jaeger-collector.selectorLabels" . | nindent 4 }}
+  type: ClusterIP

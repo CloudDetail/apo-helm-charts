@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-ilogtail-logger-config
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+data:
+  plugin_logger.xml: |
+    <seelog type="asynctimer" asyncinterval="500000" minlevel="info" >
+    <outputs formatid="common">
+            <rollingfile type="size" filename="/usr/local/ilogtail/logtail_plugin.LOG" maxsize="20000000" maxrolls="10"/>
+    </outputs>
+    <formats>
+            <format id="common" format="%Date %Time [%LEV] [%File:%Line] [%FuncShort] %Msg%n" />
+    </formats>
+    </seelog>

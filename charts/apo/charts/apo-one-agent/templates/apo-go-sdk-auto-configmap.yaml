@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-go-sdk-auto-config
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+data:
+  sdk-auto.yml: |
+    auto:
+      port: 29003
+      trace_api: {{ tpl .Values.apoGoSdkAuto.apoOtelCollectorUrl . }}
+      scan_interval: 30
+      black_list:
+        go:
+          apisix:
+            - apisix-ingress-*
+          calico:
+            - calico-node
+            - kube-controller*
+          chaos:
+            - chaos-*
+            - logserver
+          containerd:
+            - containerd*
+            - image-cri-shim
+            - registry
+          deepflow-ce:
+            - deepflow-server
+            - grafana
+            - gpx_*
+          docker:
+            - docker*
+            - runc
+            - runc:*
+          elastic:
+            - apm-server
+            - elastic-operato*
+          flannel:
+            - flanneld
+          flagd:
+            - flagd-build
+          go:
+            - dlv
+            - gopls
+          ingress-nginx:
+            - nginx-ingress-c*
+          jaegertracing:
+            - agent-linux
+            - all-in-one-linu*
+          k8s:
+            - coredns
+            - etcd
+            - kubectl
+            - kubelet
+            - kube-*
+          kind:
+            - kindnetd
+            - local-path-prov*
+          kindling:
+            - camera-apm-adap*
+            - camera-receiver
+            - management
+            - metadata-provid*
+            - meta-agent
+            - originx-gc-agen*
+            - originx-sdk-aut*
+            - otel-go-instrum*
+            - pinger
+            - portal
+            - root-cause-infe*
+          kubeskoop:
+            - inspector
+          lvs:
+            - lvscare
+          metrics-server:
+            - metrics-server
+          odigos:
+            - app
+            - odiglet
+            - odigosotelcol
+          openebs:
+            - exporter
+            - ndm
+            - ndo
+            - provisioner-loc*
+          opentelemetry:
+            - otelcol-contrib
+          olm:
+            - catalog
+            - olm
+          prometheus:
+            - node_exporter
+            - operator
+            - prometheus
+            - prometheus-conf*
+          radondb:
+            - xenon
+          victoriametrics:
+            - victoria-metric*
+            - vmagent-prod
+        java:
+          skywalking:
+            - "*org.apache.skywalking.oap.server.starter.OAPServerStartUp"
+            - "*org.apache.skywalking.oap.server.webapp.ApplicationStartUp"
+            - "*skywalking-webapp.jar"
+          es:
+            - "*org.elasticsearch.bootstrap.Elasticsearch"
+            - "*/kindling/apm-agent-attach-cli*"
+          zookeeper:
+            - "*org.apache.zookeeper.server.quorum.QuorumPeerMain"
+          nacos:
+            - "*nacos-server.jar"
+          eureka-server:
+            - "eureka-server-*.jar"

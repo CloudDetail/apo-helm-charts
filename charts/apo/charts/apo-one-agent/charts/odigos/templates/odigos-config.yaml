@@ -1,0 +1,79 @@
+apiVersion: odigos.io/v1alpha1
+kind: OdigosConfiguration
+metadata:
+  name: odigos-config
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+spec:
+  configVersion: 1
+  autoscalerImage: {{ .Values.autoscaler.image.repository }}
+  {{- if .Values.imagePrefix }}
+  imagePrefix: {{ .Values.imagePrefix }}
+  {{- end }}
+  {{- if .Values.collectorGateway }}
+  collectorGateway:
+    {{- with .Values.collectorGateway.requestMemoryMiB }}
+    requestMemoryMiB: {{ . }}
+    {{- end }}
+    {{- with .Values.collectorGateway.memoryLimiterLimitMiB }}
+    memoryLimiterLimitMiB: {{ . }}
+    {{- end }}
+    {{- with .Values.collectorGateway.memoryLimiterSpikeLimitMiB }}
+    memoryLimiterSpikeLimitMiB: {{ . }}
+    {{- end }}
+    {{- with .Values.collectorGateway.goMemLimitMiB }}
+    goMemLimitMiB: {{ . }}
+    {{- end }}
+  {{- end }}  
+  instrumentorImage: {{ tpl .Values.instrumentor.image.repository . }}
+  odigosVersion: {{ .Values.odiglet.image.tag }}
+  telemetryEnabled: {{ .Values.telemetry.enabled }}
+  openshiftEnabled: {{ .Values.openshift.enabled }}
+  psp: {{ .Values.psp.enabled }}
+  ignoredNamespaces:
+    {{- toYaml .Values.ignoredNamespaces | nindent 8 }}
+  ignoredContainers:
+    {{- toYaml .Values.ignoredContainers | nindent 8 }}
+  defaultSDKs:
+    dotnet:
+      sdkTier: community
+      sdkType: native
+    go:
+      sdkTier: community
+      sdkType: ebpf
+    {{- if eq .Values.config.javaAgentType "skywalking" }}
+    java:
+      sdkTier: community
+      sdkType: skywalking
+    {{- else if eq .Values.config.javaAgentType "otherversions" }}
+    java:
+      sdkTier: community
+      sdkType: custom
+    {{- else }}
+    java:
+      sdkTier: community
+      sdkType: native
+    {{- end }}
+    javascript:
+      sdkTier: community
+      sdkType: native
+    python:
+      sdkTier: community
+      sdkType: native
+  supportedSDKs:
+    dotnet:
+      - sdkTier: community
+        sdkType: native
+    go:
+      - sdkTier: community
+        sdkType: ebpf
+    java:
+      - sdkTier: community
+        sdkType: native
+    javascript:
+      - sdkTier: community
+        sdkType: native
+    python:
+      - sdkTier: community
+        sdkType: native

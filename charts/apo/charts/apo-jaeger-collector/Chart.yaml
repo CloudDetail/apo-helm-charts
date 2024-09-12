@@ -1,0 +1,5 @@
+apiVersion: v2
+name: apo-jaeger-collector
+version: "0.1.0"
+type: application
+description: apo-jaeger-collector deployment charts

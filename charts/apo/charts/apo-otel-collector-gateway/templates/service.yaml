@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apo-otel-collector-gateway.fullname" . }}-svc
+  labels:
+    {{- include "apo-otel-collector-gateway.labels" . | nindent 4 }}
+spec:
+  ports:
+  {{- $serviceType := .Values.service.type -}}
+  {{- range .Values.service.ports }}
+  - name: {{ tpl .name $ }}
+    port: {{ tpl (toString .port) $ }}
+    targetPort: {{ tpl (toString .targetPort) $ }}
+    {{- if and (eq $serviceType "NodePort") (.nodePort) }}
+    nodePort: {{ tpl (toString .nodePort) $ }}
+    {{- end }}
+    protocol: {{ tpl .protocol $ }}
+  {{- end }}
+  selector:
+    {{- include "apo-otel-collector-gateway.selectorLabels" . | nindent 4 }}
+  type: "{{ .Values.service.type }}"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apo-otel-collector-gateway.fullname" . }}-nodeport-svc
+  labels:
+    {{- include "apo-otel-collector-gateway.labels" . | nindent 4 }}
+spec:
+  ports:
+  {{- $serviceType := .Values.serviceNodePort.type -}}
+  {{- range .Values.serviceNodePort.ports }}
+  - name: {{ tpl .name $ }}
+    port: {{ tpl (toString .port) $ }}
+    targetPort: {{ tpl (toString .targetPort) $ }}
+    {{- if and (eq $serviceType "NodePort") (.nodePort) }}
+    nodePort: {{ tpl (toString .nodePort) $ }}
+    {{- end }}
+    protocol: {{ tpl .protocol $ }}
+  {{- end }}
+  selector:
+    {{- include "apo-otel-collector-gateway.selectorLabels" . | nindent 4 }}
+  type: "{{ .Values.serviceNodePort.type }}"

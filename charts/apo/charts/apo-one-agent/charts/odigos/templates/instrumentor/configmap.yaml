@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-instrumentor-config
+data:
+  instrument-conf.yaml: |
+    # 目前下面任何设置都绝对不会操作kube-system这个namespace
+
+    # 设置需要注入的Namespace
+    # enabled: 注入现有的所有服务,但不注入后续新增应用
+    # enabledFuture: 注入现在以及后续的所有服务
+    # disabled: 不注入指定namespace下的服务,用于在instrument-all-namespace时忽略特定的Namespace
+    # e.g 
+    # namespace:
+    #   train-ticket: enabledFuture
+    #   originx: enabled
+    namespace:
+    {{- range .Values.instrumentor.targetNamespace }}
+      {{ .name }}: {{ .value }}
+    {{- end }}
+
+    # 设置namespace下需要注入的工作负载
+    # 优先级高于namespace中的设置,可以通常用于开启对特定workload的注入或者注入namespace时忽略特定的workload
+    # e.g
+    # workload:
+    #   train-ticket:
+    #     deployment/ts-travel-service: disabled
+    #   kindling:
+    #     center-api-server: enabled
+    # workload:
+    #   kindling:
+    #     deployment/center-api-server: enabled
+
+    # instrument-all-namespace 是否注入所有namespace
+    # 等价于设置所有namespace的enabledFuture
+    # 但如果已经设置了ns或者workload的disabled将不会注入
+    instrument-all-namespace: {{ .Values.instrumentor.instrumentAllNamespace }}
+    # force-instrument-all-namespace 是否强制注入所有namespace
+    # 和instrument-all-namespace类似,所有ns设置enabledFuture
+    # 并忽略所有disabled设置
+    force-instrument-all-namespace: {{ .Values.instrumentor.forceInstrumentAllNamespace }}

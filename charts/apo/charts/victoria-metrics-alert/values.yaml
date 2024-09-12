@@ -1,0 +1,713 @@
+# Default values for victoria-metrics-alert.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  compatibility:
+    openshift:
+      adaptSecurityContext: "auto"
+      
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  # mount API token to pod directly
+  automountToken: true
+
+rbac:
+  create: true
+  # Note: The PSP will only be deployed, if Kubernetes (<1.25) supports the resource.
+  pspEnabled: true
+  namespaced: false
+  extraLabels: {}
+  annotations: {}
+
+server:
+  name: server
+  enabled: true
+  image:
+    repository: victoriametrics/vmalert
+    tag: "" # rewrites Chart.AppVersion
+    # Variant of the image to use.
+    # e.g. enterprise, scratch
+    variant: ""
+    pullPolicy: IfNotPresent
+  nameOverride: ""
+  fullnameOverride: ""
+  imagePullSecrets: []
+
+  ## See `kubectl explain poddisruptionbudget.spec` for more
+  ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 1
+    labels: {}
+
+  # -- Additional environment variables (ex.: secret tokens, flags) https://github.com/VictoriaMetrics/VictoriaMetrics#environment-variables
+  env:
+    []
+    # - name: VM_remoteWrite_basicAuth_password
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: auth_secret
+    #       key: password
+
+  envFrom:
+    []
+    #- configMapRef:
+    #    name: special-config
+
+  # Readiness & Liveness probes
+  probe:
+    readiness:
+      initialDelaySeconds: 5
+      periodSeconds: 15
+      timeoutSeconds: 5
+      failureThreshold: 3
+    liveness:
+      initialDelaySeconds: 5
+      periodSeconds: 15
+      timeoutSeconds: 5
+      failureThreshold: 3
+
+  replicaCount: 1
+
+  # deployment strategy, set to standard k8s default
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+  # specifies the minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing/terminating
+  # 0 is the standard k8s default
+  minReadySeconds: 0
+
+  # vmalert reads metrics from source, next section represents its configuration. It can be any service which supports
+  # MetricsQL or PromQL.
+  datasource:
+    url: ""
+    # -- Basic auth for datasource
+    basicAuth:
+      username: ""
+      password: ""
+      # -- Auth based on Bearer token for datasource
+    bearer:
+      # -- Token with Bearer token. You can use one of token or tokenFile. You don't need to add "Bearer" prefix string
+      token: ""
+      # -- Token Auth file with Bearer token. You can use one of token or tokenFile
+      tokenFile: ""
+
+  remote:
+    write:
+      url: ""
+      # -- Basic auth for remote write
+      basicAuth:
+        username: ""
+        password: ""
+      # -- Auth based on Bearer token for remote write
+      bearer:
+        # -- Token with Bearer token. You can use one of token or tokenFile. You don't need to add "Bearer" prefix string
+        token: ""
+        # -- Token Auth file with Bearer token. You can use one of token or tokenFile
+        tokenFile: ""
+    read:
+      url: ""
+      # -- Basic auth for remote read
+      basicAuth:
+        username: ""
+        password: ""
+        # -- Auth based on Bearer token for remote read
+      bearer:
+        # -- Token with Bearer token. You can use one of token or tokenFile. You don't need to add "Bearer" prefix string
+        token: ""
+        # -- Token Auth file with Bearer token. You can use one of token or tokenFile
+        tokenFile: ""
+
+  # -- Notifier to use for alerts.
+  # Multiple notifiers can be enabled by using `notifiers` section
+  notifier:
+    alertmanager:
+      url: ""
+      # -- Basic auth for alertmanager
+      basicAuth:
+        username: ""
+        password: ""
+        # -- Auth based on Bearer token for alertmanager
+      bearer:
+        # -- Token with Bearer token. You can use one of token or tokenFile. You don't need to add "Bearer" prefix string
+        token: ""
+        # -- Token Auth file with Bearer token. You can use one of token or tokenFile
+        tokenFile: ""
+
+  # -- Additional notifiers to use for alerts
+  notifiers:
+    []
+    # - alertmanager:
+    #    url: ""
+    #    basicAuth:
+    #      username: ""
+    #      password: ""
+    #    bearer:
+    #      token: ""
+    #      tokenFile: ""
+
+  extraArgs:
+    envflag.enable: "true"
+    envflag.prefix: VM_
+    loggerFormat: json
+
+  # -- Additional hostPath mounts
+  extraHostPathMounts:
+    []
+    # - name: certs-dir
+    #   mountPath: /etc/kubernetes/certs
+    #   subPath: ""
+    #   hostPath: /etc/kubernetes/certs
+  #   readOnly: true
+
+  # -- Extra Volumes for the pod
+  extraVolumes:
+    []
+    #- name: example
+    #  configMap:
+    #    name: example
+
+  # -- Extra Volume Mounts for the container
+  extraVolumeMounts:
+    []
+    # - name: example
+    #   mountPath: /example
+
+  # -- Additional containers to run in the same pod
+  extraContainers:
+    []
+    #- name: config-reloader
+    #  image: reloader-image
+
+  service:
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 8880
+    # nodePort: 30000
+    type: ClusterIP
+    # Ref: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    # externalTrafficPolicy: "local"
+    # healthCheckNodePort: 0
+
+  ingress:
+    enabled: false
+    annotations: {}
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+
+    extraLabels: {}
+    hosts: []
+    #   - name: vmselect.local
+    #     path: /select
+    #     port: http
+
+    tls: []
+    #   - secretName: vmselect-ingress-tls
+    #     hosts:
+    #       - vmselect.local
+
+    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+    # ingressClassName: nginx
+    # -- pathType is only for k8s >= 1.1=
+    pathType: Prefix
+
+  podSecurityContext:
+    enabled: true
+  # fsGroup: 2000
+
+  securityContext:
+    enabled: true
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+  # runAsUser: 1000
+
+  resources:
+    {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+  #   memory: 128Mi
+
+  # Annotations to be added to the deployment
+  annotations: {}
+  # labels to be added to the deployment
+  labels: {}
+
+  # Annotations to be added to pod
+  podAnnotations: {}
+
+  podLabels: {}
+
+  nodeSelector: {}
+
+  priorityClassName: ""
+
+  tolerations: []
+
+  affinity: {}
+
+  # vmalert alert rules configuration configuration:
+  # use existing configmap if specified
+  # otherwise .config values will be used
+  configMap: ""
+  config:
+    alerts:
+      groups:
+      - name: 应用指标
+        rules:
+        - alert: 平均请求延时超过1s
+          expr: sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m]))/
+            sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))/1000000 > 1000
+          for: 1m
+          labels:
+            severity: warning
+            group: app
+          annotations:
+            summary: 平均请求延时超过1s (服务名 {{ $labels.svc_name }}, 服务端点 {{ $labels.content_key }})
+            description: |-
+              平均请求延时超过1s
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 请求错误率超过0%
+          expr: sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m]))/
+            sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m])) > 0
+          for: 1m
+          labels:
+            severity: warning
+            group: app
+          annotations:
+            summary: 请求错误率超过0% (服务名 {{ $labels.svc_name }}, 服务端点 {{ $labels.content_key }})
+            description: |-
+              请求错误率超过0%
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 平均请求延时相比昨天升高20%以上
+          expr: (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m]))/
+            sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))) / 
+            (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m] offset 24h))/
+            sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m] offset 24h))) - 1 > 0.2
+          for: 1m
+          labels:
+            severity: warning
+            group: app
+          annotations:
+            summary: 平均请求延时相比昨天升高20%以上 (服务名 {{ $labels.svc_name }}, 服务端点 {{ $labels.content_key }})
+            description: |-
+              平均请求延时相比昨天升高20%以上
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+      - name: 主机相关
+        rules:
+        - alert: 磁盘不足20%
+          expr: ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 20 and
+            ON (instance_name, device, mountpoint) node_filesystem_readonly == 0) * on(instance_name)
+            group_left (nodename) node_uname_info{nodename=~".+"}
+          for: 1m
+          labels:
+            severity: warning
+            group: infra
+          annotations:
+            summary: Host out of disk space (instance_name {{ $labels.instance_name }})
+            description: |-
+              Disk is almost full (< 20% left)
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 异常网络入吞吐量
+          expr: (sum by (instance_name) (rate(node_network_receive_bytes_total[2m])) / 1024 /
+            1024 > 100) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+          for: 1m
+          labels:
+            severity: warning
+            group: infra
+          annotations:
+            summary: Host unusual network throughput in (instance_name {{ $labels.instance_name }})
+            description: |-
+              Host network interfaces are probably receiving too much data (> 100 MB/s)
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 异常磁盘读速度
+          expr: (sum by (instance_name) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024
+            > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+          for: 1m
+          labels:
+            severity: warning
+            group: infra
+          annotations:
+            summary: Host unusual disk read rate (instance_name {{ $labels.instance_name }})
+            description: |-
+              Disk is probably reading too much data (> 50 MB/s)
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 异常磁盘写速度
+          expr: (sum by (instance_name) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024
+            > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+          for: 1m
+          labels:
+            severity: warning
+            group: infra
+          annotations:
+            summary: Host unusual disk write rate (instance_name {{ $labels.instance_name }})
+            description: |-
+              Disk is probably writing too much data (> 50 MB/s)
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: CPU高负载
+          expr: (sum by (instance_name) (avg by (mode, instance_name) (rate(node_cpu_seconds_total{mode!="idle"}[2m])))
+            > 0.8) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+          for: 1m
+          labels:
+            severity: warning
+            group: infra
+          annotations:
+            summary: Host high CPU load (instance_name {{ $labels.instance_name }})
+            description: |-
+              CPU load is > 80%
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: CPU高IO Wait
+          expr: (avg by (instance_name) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) * 100
+            > 10) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+          for: 0m
+          labels:
+            severity: warning
+            group: infra
+          annotations:
+            summary: Host CPU high iowait (instance_name {{ $labels.instance_name }})
+            description: |-
+              CPU iowait > 10%. A high iowait means that you are disk or network bound.
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 异常磁盘IO利用率
+          expr: (rate(node_disk_io_time_seconds_total[1m]) > 0.5) * on(instance_name) group_left
+            (nodename) node_uname_info{nodename=~".+"}
+          for: 1m
+          labels:
+            severity: warning
+            group: infra
+          annotations:
+            summary: Host unusual disk IO (instance_name {{ $labels.instance_name }})
+            description: |-
+              Time spent in IO is too high on {{ $labels.instance_name }}. Check storage for issues.
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+      - name: 网络相关
+        rules:
+        - alert: 网络RTT延时超过50ms
+          expr: kindling_network_rtt{} * 1000 > 50
+          for: 1m
+          labels:
+            severity: warning
+            group: network
+          annotations:
+            summary: RTT is high (src_ip {{ $labels.src_ip }} dst_ip {{ $labels.dst_ip }})
+            description: |-
+              RTT is high (> 50 ms)
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+      - name: 容器相关
+        rules:
+        - alert: 容器被Killed
+          expr: time() - container_last_seen > 60
+          for: 0m
+          labels:
+            severity: warning
+            group: container
+          annotations:
+            summary: Container killed (instance_name {{ $labels.instance_name }})
+            description: |-
+              A container has disappeared
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 容器消亡
+          expr: absent(container_last_seen)
+          for: 5m
+          labels:
+            severity: warning
+            group: container
+          annotations:
+            summary: Container absent (instance_name {{ $labels.instance_name }})
+            description: |-
+              A container is absent for 5 min
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 容器CPU使用率超过80%
+          expr: (sum(rate(container_cpu_usage_seconds_total{container!=""}[5m])) by (pod,
+            container) / sum(container_spec_cpu_quota{container!=""}/container_spec_cpu_period{container!=""})
+            by (pod, container) * 100) > 80
+          for: 2m
+          labels:
+            severity: warning
+            group: container
+          annotations:
+            summary: Container High CPU utilization (instance_name {{ $labels.instance_name }})
+            description: |-
+              Container CPU utilization is above 80%
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 容器内存使用率超过80%
+          expr: (sum(container_memory_working_set_bytes{name!=""}) BY (instance_name, name) /
+            sum(container_spec_memory_limit_bytes > 0) BY (instance_name, name) * 100) > 80
+          for: 2m
+          labels:
+            severity: warning
+            group: container
+          annotations:
+            summary: Container High Memory usage (instance_name {{ $labels.instance_name }})
+            description: |-
+              Container Memory usage is above 80%
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 容器持久卷使用率超过80%
+          expr: (1 - (sum(container_fs_inodes_free{name!=""}) BY (instance_name) / sum(container_fs_inodes_total)
+            BY (instance_name))) * 100 > 80
+          for: 2m
+          labels:
+            severity: warning
+            group: container
+          annotations:
+            summary: Container Volume usage (instance_name {{ $labels.instance_name }})
+            description: |-
+              Container Volume usage is above 80%
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 容器高cpu_cfs_throttled
+          expr: sum(increase(container_cpu_cfs_throttled_periods_total{container!=""}[5m]))
+            by (container, pod, namespace) / sum(increase(container_cpu_cfs_periods_total[5m]))
+            by (container, pod, namespace) > (25 / 100)
+          for: 5m
+          labels:
+            severity: warning
+            group: container
+          annotations:
+            summary: Container high throttle rate (instance_name {{ $labels.instance_name }})
+            description: |-
+              Container is being throttled
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 容器CPU使用率低于20%
+          expr: (sum(rate(container_cpu_usage_seconds_total{container!=""}[5m])) by (pod,
+            container) / sum(container_spec_cpu_quota{container!=""}/container_spec_cpu_period{container!=""})
+            by (pod, container) * 100) < 20
+          for: 7d
+          labels:
+            severity: info
+            group: container
+          annotations:
+            summary: Container Low CPU utilization (instance_name {{ $labels.instance_name }})
+            description: |-
+              Container CPU utilization is under 20% for 1 week. Consider reducing the allocated CPU.
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+        - alert: 容器内存使用率低于20%
+          expr: (sum(container_memory_working_set_bytes{name!=""}) BY (instance_name, name) /
+            sum(container_spec_memory_limit_bytes > 0) BY (instance_name, name) * 100) < 20
+          for: 7d
+          labels:
+            severity: info
+            group: container
+          annotations:
+            summary: Container Low Memory usage (instance_name {{ $labels.instance_name }})
+            description: |-
+              Container Memory usage is under 20% for 1 week. Consider reducing the allocated memory.
+                VALUE = {{ $value }}
+                LABELS = {{ $labels }}
+
+
+  # -- Vertical Pod Autoscaler
+  verticalPodAutoscaler:
+    # -- Use VPA for vmalert
+    enabled: false
+    # recommenders:
+    #   - name: 'alternative'
+    # updatePolicy:
+    #   updateMode: "Auto"
+    #   minReplicas: 1
+    # resourcePolicy:
+    #   containerPolicies:
+    #     - containerName: '*'
+    #       minAllowed:
+    #         cpu: 100m
+    #         memory: 128Mi
+    #       maxAllowed:
+    #         cpu: 1
+    #         memory: 500Mi
+    #       controlledResources: ["cpu", "memory"]
+
+serviceMonitor:
+  enabled: false
+  extraLabels: {}
+  annotations: {}
+  relabelings: []
+  metricRelabelings: []
+#    interval: 15s
+#    scrapeTimeout: 5s
+# -- Commented. HTTP scheme to use for scraping.
+#    scheme: https
+# -- Commented. TLS configuration to use when scraping the endpoint
+#    tlsConfig:
+#      insecureSkipVerify: true
+
+alertmanager:
+  enabled: true
+  podMetadata:
+    labels: {}
+    annotations: {}
+  image: prom/alertmanager
+  tag: v0.25.0
+  retention: 120h
+  nodeSelector: {}
+  priorityClassName: ""
+  resources: {}
+  tolerations: []
+  imagePullSecrets: []
+  podSecurityContext:
+    enabled: false
+  securityContext:
+    enabled: false
+  listenAddress: "0.0.0.0:9093"
+  extraArgs: {}
+  # key: value
+  envFrom: []
+  # external URL, that alertmanager will expose to receivers
+  baseURL: ""
+  # external URL Prefix, Prefix for the internal routes of web endpoints
+  baseURLPrefix: ""
+  # use existing configmap if specified
+  # otherwise .config values will be used
+  configMap: ""
+  # config:
+  #   global:
+  #     resolve_timeout: 5m
+  #   route:
+  #     # default receiver
+  #     receiver: devnull
+  #     # tag to group by
+  #     group_by: ["alertname"]
+  #     # How long to initially wait to send a notification for a group of alerts
+  #     group_wait: 30s
+  #     # How long to wait before sending a notification about new alerts that are added to a group
+  #     group_interval: 10s
+  #     # How long to wait before sending a notification again if it has already been sent successfully for an alert
+  #     repeat_interval: 24h
+  #   receivers:
+  #     - name: devnull
+  templates: {}
+  #  alertmanager.tmpl: |-
+  service:
+    annotations: {}
+    type: ClusterIP
+    port: 9093
+    # if you want to force a specific nodePort. Must be use with service.type=NodePort
+    # nodePort:
+  ingress:
+    enabled: false
+    annotations: {}
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+    extraLabels: {}
+    hosts: []
+    #   - name: alertmanager.local
+    #     path: /
+    #     port: web
+
+    tls: []
+    #   - secretName: alertmanager-ingress-tls
+    #     hosts:
+    #       - alertmanager.local
+
+    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+    # ingressClassName: nginx
+    # -- pathType is only for k8s >= 1.1=
+    pathType: Prefix
+  persistentVolume:
+    # -- Create/use Persistent Volume Claim for alertmanager component. Empty dir if false
+    enabled: false
+    # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
+    accessModes:
+      - ReadWriteOnce
+    # -- Persistant volume annotations
+    annotations: {}
+    # -- StorageClass to use for persistent volume. Requires alertmanager.persistentVolume.enabled: true. If defined, PVC created automatically
+    storageClass: ""
+    # -- Existing Claim name. If defined, PVC must be created manually before volume will be bound
+    existingClaim: ""
+    # -- Mount path. Alertmanager data Persistent Volume mount root path.
+    mountPath: /data
+    # -- Mount subpath
+    subPath: ""
+    # -- Size of the volume. Better to set the same as resource limit memory property.
+    size: 50Mi
+
+  # Additional hostPath mounts
+  extraHostPathMounts:
+    []
+    # - name: certs-dir
+    #   mountPath: /etc/kubernetes/certs
+    #   subPath: ""
+    #   hostPath: /etc/kubernetes/certs
+  #   readOnly: true
+
+  # Extra Volumes for the pod
+  extraVolumes:
+    []
+    #- name: example
+    #  configMap:
+    #    name: example
+
+  # Extra Volume Mounts for the container
+  extraVolumeMounts:
+    []
+    # - name: example
+    #   mountPath: /example
+
+  extraContainers:
+    []
+    #- name: config-reloader
+    #  image: reloader-image
+
+# -- Add extra specs dynamically to this chart
+extraObjects: []
+
+# -- Enterprise license key configuration for VictoriaMetrics enterprise.
+# Required only for VictoriaMetrics enterprise.
+# Documentation - https://docs.victoriametrics.com/enterprise.html,
+# for more information, visit https://victoriametrics.com/products/enterprise/ .
+# To request a trial license, go to https://victoriametrics.com/products/enterprise/trial/
+# Supported starting from VictoriaMetrics v1.94.0
+license:
+  # -- License key
+  key: ""
+
+  # -- Use existing secret with license key
+  secret:
+    # -- Existing secret name
+    name: ""
+    # -- Key in secret with license key
+    key: ""

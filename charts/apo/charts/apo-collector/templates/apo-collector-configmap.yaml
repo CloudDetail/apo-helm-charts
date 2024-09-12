@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "apo-collector.fullname" . }}-config
+  labels:
+    {{- include "apo-collector.labels" . | nindent 4 }}
+data:
+  receiver-config.yml: |
+    receiver:
+      # 暴露Grpc端口号.
+      grpc_port: 29090
+      http_port: 8080
+      center_api_server: product.kindlingx.com
+    profile:
+      # 设置TraceId缓存时间,单位为秒.
+      traceid_cache_time: 6
+      # 是否开启动态调整报告窗口采样数.
+      open_window_sample: false
+      # 动态调整缺失报告数据的窗口期采样数.(由1 -> N).
+      window_sample_num: 10
+
+    slo:
+      enable: true
+      debug: true
+
+    promethues:
+      address: {{ tpl .Values.apoCollector.config.victoriaMetricsUrl . }}
+      storage: "vm"
+
+    es:
+      host: http://elasticsearch-master:9200
+      index_suffix: originx
+      # es数据清理工作的 Cron 定时任务调度表达式
+      cron_schedule: "0 1 * * *"
+      # 清理多少天前的数据
+      days_before: 3
+      # 需要定时清理数据的索引的前缀
+      indices:
+        - "camera_agent_log_"
+        - "slo_result-"
+
+    clickhouse:
+      endpoint: "tcp://{{ tpl .Values.apoCollector.config.clickhouseUrl . }}"
+      username: {{ tpl .Values.apoCollector.config.clickhouseUsername . }}
+      password: {{ tpl .Values.apoCollector.config.clickhousePassword . }}
+      database: "apo"
+      cluster: ""
+      # (default = 0): The data time-to-live in days, 0 means no ttl.
+      ttl_days: 7
+      ttl_config:
+      - tables: ["service_relation", "service_topology"]
+        ttl: 30
+        timestamp_field: "timestamp"
+      - tables: ["alert_event"]
+        ttl: 7
+        timestamp_field: "received_time"
+      # Wait for N seconds to flush datas to clickhouse.
+      flush_seconds: 5
+
+    analyzer:
+      # 设置单次Trace缓存时间(秒),超过该时间还没有收到入口Trace则清除.
+      cache_second: 60
+      # 设置执行分析流程的线程数.
+      thread_count: 10
+      # 设置延迟处理等待时间(秒),确保APM数据已入库.
+      delay_duration: 5
+      # 等待N(秒)后重试连接Adapter，生成报告
+      retry_duration: 5
+      # 最后一条Trace等待N秒还未采集到入口数据，则生成多个报告 和 拓扑
+      # 当设置为0，则表示关闭
+      miss_top_time: 30
+      # 每N秒生成一个入口服务 + URL相关的拓扑
+      topology_period: 60
+      # 重试次数,考虑到APM数据可能还未到达,存在获取APM数据失败的场景.
+      retry_times: 3
+      # Set Mutated Span Duration Percent Threshold. [0 ~ 100]%.
+      ratio_threshold: 2
+      # profile缓存时间
+      segment_size: 40
+      # 突变节点识别算法：single / service
+      mutate_node_mode: service
+      # 转发Adapter地址
+      trace_adress: {{ tpl .Values.apoCollector.config.apmAdapterUrl . }}
+      # 超时时间(秒).
+      timeout: 10
+      # 设置需要执行GetDetail()的apmType类型.
+      get_detail_types: ["arms"]
+    
+    redis:
+      # 单实例可考虑不引入Redis, 多实例则需要引入中间件Redis.
+      enable: false
+      address: ""
+      password: ""
+      # 设置缓存时间(秒)
+      expire_time: 300
+
+    k8s:
+      enable: true
+      api_type: meta_server
+      meta_server_config:
+        fetch_source:
+          source_addr: {{ tpl .Values.apoCollector.config.apoBackendUrl . }}/metadata
+        querier:
+          query_server_port: 8082
+          is_single_cluster: true

@@ -1,0 +1,128 @@
+image:
+  tag: "v1.0.89"
+  imagePullPolicy: IfNotPresent
+imagePullSecrets: []
+
+# namespaces not to show in odigos ui
+ignoredNamespaces:
+  - odigos-system
+  - kube-system
+  - local-path-storage
+  - istio-system
+  - linkerd
+  - kube-node-lease
+
+ignoredContainers:
+  - istio-proxy
+
+collectorGateway:
+  # the memory request for the cluster gateway collector deployment.
+  # it will be embedded in the deployment as a resource request 
+  # of the form "memory: <value>Mi".
+  # default value is 500Mi
+  requestMemoryMiB: 500
+  # sets the "limit_mib" parameter in the memory limiter configuration for the collector gateway.
+  # it is the hard limit after which a force garbage collection will be performed. 
+  # if not set, it will be 50Mi below the memory request.
+  memoryLimiterLimitMiB: 450
+  # sets the "spike_limit_mib" parameter in the memory limiter configuration for the collector gateway.
+  # note that this is not the processor soft limit, but the diff in MiB between the hard limit and the soft limit.
+  # if not specified, this value will be set to 20% of the hard limit (so the soft limit will be 80% of the hard limit).
+  memoryLimiterSpikeLimitMiB: 90
+  # the GOMEMLIMIT environment variable value for the collector gateway deployment.
+  # this is when go runtime will start garbage collection.
+  # if not specified, it will be set to 80% of the hard limit of the memory limiter.
+  goMemLimitMiB: 340
+
+autoscaler:
+  image:
+    repository: keyval/odigos-autoscaler
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}
+
+scheduler:
+  image:
+    repository: keyval/odigos-scheduler
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}
+
+ui:
+  image:
+    repository: keyval/odigos-ui
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations: []
+  affinity: {}
+
+instrumentor:
+  deleteLangDetectionPods: true
+  image:
+    repository: keyval/odigos-instrumentor
+    imagePullPolicy: IfNotPresent
+    tag: "v1.0.75-webhook"
+  resources: {}
+  #   limits:
+  #     cpu: 500m
+  #     memory: 128Mi
+  #   requests:
+  #     cpu: 10m
+  #     memory: 64Mi
+  tolerations: []
+  affinity: {}
+  # targetNamespace 
+  # name：目标命名空间
+  # value：
+  #   enabled: 注入现有的所有服务,但不注入后续新增应用
+  #   enabledFuture: 注入现在以及后续的所有服务
+  #   disabled: 不注入指定namespace下的服务,用于在instrument-all-namespace时忽略特定的Namespace
+  targetNamespace:
+  - name: default
+    value: disabled
+  # instrument-all-namespace 是否注入所有namespace
+  # 等价于设置所有namespace的enabledFuture
+  # 但如果已经设置了ns或者workload的disabled将不会注入
+  instrumentAllNamespace: false
+  # force-instrument-all-namespace 是否强制注入所有namespace
+  # 和instrument-all-namespace类似,所有ns设置enabledFuture
+  # 并忽略所有disabled设置
+  forceInstrumentAllNamespace: false
+
+odiglet:
+  image:
+    repository: keyval/odigos-odiglet
+    enterpriseRepository: keyval/odigos-enterprise-odiglet
+    imagePullPolicy: IfNotPresent
+    tag: "v1.0.75-3"
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi
+  affinity: {}
+
+config:
+  apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.apo:4317"
+  apoOtelCollectorHttpUrl: "apo-otel-collector-svc.apo:4318"
+
+cli:
+  image:
+    repository: keyval/odigos-cli
+
+# Pod Security Policy
+psp:
+  enabled: false
+
+telemetry:
+  enabled: true
+
+openshift:
+  enabled: false
+
+gke:
+  enabled: false

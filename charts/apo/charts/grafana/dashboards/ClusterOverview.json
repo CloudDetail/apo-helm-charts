@@ -1,0 +1,2853 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "This is a modern 'Global View' dashboard for your Kubernetes cluster(s). Made for kube-prometheus-stack and take advantage of the latest Grafana features. GitHub repository: https://github.com/dotdc/grafana-dashboards-kubernetes",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": 10,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 67,
+      "panels": [],
+      "title": "总览",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      },
+      "id": 77,
+      "options": {
+        "displayMode": "lcd",
+        "maxVizHeight": 300,
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "avg(sum by (instance_name, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])))",
+          "interval": "",
+          "legendFormat": "Real Linux",
+          "range": true,
+          "refId": "Real Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "avg(sum by (core) (rate(windows_cpu_time_total{mode!=\"idle\", cluster=\"$cluster\"}[$__rate_interval])))",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "Real Windows",
+          "range": true,
+          "refId": "Real Windows"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\", cluster=\"$cluster\"}) / sum(machine_cpu_cores{cluster=\"$cluster\"})",
+          "hide": true,
+          "legendFormat": "Requests",
+          "range": true,
+          "refId": "Requests"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"cpu\", cluster=\"$cluster\"}) / sum(machine_cpu_cores{cluster=\"$cluster\"})",
+          "hide": true,
+          "legendFormat": "Limits",
+          "range": true,
+          "refId": "Limits"
+        }
+      ],
+      "title": "集群总CPU使用率",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Real",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "Real Linux",
+                "Real Windows"
+              ],
+              "reducer": "mean"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Real Linux": true,
+              "Real Windows": true,
+              "Time": true
+            },
+            "indexByName": {
+              "Limits": 5,
+              "Real": 1,
+              "Real Linux": 2,
+              "Real Windows": 3,
+              "Requests": 4,
+              "Time": 0
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 9,
+        "x": 8,
+        "y": 1
+      },
+      "id": 78,
+      "options": {
+        "displayMode": "lcd",
+        "maxVizHeight": 300,
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job_name=\"$job_name\"} - node_memory_MemAvailable_bytes{cluster=\"$cluster\", job_name=\"$job_name\"}) / sum(max_over_time(node_memory_MemTotal_bytes{cluster=\"$cluster\", job_name=\"$job_name\"}[5m]))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Real Linux",
+          "range": true,
+          "refId": "Real Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(windows_memory_available_bytes{cluster=\"$cluster\"} + windows_memory_cache_bytes{cluster=\"$cluster\"}) / sum(windows_os_visible_memory_bytes{cluster=\"$cluster\"})",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "Real Windows",
+          "range": true,
+          "refId": "Real Windows"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\", cluster=\"$cluster\"}) / sum(machine_memory_bytes{cluster=\"$cluster\"})",
+          "hide": true,
+          "legendFormat": "Requests",
+          "range": true,
+          "refId": "Requests"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"memory\", cluster=\"$cluster\"}) / sum(machine_memory_bytes{cluster=\"$cluster\"})",
+          "hide": true,
+          "legendFormat": "Limits",
+          "range": true,
+          "refId": "Limits"
+        }
+      ],
+      "title": "集群总内存使用率",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Real",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "Real Linux",
+                "Real Windows"
+              ],
+              "reducer": "mean"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Real Linux": true,
+              "Real Windows": true,
+              "Time": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Limits": 5,
+              "Real": 3,
+              "Real Linux": 1,
+              "Real Windows": 2,
+              "Requests": 4,
+              "Time": 0
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "命名空间数量(Namespaces)",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 17,
+        "y": 1
+      },
+      "id": 59,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "count(group by (namespace) (container_memory_rss))",
+          "interval": "",
+          "legendFormat": "",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "命名空间数量",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "节点数(Node)",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 17,
+        "y": 5
+      },
+      "id": 63,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "count(group by (instance_name) (container_memory_rss))",
+          "interval": "",
+          "legendFormat": "",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "节点数",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(255, 255, 255)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "id": 37,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval]))",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Real Linux",
+          "range": true,
+          "refId": "Real Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(windows_cpu_time_total{mode!=\"idle\", cluster=\"$cluster\"}[$__rate_interval]))",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "Real Windows",
+          "range": true,
+          "refId": "Real Windows"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\", cluster=\"$cluster\"})",
+          "hide": true,
+          "legendFormat": "Requests",
+          "range": true,
+          "refId": "Requests"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"cpu\", cluster=\"$cluster\"})",
+          "hide": true,
+          "legendFormat": "Limits",
+          "range": true,
+          "refId": "Limits"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(max_over_time(machine_cpu_cores{cluster=\"$cluster\"}[5m]))",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Total",
+          "range": true,
+          "refId": "Total"
+        }
+      ],
+      "title": "CPU使用量",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Real",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "Real Linux"
+              ],
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Real": false,
+              "Real Linux": true,
+              "Real Windows": true,
+              "Time": true,
+              "Total": false,
+              "Total Linux": true,
+              "Total Windows": true,
+              "实时用量": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Limits": 5,
+              "Real": 3,
+              "Real Linux": 1,
+              "Real Windows": 2,
+              "Requests": 4,
+              "Time": 0,
+              "Total": 8,
+              "Total Linux": 6,
+              "Total Windows": 7
+            },
+            "renameByName": {
+              "Real": "实时用量",
+              "Total": "总核数"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "内存使用量(RAM Usage)",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(255, 255, 255)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 9,
+        "x": 8,
+        "y": 8
+      },
+      "id": 39,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job_name=\"$job_name\"} - node_memory_MemAvailable_bytes{cluster=\"$cluster\", job_name=\"$job_name\"})",
+          "interval": "",
+          "legendFormat": "Real Linux",
+          "range": true,
+          "refId": "Real Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(windows_os_visible_memory_bytes{cluster=\"$cluster\"} - windows_memory_available_bytes{cluster=\"$cluster\"} - windows_memory_cache_bytes{cluster=\"$cluster\"})",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "Real Windows",
+          "range": true,
+          "refId": "Real Windows"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\", cluster=\"$cluster\"})",
+          "hide": true,
+          "legendFormat": "Requests",
+          "range": true,
+          "refId": "Requests"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"memory\", cluster=\"$cluster\"})",
+          "hide": true,
+          "legendFormat": "Limits",
+          "range": true,
+          "refId": "Limits"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(max_over_time(machine_memory_bytes{cluster=\"$cluster\"}[5m]))",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Total",
+          "range": true,
+          "refId": "Total"
+        }
+      ],
+      "title": "内存使用量",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Real",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "Real Linux",
+                "Real Windows"
+              ],
+              "reducer": "mean"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Real Linux": true,
+              "Real Windows": true,
+              "Time": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Limits": 5,
+              "Real": 3,
+              "Real Linux": 1,
+              "Real Windows": 2,
+              "Requests": 4,
+              "Time": 0,
+              "Total": 6
+            },
+            "renameByName": {
+              "Real": "已用",
+              "Real Linux": "",
+              "Total": "总量"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "运行的Pod数(Running Pod)",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 17,
+        "y": 9
+      },
+      "id": 62,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(group by (pod) (container_memory_rss))",
+          "interval": "",
+          "legendFormat": "",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "运行的Pod数",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "集群CPU使用率 (Cluster CPU Utilization)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd",
+            "seriesBy": "last"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "CPU %",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 0.7
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "id": 72,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "right",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "avg(sum by (instance_name, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])))",
+          "interval": "$resolution",
+          "legendFormat": "Linux",
+          "range": true,
+          "refId": "Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "1 - avg(rate(windows_cpu_time_total{cluster=\"$cluster\",mode=\"idle\"}[$__rate_interval]))",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Windows",
+          "range": true,
+          "refId": "Windows"
+        }
+      ],
+      "title": "集群CPU使用率",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "CPU使用率(%)",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "mean"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "集群内存使用率(Cluster Memory Utilization)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "MEMORY",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 0.7
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "id": 55,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "hidden",
+          "placement": "right",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job_name=\"$job_name\"} - node_memory_MemAvailable_bytes{cluster=\"$cluster\", job_name=\"$job_name\"}) / sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job_name=\"$job_name\"})",
+          "interval": "$resolution",
+          "legendFormat": "Linux",
+          "range": true,
+          "refId": "Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(windows_os_visible_memory_bytes{cluster=\"$cluster\"} - windows_memory_available_bytes{cluster=\"$cluster\"}) / sum(windows_os_visible_memory_bytes{cluster=\"$cluster\"})",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Windows",
+          "range": true,
+          "refId": "Windows"
+        }
+      ],
+      "title": "集群内存使用率",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "内存使用率(%)",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "mean"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "设备的网络利用率(Global Network Utilization by device),移除了常见的虚拟设备以避免噪音(veth,azv,lxc,cali)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "带宽",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "接收 : ens192"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 44,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(node_network_receive_bytes_total{device!~\"(veth|azv|lxc|cali).*\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (device)",
+          "interval": "$resolution",
+          "legendFormat": "接收 : {{ device }}",
+          "range": true,
+          "refId": "Linux Received"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "- sum(rate(node_network_transmit_bytes_total{device!~\"(veth|azv|lxc|cali).*\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (device)",
+          "interval": "$resolution",
+          "legendFormat": "发送 : {{ device }}",
+          "range": true,
+          "refId": "Linux Transmitted"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(windows_net_bytes_received_total{cluster=\"$cluster\"}[$__rate_interval])) by (nic)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Received : {{ nic }}",
+          "range": true,
+          "refId": "Windows Received"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "- sum(rate(windows_net_bytes_sent_total{cluster=\"$cluster\"}[$__rate_interval])) by (nic)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Transmitted : {{ device }}",
+          "range": true,
+          "refId": "Windows Transmitted"
+        }
+      ],
+      "title": "集群整体网络带宽(按设备统计)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "网络饱和 - 丢包数(Network Saturation - Packets Dropped)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "丢包数",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 53,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(node_network_receive_drop_total{cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval]))",
+          "interval": "$resolution",
+          "legendFormat": "Linux Packets dropped (receive)",
+          "range": true,
+          "refId": "Linux Packets dropped (receive)"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "- sum(rate(node_network_transmit_drop_total{cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval]))",
+          "interval": "$resolution",
+          "legendFormat": "Linux Packets dropped (transmit)",
+          "range": true,
+          "refId": "Linux Packets dropped (transmit)"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(windows_net_packets_received_discarded_total{cluster=\"$cluster\"}[$__rate_interval]))",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Windows Packets dropped (receive)",
+          "range": true,
+          "refId": "Windows Packets dropped (receive)"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "- sum(rate(windows_net_packets_outbound_discarded_total{cluster=\"$cluster\"}[$__rate_interval]))",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Windows Packets dropped (transmit)",
+          "range": true,
+          "refId": "Windows Packets dropped (transmit)"
+        }
+      ],
+      "title": "网络饱和 - 丢包数",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Packets dropped (receive)",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "Linux Packets dropped (receive)",
+                "Windows Packets dropped (receive)"
+              ],
+              "reducer": "mean"
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Packets dropped (transmit)",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "Linux Packets dropped (transmit)",
+                "Windows Packets dropped (transmit)"
+              ],
+              "reducer": "mean"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Linux Packets dropped (receive)": true,
+              "Linux Packets dropped (transmit)": true,
+              "Time": false,
+              "Windows Packets dropped (receive)": true,
+              "Windows Packets dropped (transmit)": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 71,
+      "panels": [],
+      "title": "节点资源使用",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "节点CPU使用率(CPU Utilization by instance)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "CPU %",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 54,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Max",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "avg(sum by (instance_name, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval]))) by (instance_name)",
+          "interval": "$resolution",
+          "legendFormat": "{{ node }}",
+          "range": true,
+          "refId": "Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "avg(sum by (instance_name,core) (rate(windows_cpu_time_total{mode!=\"idle\", cluster=\"$cluster\"}[$__rate_interval]))) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "{{ node }}",
+          "range": true,
+          "refId": "Windows"
+        }
+      ],
+      "title": "节点CPU使用率",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "节点内存使用量(Memory Utilization by instance)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "MEMORY",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "id": 73,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Max",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job_name=\"$job_name\"} - node_memory_MemAvailable_bytes{cluster=\"$cluster\", job_name=\"$job_name\"}) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "{{ instance_name }}",
+          "range": true,
+          "refId": "Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(windows_os_visible_memory_bytes{cluster=\"$cluster\"} - windows_memory_available_bytes{cluster=\"$cluster\"}) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "{{ instance_name }}",
+          "range": true,
+          "refId": "Windows"
+        }
+      ],
+      "title": "节点内存使用量",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "节点的网络使用量(Total Network Received with all virtual devices by instance), 含虚拟设备和回环网卡",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "带宽",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "接收: large-server-6"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 38
+      },
+      "id": 80,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(node_network_receive_bytes_total{cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (instance_name)",
+          "interval": "$resolution",
+          "legendFormat": "接收: {{ instance_name }}",
+          "range": true,
+          "refId": "Linux Received bytes"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "- sum(rate(node_network_transmit_bytes_total{cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "发送: {{ instance_name }}",
+          "range": true,
+          "refId": "Linux Transmitted bytes"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(windows_net_bytes_received_total{cluster=\"$cluster\"}[$__rate_interval])) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Received bytes in {{ instance_name }}",
+          "range": true,
+          "refId": "Windows Received bytes"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "- sum(rate(windows_net_bytes_sent_total{cluster=\"$cluster\"}[$__rate_interval])) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Transmitted bytes in {{ instance_name }}",
+          "range": true,
+          "refId": "Windows Transmitted bytes"
+        }
+      ],
+      "title": "节点的网络使用量",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "节点的网络使用量,不含回环/虚拟设备(Network Received without loopback by instance)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "带宽",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 38
+      },
+      "id": 56,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(node_network_receive_bytes_total{device!~\"(veth|azv|lxc|lo|cali).*\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (instance_name)",
+          "interval": "$resolution",
+          "legendFormat": "Received bytes in {{ instance_name }}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "- sum(rate(node_network_transmit_bytes_total{device!~\"(veth|azv|lxc|lo|cali).*\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Transmitted bytes in {{ instance_name }}",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(windows_net_bytes_received_total{nic!~\".*Virtual.*\",cluster=\"$cluster\"}[$__rate_interval])) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Received bytes in {{ instance_name }}",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "- sum(rate(windows_net_bytes_sent_total{nic!~\".*Virtual.*\",cluster=\"$cluster\"}[$__rate_interval])) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Transmitted bytes in {{ instance_name }}",
+          "range": true,
+          "refId": "D"
+        }
+      ],
+      "title": "节点的网络使用量(不含回环/虚拟设备)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "节点(Network Received (loopback only) by instance)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "带宽",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 46
+      },
+      "id": 81,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(node_network_receive_bytes_total{device=\"lo\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (instance_name)",
+          "interval": "$resolution",
+          "legendFormat": "Received bytes in {{ instance_name }}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "- sum(rate(node_network_transmit_bytes_total{device=\"lo\", cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (instance_name)",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "Transmitted bytes in {{ instance_name }}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "节点的网络使用量(仅回环)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "节点CPU限流时长(CPU Core Throttled by instance), 没数据说明CPU充足或未做限制",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "NB",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 46
+      },
+      "id": 83,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Max",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(node_cpu_core_throttles_total{cluster=\"$cluster\", job_name=\"$job_name\"}[$__rate_interval])) by (instance_name)",
+          "interval": "$resolution",
+          "legendFormat": "{{ instance_name }}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "节点CPU限流时长",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 54
+      },
+      "id": 84,
+      "panels": [],
+      "title": "命名空间资源使用",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "命名空间的CPU使用量(CPU Utilization by namespace)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "CPU(核数)",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 55
+      },
+      "id": 46,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Max",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(container_cpu_usage_seconds_total{image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (namespace) OR (group by (namespace) (container_memory_rss{job_name=\"$container_metric_source\",cluster=\"$cluster\"}) * 0 ) ",
+          "format": "time_series",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "{{ namespace }}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "命名空间的CPU使用量",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "命名空间的CPU限流时长(CPU Throttled seconds by namespace), 没数据说明没有被限制,意味着CPU充足或者未进行限制",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "SECONDS",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 55
+      },
+      "id": 82,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Max",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (namespace) > 0",
+          "interval": "$resolution",
+          "legendFormat": "{{ namespace }}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "命名空间的CPU限流时长",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "命名空间的网络使用量(Network Received by namespace)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "带宽",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 63
+      },
+      "id": 79,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(rate(container_network_receive_bytes_total{cluster=\"$cluster\",namespace!=\"\"}[$__rate_interval])) by (namespace)\nOR (group by (namespace) (container_memory_rss{job_name=\"$container_metric_source\",cluster=\"$cluster\"}) * 0 ) ",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "接收 : {{ namespace }}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "- (sum(rate(container_network_transmit_bytes_total{cluster=\"$cluster\",namespace!=\"\"}[$__rate_interval])) by (namespace)\nOR (group by (namespace) (container_memory_rss{job_name=\"$container_metric_source\",cluster=\"$cluster\"}) * 0 ) )",
+          "hide": false,
+          "interval": "$resolution",
+          "legendFormat": "发送 : {{ namespace }}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "命名空间的网络使用量",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "命名空间的内存使用量(Memory Utilization by namespace)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Memory",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 63
+      },
+      "id": 50,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Max",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(container_memory_working_set_bytes{image!=\"\", cluster=\"$cluster\"}) by (namespace)\n OR (group by (namespace) (container_memory_rss{job_name=\"$container_metric_source\",cluster=\"$cluster\"}) * 0 ) ",
+          "interval": "$resolution",
+          "legendFormat": "{{ namespace }}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "命名空间的内存使用量",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "APO-VictoriaMetric",
+          "value": "APO-VictoriaMetric"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "数据源",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(kube_node_info,cluster)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "集群",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(kube_node_info,cluster)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1s",
+          "value": "1s"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "精度",
+        "multi": false,
+        "name": "resolution",
+        "options": [
+          {
+            "selected": true,
+            "text": "1s",
+            "value": "1s"
+          },
+          {
+            "selected": false,
+            "text": "15s",
+            "value": "15s"
+          },
+          {
+            "selected": false,
+            "text": "30s",
+            "value": "30s"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "3m",
+            "value": "3m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          }
+        ],
+        "query": "1s, 15s, 30s, 1m, 3m, 5m",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "integrations/unix"
+          ],
+          "value": [
+            "integrations/unix"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(node_cpu_seconds_total{cluster=\"$cluster\"},job_name)",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": true,
+        "name": "job_name",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(node_cpu_seconds_total{cluster=\"$cluster\"},job_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "集群总览",
+  "uid": "k8s_views_global",
+  "version": 10,
+  "weekStart": ""
+}

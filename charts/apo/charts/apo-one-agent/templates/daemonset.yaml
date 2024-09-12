@@ -1,0 +1,342 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "apo-one-agent.fullname" . }}
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "apo-one-agent.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "apo-one-agent.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      hostNetwork: true
+      hostPID: true
+      dnsPolicy: {{ tpl .Values.dnsPolicy . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: {{ include "apo-one-agent.serviceAccountName" . }}
+      containers:
+        {{- if .Values.apoOneAgent.enabled }}
+        - name: ebpf-agent
+          image: "{{ tpl .Values.apoOneAgent.image.repository . }}:{{ tpl (toString (default .Chart.AppVersion .Values.apoOneAgent.image.tag)) . }}"
+          imagePullPolicy: "{{ tpl .Values.apoOneAgent.image.pullPolicy . }}"
+          ports:
+            - hostPort: 9500
+              containerPort: 9500
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.apoOneAgent.resources | nindent 12 }}
+          {{- include "apo-one-agent.envAndVolume" . | nindent 10 }}
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /app/kernel-support
+          securityContext:
+            privileged: true
+        {{- end }}
+        - name: node-agent
+          image: "{{ tpl .Values.apoNodeAgent.image.repository . }}:{{ tpl (toString .Values.apoNodeAgent.image.tag) . }}"
+          imagePullPolicy: "{{ tpl .Values.apoNodeAgent.image.pullPolicy . }}"
+          ports:
+            - hostPort: 9408
+              containerPort: 9408
+              protocol: TCP
+          env:
+            - name: FETCH_SOURCE_ADDR
+              value: {{ tpl (toString .Values.apoNodeAgent.apoOtelCollectorUrl) . }}
+            - name: MY_NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: PROCESS_TYPE
+              value: java,python,node,donet
+            - name: PROCESS_TIME
+              value: 'true'
+          volumeMounts:
+            - name: proc-vol
+              mountPath: /proc
+          resources:
+            {{- toYaml .Values.apoNodeAgent.resources | nindent 12 }}
+          securityContext:
+            privileged: true
+        - name: ilogtail
+          image: "{{ tpl .Values.apoIlogtail.image.repository . }}:{{ tpl (toString .Values.apoIlogtail.image.tag) . }}"
+          imagePullPolicy: "{{ tpl .Values.apoIlogtail.image.pullPolicy . }}"
+          env:
+            - name: HOST_DIR
+              value: /logtail_host
+            - name: ALIYUN_LOG_ENV_TAGS
+              value: _node_name_|_node_ip_
+            - name: _node_name_
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: _node_ip_
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: cpu_usage_limit
+              value: '1'
+            - name: mem_usage_limit
+              value: '512'
+          resources:
+            {{- toYaml .Values.apoIlogtail.resources | nindent 12 }}
+          volumeMounts:
+            - name: run
+              mountPath: /var/run
+            - name: root
+              readOnly: true
+              mountPath: /logtail_host
+              mountPropagation: HostToContainer
+            - name: checkpoint
+              mountPath: /usr/local/ilogtail/checkpoint
+            - name: signal-uds
+              mountPath: /opt/signal
+            - name: apo-ilogtail-user-config
+              readOnly: true
+              mountPath: /usr/local/ilogtail/user_yaml_config.d
+            - name: apo-ilogtail-logger-config
+              mountPath: /usr/local/ilogtail/plugin_logger.xml
+              subPath: plugin_logger.xml
+        - name: go-sdk-auto
+          image: "{{ tpl .Values.apoGoSdkAuto.image.repository . }}:{{ tpl (toString .Values.apoGoSdkAuto.image.tag) . }}"
+          imagePullPolicy: "{{ tpl .Values.apoGoSdkAuto.image.pullPolicy . }}"
+          ports:
+            - name: http
+              hostPort: 9502
+              containerPort: 9502
+              protocol: TCP
+          env:
+            - name: KINDLING_WRITE_TRACE
+              value: 'true'
+          resources:
+            {{- toYaml .Values.apoGoSdkAuto.resources | nindent 12 }}
+          volumeMounts:
+            - name: apo-go-sdk-auto-config
+              mountPath: /app/sdk-auto.yml
+              subPath: sdk-auto.yml
+        - name: grafana-alloy
+          image: "{{ tpl .Values.grafanaAlloy.image.repository . }}:{{ tpl (toString .Values.grafanaAlloy.image.tag) . }}"
+          imagePullPolicy: "{{ tpl .Values.grafanaAlloy.image.pullPolicy . }}"
+          args:
+            - run
+            - /etc/alloy/config.alloy
+            - '--storage.path=/tmp/alloy'
+            - '--server.http.listen-addr=0.0.0.0:12345'
+            - '--server.http.ui-path-prefix=/'
+            - '--stability.level=generally-available'
+          ports:
+            - name: http-metrics
+              hostPort: 12345
+              containerPort: 12345
+              protocol: TCP
+          env:
+            - name: ALLOY_DEPLOY_MODE
+              value: helm
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          resources:
+            {{- toYaml .Values.grafanaAlloy.resources | nindent 12 }}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: grafana-alloy-config
+              mountPath: /etc/alloy
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 12345
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+        - name: apo-odiglet
+          image: "{{ tpl .Values.odiglet.image.repository . }}:{{ .Values.odiglet.image.tag }}"
+          imagePullPolicy: "{{ tpl .Values.odiglet.image.pullPolicy . }}"
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: APO_COLLECTOR_GRPC_ENDPOINT
+              value: http://$(NODE_IP):4317
+            - name: APO_COLLECTOR_HTTP_ENDPOINT
+              value: http://$(NODE_IP):4318
+            - name: APO_COLLECTOR_SKYWALKING_ENDPOINT
+              value: $(NODE_IP):11800
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: CURRENT_NS
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOG_LEVEL
+              value: info
+          envFrom:
+            - configMapRef:
+                name: apo-odigos-own-telemetry-otel-config
+                optional: true
+          resources:
+            {{- toYaml .Values.odiglet.resources | nindent 12 }}
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_PTRACE
+          volumeMounts:
+            - name: run-dir
+              mountPath: /run
+            - name: device-plugins-dir
+              mountPath: /var/lib/kubelet/device-plugins
+            - name: pod-resources
+              mountPath: /var/lib/kubelet/pod-resources
+              readOnly: true
+            - name: odigos
+              mountPath: /var/odigos
+              readOnly: false
+            - name: kernel-debug
+              mountPath: /sys/kernel/debug
+        - name: apo-otel-collector-agent
+          image: "{{ tpl .Values.apoOtelCollectorAgent.image.repository . }}:{{ .Values.apoOtelCollectorAgent.image.tag }}"
+          command:
+            - ./otelcol
+            - '--config'
+            - /app/conf/otelcol-config.yaml
+          args:
+            - >-
+              --feature-gates=receiver.prometheusreceiver.RemoveLegacyResourceAttributes
+          resources: {}
+          volumeMounts:
+            - name: apo-otel-collector-agent-config
+              mountPath: /app/conf
+            - name: signal-uds
+              mountPath: /opt/signal
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      volumes:
+        - name: apo-one-agent-config
+          configMap:
+            name: {{ include "apo-one-agent.fullname" . }}-config
+            defaultMode: 420
+        - name: apo-ilogtail-user-config
+          configMap:
+            name: apo-ilogtail-user-config
+            defaultMode: 420
+        - name: apo-ilogtail-logger-config
+          configMap:
+            name: apo-ilogtail-logger-config
+            defaultMode: 420
+        - name: apo-go-sdk-auto-config
+          configMap:
+            name: apo-go-sdk-auto-config
+            defaultMode: 420
+        - name: grafana-alloy-config
+          configMap:
+            name: apo-grafana-alloy-config
+            defaultMode: 420
+        - name: apo-otel-collector-agent-config
+          configMap:
+            name: apo-otel-collector-agent-config
+            defaultMode: 420
+        - name: modprobe-d
+          hostPath:
+            path: /etc/modprobe.d
+            type: ''
+        - name: dshm
+          emptyDir:
+            medium: Memory
+        - name: dev-vol
+          hostPath:
+            path: /dev
+            type: ''
+        - name: proc-vol
+          hostPath:
+            path: /proc
+            type: ''
+        - name: etc-vol
+          hostPath:
+            path: /etc
+            type: ''
+        - name: boot-vol
+          hostPath:
+            path: /boot
+            type: ''
+        - name: modules-vol
+          hostPath:
+            path: /lib/modules
+            type: ''
+        - name: usr-vol
+          hostPath:
+            path: /usr
+            type: ''
+        - name: run-vol
+          hostPath:
+            path: /run
+            type: ''
+        - name: varrun-vol
+          hostPath:
+            path: /var/run
+            type: ''
+        - name: sys-vol
+          hostPath:
+            path: /sys
+            type: ''
+        - name: signal-uds
+          emptyDir:
+            medium: Memory
+        - name: run
+          hostPath:
+            path: /var/run
+            type: Directory
+        - name: root
+          hostPath:
+            path: /
+            type: Directory
+        - name: checkpoint
+          hostPath:
+            path: /etc/ilogtail-ilogtail-ds/checkpoint
+            type: DirectoryOrCreate
+        - name: run-dir
+          hostPath:
+            path: /run
+        - name: pod-resources
+          hostPath:
+            path: /var/lib/kubelet/pod-resources
+        - name: device-plugins-dir
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+        - name: odigos
+          hostPath:
+            path: /var/odigos
+        - name: kernel-debug
+          hostPath:
+            path: /sys/kernel/debug

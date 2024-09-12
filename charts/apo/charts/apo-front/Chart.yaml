@@ -1,0 +1,5 @@
+apiVersion: v2
+name: apo-front
+version: "0.1.0"
+type: application
+description: apo-front deployment charts

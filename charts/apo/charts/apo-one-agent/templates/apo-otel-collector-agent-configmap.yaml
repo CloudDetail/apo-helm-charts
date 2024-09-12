@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-otel-collector-agent-config
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+data:
+  otelcol-config.yaml: |-
+    extensions:
+      pprof:
+        endpoint: 0.0.0.0:1777
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+            max_recv_msg_size_mib: 999999999
+          http:
+            endpoint: 0.0.0.0:4318
+      skywalking:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:11800 # 接收 SkyWalking Agent 上报的 Trace 数据
+          http:
+            endpoint: 0.0.0.0:12800 # 接收从前端/ nginx 等 HTTP 协议上报的 Trace 数据
+    connectors:
+      redmetrics:
+        server_enabled: true
+        db_enabled: true
+        dimensions_cache_size: 1000
+        max_services_to_track: 256
+        max_operations_to_track_per_service: 2048
+        metrics_flush_interval: 15s
+    processors:
+      batch:
+        send_batch_size: 10000
+        timeout: 2s
+      backsampling:
+        sampler:
+          normal_top_sample: false
+          normal_sample_wait_time: 60
+          open_slow_sampling: true
+          open_error_sampling: true
+          enable_tail_base_profiling: true
+          sample_trace_repeat_num: 3
+          sample_trace_wait_time: 30
+          sample_trace_ignore_threshold: 0
+          silent_period: 5
+          silent_count: 1
+          silent_mode: window
+        controller:
+          host: "{{ tpl .Values.apoOtelCollectorAgent.config.apoCollectorUrl . }}"
+          port: "{{ tpl .Values.apoOtelCollectorAgent.config.apoCollectorPort . }}"
+          interval_query_slow_threshold: 30
+          interval_query_sample: 2
+          interval_send_trace: 1
+        notify:
+          enabled: true
+    exporters:
+      nop:
+      debug:
+        verbosity: normal
+        sampling_initial: 5
+        sampling_thereafter: 200
+      otlp:
+        endpoint: "http://{{ tpl .Values.apoOtelCollectorAgent.config.apoOtelCollectorUrl . }}:{{ tpl .Values.apoOtelCollectorAgent.config.apoOtelCollectorGRPCPort . }}"
+        tls:
+          insecure: true
+    service:
+      telemetry:
+        logs:
+          level: info
+        metrics:
+          level: none
+      extensions: [pprof]
+      pipelines:
+        traces:
+          receivers: [otlp, skywalking]
+          processors: [backsampling, batch]
+          exporters: [otlp, redmetrics]
+        metrics:
+          receivers: [otlp, redmetrics]
+          processors: [batch]
+          exporters: [otlp]
+        metrics/sw:
+          receivers: [skywalking]
+          processors: []
+          exporters: [nop]
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp]

@@ -1,0 +1,91 @@
+serviceNodePort:
+  ports:
+  - name: otlpgrpc
+    protocol: TCP
+    port: 4317
+    targetPort: 4317
+    nodePort: 30317
+  - name: otlpk8s
+    protocol: TCP
+    port: 4319
+    targetPort: 4319
+    nodePort: 30319
+  type: NodePort
+
+service:
+  ports:
+  - name: query
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - name: metric
+    protocol: TCP
+    port: 9500
+    targetPort: 9500
+  - name: otlpgrpc
+    protocol: TCP
+    port: 4315
+    targetPort: 4315
+  - name: otlphttp
+    protocol: TCP
+    port: 4316
+    targetPort: 4316
+  - name: otlp-outage-grpc
+    protocol: TCP
+    port: 4317
+    targetPort: 4317
+  - name: otlp-outage-http
+    protocol: TCP
+    port: 4318
+    targetPort: 4318
+  - name: otlpk8s
+    protocol: TCP
+    port: 4319
+    targetPort: 4319
+  - name: sk-receiver
+    protocol: TCP
+    port: 11800
+    targetPort: 11800
+  type: ClusterIP
+
+rbac:
+  create: false
+
+nameOverride: ""
+replicas: "1"
+podAnnotations: {}
+hostNetwork: "false"
+dnsPolicy: "ClusterFirst"
+podSecurityContext: {}
+image:
+  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-otel-collector
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+initImage:
+  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/busybox
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "1.36.1"
+resources: {}
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+# limits:
+#   cpu: 100m
+#   memory: 128Mi
+# requests:
+#   cpu: 100m
+#   memory: 128Mi
+nodeSelector: {}
+serviceAccount:
+  name: apo-otel-collector
+
+config:
+  metaServerUrl: "apo-meta-server-svc:8080"
+  jaegerCollectorUrl: "http://apo-jaeger-collector-svc:4317"
+  victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
+  clickhouseUrl: "apo-clickhouse-svc:9000"
+  clickhouseUsername: "admin"
+  clickhousePassword: "Apo@123456"

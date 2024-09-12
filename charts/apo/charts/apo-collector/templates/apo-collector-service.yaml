@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apo-collector.fullname" . }}-nodeport-svc
+  labels:
+    {{- include "apo-collector.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.apoCollector.service.type }}
+  ports:
+    - port: 29090
+      targetPort: 29090
+      protocol: TCP
+      name: grpc
+      nodePort: {{ .Values.apoCollector.service.nodePortGrpc }}
+    # - port: 8080
+    #   targetPort: 8080
+    #   protocol: TCP
+    #   name: http
+    #   nodePort: {{ .Values.apoCollector.service.nodePortHttp }}
+  selector:
+    {{- include "apo-collector.selectorLabels" . | nindent 4 }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apo-collector.fullname" . }}-svc
+  labels:
+    {{- include "apo-collector.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 29090
+      targetPort: 29090
+      protocol: TCP
+      name: grpc
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "apo-collector.selectorLabels" . | nindent 4 }}
