@@ -102,7 +102,7 @@ odiglet:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-odiglet"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.3.0"
+    tag: "v0.4.0"
   # resources:
   #   limits:
   #     cpu: 1000m
@@ -118,7 +118,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.3.1"
+    tag: "v0.4.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -138,7 +138,7 @@ odigos:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
       imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.3.0"
+      tag: "v0.4.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -172,8 +172,8 @@ odigos:
 apo-nginx-proxy:
   enabled: true
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/nginx
-    pullPolicy: IfNotPresent
+    repository: "{{ .Values.global.image.repository }}/nginx"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
     tag: "stable-alpine3.20"
   # resources:
@@ -195,7 +195,7 @@ apo-otel-collector:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.3.1"
+    tag: "v0.4.0"
   config:
     apoBackendUrl: "{{ .Values.global.apoServerIP }}"
     apoBackendPort: "{{ .Values.global.apoBackendPort }}"

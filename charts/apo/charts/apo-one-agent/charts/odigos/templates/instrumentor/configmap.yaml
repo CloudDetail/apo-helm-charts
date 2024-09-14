@@ -22,14 +22,11 @@ data:
     # 设置namespace下需要注入的工作负载
     # 优先级高于namespace中的设置,可以通常用于开启对特定workload的注入或者注入namespace时忽略特定的workload
     # e.g
-    # workload:
-    #   train-ticket:
-    #     deployment/ts-travel-service: disabled
-    #   kindling:
-    #     center-api-server: enabled
-    # workload:
-    #   kindling:
-    #     deployment/center-api-server: enabled
+    workload:
+      apo:
+        deployment/apo-java-demo: enabled
+      # default:
+      #   deploymen/demo: disabled
 
     # instrument-all-namespace 是否注入所有namespace
     # 等价于设置所有namespace的enabledFuture

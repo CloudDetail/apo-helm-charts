@@ -1,7 +1,7 @@
 apiVersion: v2
 name: apo
-version: "0.3.001"
-appVersion: "0.3.1"
+version: "0.4.000"
+appVersion: "0.4.0"
 type: application
 description: apo deployment charts
 
@@ -15,15 +15,15 @@ dependencies:
   - name: apo-collector
     condition: apo-collector.enabled
     repository: "file://dep/apo-collector"
-  - name: apo-one-agent
-    condition: apo-one-agent.enabled
-    repository: "file://dep/apo-one-agent"
   - name: apo-front
     condition: apo-front.enabled
     repository: "file://dep/apo-front"
   - name: apo-jaeger-collector
     condition: apo-jaeger-collector.enabled
     repository: "file://dep/apo-jaeger-collector"
+  - name: apo-one-agent
+    condition: apo-one-agent.enabled
+    repository: "file://dep/apo-one-agent"
   - name: apo-otel-collector-gateway
     condition: apo-otel-collector-gateway.enabled
     repository: "file://dep/apo-otel-collector-gateway"

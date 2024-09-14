@@ -158,6 +158,11 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
+            - name: MY_NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
           resources:
             {{- toYaml .Values.grafanaAlloy.resources | nindent 12 }}
           securityContext:

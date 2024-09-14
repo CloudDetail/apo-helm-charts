@@ -80,7 +80,7 @@ resources: {}
 #   memory: 128Mi
 nodeSelector: {}
 serviceAccount:
-  name: apo-otel-collector
+  name: apo-otel-collector-gateway
 
 config:
   metaServerUrl: "apo-meta-server-svc:8080"

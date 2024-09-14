@@ -68,48 +68,25 @@ data:
       scrape_interval = "10s"
     }
 
-    discovery.kubernetes "nodes" {
-      role = "node"
-    }
-
-    discovery.relabel "kubelet" {
-      targets = discovery.kubernetes.nodes.targets
-    }
-
-    prometheus.scrape "kubelet" {
-      job_name   = "integrations/kubernetes/kubelet"
-      targets  = discovery.relabel.kubelet.output
-      scheme   = "https"
-      scrape_interval = "60s"
-      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-      tls_config {
-        insecure_skip_verify = true
-      }
-      clustering {
-        enabled = true
-      }
-      forward_to = [prometheus.relabel.example.receiver]
-    }
-
-    discovery.relabel "cadvisor" {
-      targets = discovery.kubernetes.nodes.targets
-      rule {
-        replacement   = "/metrics/cadvisor"
-        target_label  = "__metrics_path__"
-      }
-    }
-
-    prometheus.scrape "cadvisor" {
-      job_name   = "integrations/kubernetes/cadvisor"
-      targets    = discovery.relabel.cadvisor.output
+    prometheus.scrape "k8s_metrics" {
+      targets = [
+        {
+          __address__ = format("%s:10250", env("MY_NODE_IP")),
+          __metrics_path__ = "/metrics/cadvisor",
+          job = "integrations/kubernetes/cadvisor",
+          node_name = env("HOSTNAME"),
+        },
+        {
+          __address__ = format("%s:10250", env("MY_NODE_IP")),
+          job = "integrations/kubernetes/kubelet",
+          node_name = env("HOSTNAME"),
+        },
+      ]
       scheme     = "https"
       scrape_interval = "60s"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       tls_config {
         insecure_skip_verify = true
-      }
-      clustering {
-        enabled = true
       }
       forward_to = [prometheus.relabel.example.receiver]
     }
