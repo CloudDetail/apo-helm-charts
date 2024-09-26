@@ -10,7 +10,7 @@ data:
     # enabled: 注入现有的所有服务,但不注入后续新增应用
     # enabledFuture: 注入现在以及后续的所有服务
     # disabled: 不注入指定namespace下的服务,用于在instrument-all-namespace时忽略特定的Namespace
-    # e.g 
+    # e.g
     # namespace:
     #   train-ticket: enabledFuture
     #   originx: enabled
@@ -23,8 +23,9 @@ data:
     # 优先级高于namespace中的设置,可以通常用于开启对特定workload的注入或者注入namespace时忽略特定的workload
     # e.g
     workload:
-      apo:
+      default:
         deployment/apo-java-demo: enabled
+        deployment/apo-request-demo: disabled
       # default:
       #   deploymen/demo: disabled
 

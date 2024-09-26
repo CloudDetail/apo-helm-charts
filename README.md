@@ -1,6 +1,6 @@
 # apo
 
-![Version: 0.4.000](https://img.shields.io/badge/Version-0.4.000-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
+![Version: 0.4.003](https://img.shields.io/badge/Version-0.4.003-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.3](https://img.shields.io/badge/AppVersion-0.4.3-informational?style=flat-square)
 
 apo deployment charts
 
@@ -85,7 +85,7 @@ apo deployment charts
 | apo-front.enabled | bool | `true` |  |
 | apo-front.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-front.image.repository | string | `"{{ .Values.global.image.repository }}/apo-front"` |  |
-| apo-front.image.tag | string | `"v0.4.0"` |  |
+| apo-front.image.tag | string | `"v0.4.1"` |  |
 | apo-front.service.nodePort | int | `31364` |  |
 | apo-front.service.type | string | `"NodePort"` |  |
 | apo-jaeger-collector.config.clickhousePassword | string | `"{{ .Values.global.clickhouseRootPassword }}"` |  |
@@ -103,6 +103,9 @@ apo deployment charts
 | apo-jaeger-collector.remoteStorage.image.repository | string | `"{{ .Values.global.image.repository }}/jaeger-remote-storage"` |  |
 | apo-jaeger-collector.remoteStorage.image.tag | string | `"v0.1.0"` |  |
 | apo-one-agent.apo-nginx-proxy.enabled | bool | `false` |  |
+| apo-one-agent.apo-nginx-proxy.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
+| apo-one-agent.apo-nginx-proxy.image.repository | string | `"{{ .Values.global.image.repository }}/nginx"` |  |
+| apo-one-agent.apo-nginx-proxy.image.tag | string | `"stable-alpine3.20"` |  |
 | apo-one-agent.apo-otel-collector.enabled | bool | `false` |  |
 | apo-one-agent.apoGoSdkAuto.apoOtelCollectorUrl | string | `"http://localhost:4318"` |  |
 | apo-one-agent.apoGoSdkAuto.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
@@ -128,7 +131,7 @@ apo deployment charts
 | apo-one-agent.apoOtelCollectorAgent.config.apoOtelCollectorUrl | string | `"apo-otel-collector-gateway-svc"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.4.0"` |  |
+| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.4.0-attributes"` |  |
 | apo-one-agent.enabled | bool | `false` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc:4315"` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc:4316"` |  |
@@ -140,7 +143,7 @@ apo deployment charts
 | apo-one-agent.odiglet.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-svc.apo:11800"` |  |
 | apo-one-agent.odiglet.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.odiglet.image.repository | string | `"{{ .Values.global.image.repository }}/apo-odiglet"` |  |
-| apo-one-agent.odiglet.image.tag | string | `"v0.4.0"` |  |
+| apo-one-agent.odiglet.image.tag | string | `"v0.4.1"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc.apo:4315"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc.apo:4316"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-gateway-svc.apo:11800"` |  |
@@ -152,7 +155,7 @@ apo deployment charts
 | apo-one-agent.odigos.instrumentor.image.tag | string | `"v0.4.0"` |  |
 | apo-one-agent.odigos.instrumentor.instrumentAllNamespace | bool | `false` |  |
 | apo-one-agent.odigos.instrumentor.targetNamespace[0].name | string | `"default"` |  |
-| apo-one-agent.odigos.instrumentor.targetNamespace[0].value | string | `"enabledFuture"` |  |
+| apo-one-agent.odigos.instrumentor.targetNamespace[0].value | string | `"disabled"` |  |
 | apo-otel-collector-gateway.config.apoBackendPort | string | `"8080"` |  |
 | apo-otel-collector-gateway.config.apoBackendUrl | string | `"apo-backend-svc"` |  |
 | apo-otel-collector-gateway.config.clickhousePassword | string | `"{{ .Values.global.clickhouseRootPassword }}"` |  |
@@ -163,7 +166,7 @@ apo deployment charts
 | apo-otel-collector-gateway.enabled | bool | `true` |  |
 | apo-otel-collector-gateway.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-otel-collector-gateway.image.tag | string | `"v0.4.0"` |  |
+| apo-otel-collector-gateway.image.tag | string | `"v0.4.0-attributes"` |  |
 | apo-otel-collector-gateway.initImage.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.initImage.repository | string | `"{{ .Values.global.image.repository }}/busybox"` |  |
 | apo-otel-collector-gateway.initImage.tag | string | `"1.36.1"` |  |
@@ -179,17 +182,14 @@ apo deployment charts
 | apo-otel-collector-gateway.serviceNodePort.ports[1].protocol | string | `"TCP"` |  |
 | apo-otel-collector-gateway.serviceNodePort.ports[1].targetPort | int | `4319` |  |
 | apo-otel-collector-gateway.serviceNodePort.type | string | `"NodePort"` |  |
+| global.agentCollectorMode[0] | string | `"trace"` |  |
+| global.agentCollectorMode[1] | string | `"metrics"` |  |
+| global.agentCollectorMode[2] | string | `"log"` |  |
 | global.clickhouseRootPassword | string | `"WPKf-e9U.X)K)ezTDo9#"` |  |
 | global.clickhouseRootUsername | string | `"admin"` |  |
 | global.clickhouseUrl | string | `"apo-clickhouse-svc:9000"` |  |
 | global.image.pullPolicy | string | `"Always"` |  |
 | global.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/kindlingx"` |  |
-| global.nodeAffinityLabelSelector | list | `[]` |  |
-| global.nodeAffinityTermLabelSelector | list | `[]` |  |
-| global.podAffinityLabelSelector | list | `[]` |  |
-| global.podAffinityTermLabelSelector | list | `[]` |  |
-| global.podAntiAffinityLabelSelector | list | `[]` |  |
-| global.podAntiAffinityTermLabelSelector | list | `[]` |  |
 | global.victoriaMetricsUrl | string | `"http://apo-victoria-metrics-single-server-svc:8428"` |  |
 | grafana."grafana.ini".server.domain | string | `"localhost"` |  |
 | grafana.datasources."datasources.yaml".apiVersion | int | `1` |  |
@@ -199,16 +199,16 @@ apo deployment charts
 | grafana.datasources."datasources.yaml".datasources[0].type | string | `"prometheus"` |  |
 | grafana.datasources."datasources.yaml".datasources[0].uid | string | `"APO-VictoriaMetric"` |  |
 | grafana.datasources."datasources.yaml".datasources[0].url | string | `"{{ .Values.global.victoriaMetricsUrl }}"` |  |
-| grafana.downloadDashboardsImage.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
-| grafana.downloadDashboardsImage.registry | string | `"{{ .Values.global.image.repository }}"` | The Docker registry |
-| grafana.downloadDashboardsImage.repository | string | `"curlimagescurl"` |  |
-| grafana.downloadDashboardsImage.sha | string | `""` |  |
-| grafana.downloadDashboardsImage.tag | string | `"7.85.0"` |  |
 | grafana.enabled | bool | `true` |  |
+| grafana.extraInitContainers[0].image | string | `"{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.4.0"` |  |
+| grafana.extraInitContainers[0].imagePullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
+| grafana.extraInitContainers[0].name | string | `"apo-grafana-init-dashboard"` |  |
+| grafana.extraInitContainers[0].volumeMounts[0].mountPath | string | `"/tmp/dashboards"` |  |
+| grafana.extraInitContainers[0].volumeMounts[0].name | string | `"apo-dashboards"` |  |
 | grafana.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | grafana.image.registry | string | `"{{ .Values.global.image.repository }}"` |  |
 | grafana.image.repository | string | `"grafana"` | Docker image repository |
-| grafana.image.tag | string | `""` |  |
+| grafana.image.tag | string | `"10.4.1"` |  |
 | grafana.rbac.create | bool | `false` |  |
 | victoria-metrics-alert.alertmanager.config.global.resolve_timeout | string | `"5m"` |  |
 | victoria-metrics-alert.alertmanager.config.receivers[0].name | string | `"alert-collector"` |  |
@@ -226,7 +226,7 @@ apo deployment charts
 | victoria-metrics-alert.server.datasource.url | string | `"{{ .Values.global.victoriaMetricsUrl }}"` |  |
 | victoria-metrics-alert.server.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | victoria-metrics-alert.server.image.repository | string | `"{{ .Values.global.image.repository }}/vmalert"` |  |
-| victoria-metrics-alert.server.image.tag | string | `""` |  |
+| victoria-metrics-alert.server.image.tag | string | `"v1.102.0"` |  |
 | victoria-metrics-single.enabled | bool | `true` |  |
 | victoria-metrics-single.rbac.create | bool | `false` |  |
 | victoria-metrics-single.server.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |

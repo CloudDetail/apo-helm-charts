@@ -1,14 +1,12 @@
 global:
-  podAntiAffinityLabelSelector: []
-  podAntiAffinityTermLabelSelector: []
-  podAffinityLabelSelector: []
-  podAffinityTermLabelSelector: []
-  nodeAffinityLabelSelector: []
-  nodeAffinityTermLabelSelector: []
   image:
     # kindlingx official mirror repository: registry.cn-hangzhou.aliyuncs.com/kindlingx
     repository: "registry.cn-hangzhou.aliyuncs.com/kindlingx"
     pullPolicy: "Always"
+  agentCollectorMode:
+    - trace
+    - metrics
+    - log
   clickhouseUrl: "apo-clickhouse-svc:9000"
   victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
   # Need to modify the variable clickhouse.auth.username/password synchronously
@@ -121,7 +119,7 @@ apo-front:
     repository: "{{ .Values.global.image.repository }}/apo-front"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.4.0"
+    tag: "v0.4.1"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -273,7 +271,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odiglet"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.4.0"
+      tag: "v0.4.1"
     # resources:
     #   limits:
     #     cpu: 500m
@@ -289,7 +287,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.4.0"
+      tag: "v0.4.0-attributes"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -325,7 +323,7 @@ apo-one-agent:
       #   disabled: 不注入指定namespace下的服务,用于在instrument-all-namespace时忽略特定的Namespace
       targetNamespace:
       - name: default
-        value: enabledFuture
+        value: disabled
       # instrument-all-namespace 是否注入所有namespace
       # 等价于设置所有namespace的enabledFuture
       # 但如果已经设置了ns或者workload的disabled将不会注入
@@ -342,6 +340,11 @@ apo-one-agent:
 
   apo-nginx-proxy:
     enabled: false
+    image:
+      repository: "{{ .Values.global.image.repository }}/nginx"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "stable-alpine3.20"
 
   apo-otel-collector:
     enabled: false
@@ -357,7 +360,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.4.0"
+    tag: "v0.4.0-attributes"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -418,15 +421,15 @@ grafana:
     # -- Docker image repository
     repository: grafana
     # Overrides the Grafana image tag whose default is the chart appVersion
-    tag: ""
+    tag: "10.4.1"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-  downloadDashboardsImage:
-    # -- The Docker registry
-    registry: "{{ .Values.global.image.repository }}"
-    repository: curlimagescurl
-    tag: 7.85.0
-    sha: ""
-    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+  extraInitContainers: 
+  - name: apo-grafana-init-dashboard
+    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.4.0"
+    imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    volumeMounts:
+    - name: apo-dashboards
+      mountPath: /tmp/dashboards
   datasources: 
     datasources.yaml:
       apiVersion: 1
@@ -456,7 +459,7 @@ victoria-metrics-alert:
     image:
       repository: "{{ .Values.global.image.repository }}/vmalert"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: ""
+      tag: "v1.102.0"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     datasource:
       url: "{{ .Values.global.victoriaMetricsUrl }}"

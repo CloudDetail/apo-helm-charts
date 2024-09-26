@@ -72,10 +72,8 @@ data:
         endpoint: "{{ tpl .Values.config.jaegerCollectorUrl . }}"
         tls:
           insecure: true
-      otlphttp/victoriametrics:
-        compression: gzip
-        encoding: proto
-        endpoint: "{{ tpl .Values.config.victoriaMetricsUrl . }}/opentelemetry"
+      prometheusremotewrite:
+        endpoint: "{{ tpl .Values.config.victoriaMetricsUrl . }}/api/v1/write"
         tls:
           insecure: true
       clickhouse/logs:
@@ -133,11 +131,11 @@ data:
         metrics:
           receivers: [otlp]
           processors: [batch,metadata]
-          exporters: [otlphttp/victoriametrics]
+          exporters: [prometheusremotewrite]
         metrics/gateway:
           receivers: [otlp/gateway]
           processors: [batch]
-          exporters: [otlphttp/victoriametrics]
+          exporters: [prometheusremotewrite]
         logs:
           receivers: [otlp]
           processors: [batch]

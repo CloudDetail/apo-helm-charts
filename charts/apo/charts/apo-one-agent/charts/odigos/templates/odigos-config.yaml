@@ -39,9 +39,6 @@ spec:
     dotnet:
       sdkTier: community
       sdkType: native
-    go:
-      sdkTier: community
-      sdkType: ebpf
     {{- if eq .Values.config.javaAgentType "skywalking" }}
     java:
       sdkTier: community
@@ -65,9 +62,6 @@ spec:
     dotnet:
       - sdkTier: community
         sdkType: native
-    go:
-      - sdkTier: community
-        sdkType: ebpf
     java:
       - sdkTier: community
         sdkType: native

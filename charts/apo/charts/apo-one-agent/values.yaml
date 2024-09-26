@@ -3,6 +3,10 @@ global:
     # kindlingx official mirror repository: registry.cn-hangzhou.aliyuncs.com/kindlingx
     repository: "registry.cn-hangzhou.aliyuncs.com/kindlingx"
     pullPolicy: "Always"
+  agentCollectorMode:
+    - trace
+    - metrics
+    - log
   apoServerIP: ""
   apoProxyUrl: apo-nginx-proxy-svc
   apoBackendPort: 31363
@@ -102,7 +106,7 @@ odiglet:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-odiglet"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.4.0"
+    tag: "v0.4.1"
   # resources:
   #   limits:
   #     cpu: 1000m
@@ -118,7 +122,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.4.0"
+    tag: "v0.4.0-attributes"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -195,7 +199,7 @@ apo-otel-collector:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.4.0"
+    tag: "v0.4.0-attributes"
   config:
     apoBackendUrl: "{{ .Values.global.apoServerIP }}"
     apoBackendPort: "{{ .Values.global.apoBackendPort }}"

@@ -101,7 +101,7 @@ livenessProbe:
 
 image:
   # -- The Docker registry
-  registry: registry.cn-hangzhou.aliyuncs.com/originx
+  registry: registry.cn-hangzhou.aliyuncs.com/kindlingx
   # -- Docker image repository
   repository: grafana
   # Overrides the Grafana image tag whose default is the chart appVersion
@@ -171,7 +171,9 @@ extraConfigmapMounts: []
   #   readOnly: true
 
 
-extraEmptyDirMounts: []
+extraEmptyDirMounts: 
+  - name: apo-dashboards
+    mountPath: /tmp/dashboards
   # - name: provisioning-notifiers
   #   mountPath: /etc/grafana/provisioning/notifiers
 
@@ -184,7 +186,7 @@ extraLabels: {}
 
 downloadDashboardsImage:
   # -- The Docker registry
-  registry: registry.cn-hangzhou.aliyuncs.com/originx
+  registry: registry.cn-hangzhou.aliyuncs.com/kindlingx
   repository: curlimagescurl
   tag: 7.85.0
   sha: ""
@@ -334,7 +336,13 @@ topologySpreadConstraints: []
 ## Additional init containers (evaluated as template)
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
 ##
-extraInitContainers: []
+extraInitContainers: 
+  - name: apo-grafana-init-dashboard
+    image: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-grafana-init-dashboards:v0.4.0
+    imagePullPolicy: Always
+    volumeMounts:
+    - name: apo-dashboards
+      mountPath: /tmp/dashboards
 
 ## Enable an Specify container in extraContainers. This is meant to allow adding an authentication proxy to a grafana pod
 extraContainers: ""
@@ -722,7 +730,7 @@ dashboardProviders:
      disableDeletion: false
      editable: true
      options:
-       path: /var/lib/grafana/dashboards/default
+       path: /tmp/dashboards/default
    - name: 'middleware-dashboard'
      orgId: 1
      folderUid: edwu5b9rkv94wb
@@ -731,7 +739,7 @@ dashboardProviders:
      disableDeletion: false
      editable: true
      options:
-       path: /var/lib/grafana/dashboards/middleware-dashboard
+       path: /tmp/dashboards/middleware-dashboard
 
 ## Configure grafana dashboard to import
 ## NOTE: To use dashboards you must also enable/configure dashboardProviders
@@ -739,23 +747,7 @@ dashboardProviders:
 ##
 ## dashboards per provider, use provider name as key.
 ##
-dashboards: 
-  default: 
-    Infrastructure:
-      file: dashboards/Infrastructure.json
-    ClusterOverview:
-      file: dashboards/ClusterOverview.json
-    OriginxPolarisMetrics:
-      file: dashboards/Originx-Polaris-Metrics.json
-  middleware-dashboard:
-    es:
-      file: dashboards/中间件/es.json
-    kafka:
-      file: dashboards/中间件/kafka.json
-    mysql:
-      file: dashboards/中间件/mysql.json
-    redis:
-      file: dashboards/中间件/redis.json
+dashboards: []
   # default:
   #   some-dashboard:
   #     json: |

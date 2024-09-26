@@ -27,7 +27,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "apo-one-agent.serviceAccountName" . }}
       containers:
-        {{- if .Values.apoOneAgent.enabled }}
+        {{- if and .Values.apoOneAgent.enabled (has "trace" .Values.global.agentCollectorMode) }}
         - name: ebpf-agent
           image: "{{ tpl .Values.apoOneAgent.image.repository . }}:{{ tpl (toString (default .Chart.AppVersion .Values.apoOneAgent.image.tag)) . }}"
           imagePullPolicy: "{{ tpl .Values.apoOneAgent.image.pullPolicy . }}"
@@ -46,6 +46,7 @@ spec:
           securityContext:
             privileged: true
         {{- end }}
+        {{- if (has "metrics" .Values.global.agentCollectorMode) }}
         - name: node-agent
           image: "{{ tpl .Values.apoNodeAgent.image.repository . }}:{{ tpl (toString .Values.apoNodeAgent.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.apoNodeAgent.image.pullPolicy . }}"
@@ -77,6 +78,8 @@ spec:
             {{- toYaml .Values.apoNodeAgent.resources | nindent 12 }}
           securityContext:
             privileged: true
+        {{- end }}
+        {{- if (has "log" .Values.global.agentCollectorMode) }}
         - name: ilogtail
           image: "{{ tpl .Values.apoIlogtail.image.repository . }}:{{ tpl (toString .Values.apoIlogtail.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.apoIlogtail.image.pullPolicy . }}"
@@ -118,6 +121,8 @@ spec:
             - name: apo-ilogtail-logger-config
               mountPath: /usr/local/ilogtail/plugin_logger.xml
               subPath: plugin_logger.xml
+        {{- end }}
+        {{- if (has "trace" .Values.global.agentCollectorMode) }}
         - name: go-sdk-auto
           image: "{{ tpl .Values.apoGoSdkAuto.image.repository . }}:{{ tpl (toString .Values.apoGoSdkAuto.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.apoGoSdkAuto.image.pullPolicy . }}"
@@ -135,6 +140,8 @@ spec:
             - name: apo-go-sdk-auto-config
               mountPath: /app/sdk-auto.yml
               subPath: sdk-auto.yml
+        {{- end }}
+        {{- if (has "metrics" .Values.global.agentCollectorMode) }}
         - name: grafana-alloy
           image: "{{ tpl .Values.grafanaAlloy.image.repository . }}:{{ tpl (toString .Values.grafanaAlloy.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.grafanaAlloy.image.pullPolicy . }}"
@@ -179,6 +186,8 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
+        {{- end }}
+        {{- if (has "trace" .Values.global.agentCollectorMode) }}
         - name: apo-odiglet
           image: "{{ tpl .Values.odiglet.image.repository . }}:{{ .Values.odiglet.image.tag }}"
           imagePullPolicy: "{{ tpl .Values.odiglet.image.pullPolicy . }}"
@@ -229,6 +238,8 @@ spec:
               readOnly: false
             - name: kernel-debug
               mountPath: /sys/kernel/debug
+        {{- end }}
+        {{- if or (has "trace" .Values.global.agentCollectorMode) (has "metrics" .Values.global.agentCollectorMode) }}
         - name: apo-otel-collector-agent
           image: "{{ tpl .Values.apoOtelCollectorAgent.image.repository . }}:{{ .Values.apoOtelCollectorAgent.image.tag }}"
           command:
@@ -247,6 +258,7 @@ spec:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
+        {{- end }}
       volumes:
         - name: apo-one-agent-config
           configMap:
