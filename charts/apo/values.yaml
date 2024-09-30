@@ -7,11 +7,11 @@ global:
     - trace
     - metrics
     - log
-  clickhouseUrl: "apo-clickhouse-svc:9000"
   victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
-  # Need to modify the variable clickhouse.auth.username/password synchronously
+  clickhouseUrl: "apo-clickhouse-svc:9000"
   clickhouseRootUsername: admin
   clickhouseRootPassword: "WPKf-e9U.X)K)ezTDo9#"
+  clickhouseClusterName: ""
 
 apo-backend:
   enabled: true
@@ -22,10 +22,10 @@ apo-backend:
     tag: "1.36.1"
   apoBackend:
     image:
-      repository: "{{ .Values.global.image.repository }}/query-service"
+      repository: "{{ .Values.global.image.repository }}/apo-backend"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v0.4.0"
+      tag: "v0.5.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -72,7 +72,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: IfNotPresent
-      tag: "v1.5.3"
+      tag: "v1.6.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -119,7 +119,7 @@ apo-front:
     repository: "{{ .Values.global.image.repository }}/apo-front"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.4.1"
+    tag: "v0.5.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -191,7 +191,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.6.2"
+      tag: "v1.7.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -248,7 +248,7 @@ apo-one-agent:
     #   requests:
     #     cpu: 100m
     #     memory: 128Mi
-    apoOtelCollectorUrl: "http://localhost:4318"
+    apoOtelCollectorUrl: "localhost:4318"
 
   grafanaAlloy:
     image:
@@ -271,7 +271,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odiglet"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.4.1"
+      tag: "v0.5.0"
     # resources:
     #   limits:
     #     cpu: 500m
@@ -287,7 +287,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.4.0-attributes"
+      tag: "v0.5.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -307,7 +307,7 @@ apo-one-agent:
       image:
         repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
         imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-        tag: "v0.4.0"
+        tag: "v0.5.0"
       # resources:
       #   limits:
       #     cpu: 500m
@@ -360,7 +360,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.4.0-attributes"
+    tag: "v0.5.0"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -425,7 +425,7 @@ grafana:
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   extraInitContainers: 
   - name: apo-grafana-init-dashboard
-    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.4.0"
+    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.5.0"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
     volumeMounts:
     - name: apo-dashboards
@@ -488,6 +488,17 @@ victoria-metrics-alert:
         group_wait: 30s
         receiver: alert-collector
         repeat_interval: 1m
+    extraContainers:
+    - name: alertmanager-configmap-reload
+      image: "{{ .Values.global.image.repository }}/alertmanager-configmap-reload:v0.9.0"
+      imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      args:
+        - '--volume-dir=/config'
+        - '--webhook-url=http://127.0.0.1:9093/-/reload'
+      volumeMounts:
+        - name: config
+          readOnly: true
+          mountPath: /config
   rbac:
     create: false
 

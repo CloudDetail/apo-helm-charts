@@ -45,6 +45,10 @@ data:
       username: {{ tpl .Values.config.clickhouseUsername . }}
       password: {{ tpl .Values.config.clickhousePassword . }}
       database: apo
+      cluster: "{{ .Values.global.clickhouseClusterName }}"
+    
+    kubernetes:
+      auth_type: "serviceAccount"
 
     promethues:
       address: "{{ tpl .Values.config.victoriaMetricsUrl . }}"

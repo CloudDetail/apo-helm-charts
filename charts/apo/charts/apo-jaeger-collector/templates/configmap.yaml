@@ -15,3 +15,6 @@ data:
     operations_table:
     ttl: 7
     metrics_endpoint: localhost:9101
+    {{- if .Values.global.clickhouseClusterName }}
+    replication: true
+    {{- end }}

@@ -44,16 +44,17 @@ data:
       username: {{ tpl .Values.apoCollector.config.clickhouseUsername . }}
       password: {{ tpl .Values.apoCollector.config.clickhousePassword . }}
       database: "apo"
-      cluster: ""
+      cluster: "{{ tpl .Values.global.clickhouseClusterName . }}"
       # (default = 0): The data time-to-live in days, 0 means no ttl.
       ttl_days: 7
       ttl_config:
       - tables: ["service_relation", "service_topology"]
         ttl: 30
-        timestamp_field: "timestamp"
       - tables: ["alert_event"]
         ttl: 7
-        timestamp_field: "received_time"
+      hash_config:
+        - tables: ["error_propagation", "error_report", "onoff_metric", "service_topology", "slow_report", "span_trace"]
+          hash: "cityHash64(trace_id)"
       # Wait for N seconds to flush datas to clickhouse.
       flush_seconds: 5
 

@@ -1,6 +1,6 @@
 # apo
 
-![Version: 0.4.003](https://img.shields.io/badge/Version-0.4.003-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.3](https://img.shields.io/badge/AppVersion-0.4.3-informational?style=flat-square)
+![Version: 0.5.000](https://img.shields.io/badge/Version-0.5.000-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
 
 apo deployment charts
 
@@ -35,8 +35,8 @@ apo deployment charts
 | altinity-clickhouse-operator.operator.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | altinity-clickhouse-operator.operator.image.repository | string | `"{{ .Values.global.image.repository }}/clickhouse-operator"` |  |
 | apo-backend.apoBackend.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
-| apo-backend.apoBackend.image.repository | string | `"{{ .Values.global.image.repository }}/query-service"` |  |
-| apo-backend.apoBackend.image.tag | string | `"v0.4.0"` |  |
+| apo-backend.apoBackend.image.repository | string | `"{{ .Values.global.image.repository }}/apo-backend"` |  |
+| apo-backend.apoBackend.image.tag | string | `"v0.5.0"` |  |
 | apo-backend.apoPolarisAnalyzer.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-backend.apoPolarisAnalyzer.image.repository | string | `"{{ .Values.global.image.repository }}/polaris-analyzer"` |  |
 | apo-backend.apoPolarisAnalyzer.image.tag | string | `"v0.1.1"` |  |
@@ -69,7 +69,7 @@ apo deployment charts
 | apo-collector.apoCollector.config.victoriaMetricsUrl | string | `"{{ .Values.global.victoriaMetricsUrl }}"` |  |
 | apo-collector.apoCollector.image.pullPolicy | string | `"IfNotPresent"` |  |
 | apo-collector.apoCollector.image.repository | string | `"{{ .Values.global.image.repository }}/apo-collector"` |  |
-| apo-collector.apoCollector.image.tag | string | `"v1.5.3"` |  |
+| apo-collector.apoCollector.image.tag | string | `"v1.6.0"` |  |
 | apo-collector.apoCollector.service.nodePortGrpc | int | `30044` |  |
 | apo-collector.apoCollector.service.nodePortHttp | int | `30090` |  |
 | apo-collector.apoCollector.service.port | int | `29090` |  |
@@ -85,7 +85,7 @@ apo deployment charts
 | apo-front.enabled | bool | `true` |  |
 | apo-front.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-front.image.repository | string | `"{{ .Values.global.image.repository }}/apo-front"` |  |
-| apo-front.image.tag | string | `"v0.4.1"` |  |
+| apo-front.image.tag | string | `"v0.5.0"` |  |
 | apo-front.service.nodePort | int | `31364` |  |
 | apo-front.service.type | string | `"NodePort"` |  |
 | apo-jaeger-collector.config.clickhousePassword | string | `"{{ .Values.global.clickhouseRootPassword }}"` |  |
@@ -107,7 +107,7 @@ apo deployment charts
 | apo-one-agent.apo-nginx-proxy.image.repository | string | `"{{ .Values.global.image.repository }}/nginx"` |  |
 | apo-one-agent.apo-nginx-proxy.image.tag | string | `"stable-alpine3.20"` |  |
 | apo-one-agent.apo-otel-collector.enabled | bool | `false` |  |
-| apo-one-agent.apoGoSdkAuto.apoOtelCollectorUrl | string | `"http://localhost:4318"` |  |
+| apo-one-agent.apoGoSdkAuto.apoOtelCollectorUrl | string | `"localhost:4318"` |  |
 | apo-one-agent.apoGoSdkAuto.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoGoSdkAuto.image.repository | string | `"{{ .Values.global.image.repository }}/sdk-auto"` |  |
 | apo-one-agent.apoGoSdkAuto.image.tag | string | `"v1.1.0"` |  |
@@ -124,14 +124,14 @@ apo deployment charts
 | apo-one-agent.apoOneAgent.config.javaAgentType | string | `"opentelemetry"` |  |
 | apo-one-agent.apoOneAgent.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoOneAgent.image.repository | string | `"{{ .Values.global.image.repository }}/ebpf-agent"` |  |
-| apo-one-agent.apoOneAgent.image.tag | string | `"v1.6.2"` |  |
+| apo-one-agent.apoOneAgent.image.tag | string | `"v1.7.0"` |  |
 | apo-one-agent.apoOtelCollectorAgent.config.apoCollectorPort | string | `"29090"` |  |
 | apo-one-agent.apoOtelCollectorAgent.config.apoCollectorUrl | string | `"apo-collector-svc"` |  |
 | apo-one-agent.apoOtelCollectorAgent.config.apoOtelCollectorGRPCPort | string | `"4315"` |  |
 | apo-one-agent.apoOtelCollectorAgent.config.apoOtelCollectorUrl | string | `"apo-otel-collector-gateway-svc"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.4.0-attributes"` |  |
+| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.5.0"` |  |
 | apo-one-agent.enabled | bool | `false` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc:4315"` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc:4316"` |  |
@@ -143,7 +143,7 @@ apo deployment charts
 | apo-one-agent.odiglet.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-svc.apo:11800"` |  |
 | apo-one-agent.odiglet.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.odiglet.image.repository | string | `"{{ .Values.global.image.repository }}/apo-odiglet"` |  |
-| apo-one-agent.odiglet.image.tag | string | `"v0.4.1"` |  |
+| apo-one-agent.odiglet.image.tag | string | `"v0.5.0"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc.apo:4315"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc.apo:4316"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-gateway-svc.apo:11800"` |  |
@@ -152,7 +152,7 @@ apo deployment charts
 | apo-one-agent.odigos.instrumentor.forceInstrumentAllNamespace | bool | `false` |  |
 | apo-one-agent.odigos.instrumentor.image.imagePullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.odigos.instrumentor.image.repository | string | `"{{ .Values.global.image.repository }}/apo-odigos-instrumentor"` |  |
-| apo-one-agent.odigos.instrumentor.image.tag | string | `"v0.4.0"` |  |
+| apo-one-agent.odigos.instrumentor.image.tag | string | `"v0.5.0"` |  |
 | apo-one-agent.odigos.instrumentor.instrumentAllNamespace | bool | `false` |  |
 | apo-one-agent.odigos.instrumentor.targetNamespace[0].name | string | `"default"` |  |
 | apo-one-agent.odigos.instrumentor.targetNamespace[0].value | string | `"disabled"` |  |
@@ -166,7 +166,7 @@ apo deployment charts
 | apo-otel-collector-gateway.enabled | bool | `true` |  |
 | apo-otel-collector-gateway.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-otel-collector-gateway.image.tag | string | `"v0.4.0-attributes"` |  |
+| apo-otel-collector-gateway.image.tag | string | `"v0.5.0"` |  |
 | apo-otel-collector-gateway.initImage.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.initImage.repository | string | `"{{ .Values.global.image.repository }}/busybox"` |  |
 | apo-otel-collector-gateway.initImage.tag | string | `"1.36.1"` |  |
@@ -185,6 +185,7 @@ apo deployment charts
 | global.agentCollectorMode[0] | string | `"trace"` |  |
 | global.agentCollectorMode[1] | string | `"metrics"` |  |
 | global.agentCollectorMode[2] | string | `"log"` |  |
+| global.clickhouseClusterName | string | `""` |  |
 | global.clickhouseRootPassword | string | `"WPKf-e9U.X)K)ezTDo9#"` |  |
 | global.clickhouseRootUsername | string | `"admin"` |  |
 | global.clickhouseUrl | string | `"apo-clickhouse-svc:9000"` |  |
@@ -200,7 +201,7 @@ apo deployment charts
 | grafana.datasources."datasources.yaml".datasources[0].uid | string | `"APO-VictoriaMetric"` |  |
 | grafana.datasources."datasources.yaml".datasources[0].url | string | `"{{ .Values.global.victoriaMetricsUrl }}"` |  |
 | grafana.enabled | bool | `true` |  |
-| grafana.extraInitContainers[0].image | string | `"{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.4.0"` |  |
+| grafana.extraInitContainers[0].image | string | `"{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.5.0"` |  |
 | grafana.extraInitContainers[0].imagePullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | grafana.extraInitContainers[0].name | string | `"apo-grafana-init-dashboard"` |  |
 | grafana.extraInitContainers[0].volumeMounts[0].mountPath | string | `"/tmp/dashboards"` |  |
@@ -219,6 +220,14 @@ apo deployment charts
 | victoria-metrics-alert.alertmanager.config.route.receiver | string | `"alert-collector"` |  |
 | victoria-metrics-alert.alertmanager.config.route.repeat_interval | string | `"1m"` |  |
 | victoria-metrics-alert.alertmanager.enabled | bool | `true` |  |
+| victoria-metrics-alert.alertmanager.extraContainers[0].args[0] | string | `"--volume-dir=/config"` |  |
+| victoria-metrics-alert.alertmanager.extraContainers[0].args[1] | string | `"--webhook-url=http://127.0.0.1:9093/-/reload"` |  |
+| victoria-metrics-alert.alertmanager.extraContainers[0].image | string | `"{{ .Values.global.image.repository }}/alertmanager-configmap-reload:v0.9.0"` |  |
+| victoria-metrics-alert.alertmanager.extraContainers[0].imagePullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
+| victoria-metrics-alert.alertmanager.extraContainers[0].name | string | `"alertmanager-configmap-reload"` |  |
+| victoria-metrics-alert.alertmanager.extraContainers[0].volumeMounts[0].mountPath | string | `"/config"` |  |
+| victoria-metrics-alert.alertmanager.extraContainers[0].volumeMounts[0].name | string | `"config"` |  |
+| victoria-metrics-alert.alertmanager.extraContainers[0].volumeMounts[0].readOnly | bool | `true` |  |
 | victoria-metrics-alert.alertmanager.image | string | `"{{ .Values.global.image.repository }}/alertmanager"` |  |
 | victoria-metrics-alert.alertmanager.tag | string | `"v0.25.0"` |  |
 | victoria-metrics-alert.enabled | bool | `true` |  |

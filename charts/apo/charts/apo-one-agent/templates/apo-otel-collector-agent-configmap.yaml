@@ -41,6 +41,8 @@ data:
         send_batch_size: 10000
         timeout: 2s
       backsampling:
+        # 通知Ebpf采集OnOffMetric和Profile，设为0或不设置则关闭.
+        ebpf_port: 0
         sampler:
           normal_top_sample: false
           normal_sample_wait_time: 60

@@ -51,3 +51,7 @@ component: apo-backend
 app.kubernetes.io/name: {{ include "apo-backend.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "apo-backend.serviceAccountName" -}}
+{{- default (include "apo-backend.fullname" .) .Values.serviceAccount.name }}
+{{- end }}

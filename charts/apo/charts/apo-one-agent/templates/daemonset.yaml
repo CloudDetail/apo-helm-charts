@@ -140,6 +140,8 @@ spec:
             - name: apo-go-sdk-auto-config
               mountPath: /app/sdk-auto.yml
               subPath: sdk-auto.yml
+          securityContext:
+            privileged: true
         {{- end }}
         {{- if (has "metrics" .Values.global.agentCollectorMode) }}
         - name: grafana-alloy
@@ -249,6 +251,17 @@ spec:
           args:
             - >-
               --feature-gates=receiver.prometheusreceiver.RemoveLegacyResourceAttributes
+          env:
+            - name: MY_NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
           resources: {}
           volumeMounts:
             - name: apo-otel-collector-agent-config

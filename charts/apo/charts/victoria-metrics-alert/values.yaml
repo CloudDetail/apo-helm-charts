@@ -160,6 +160,7 @@ server:
     envflag.enable: "true"
     envflag.prefix: VM_
     loggerFormat: json
+    configCheckInterval: 15s
 
   # -- Additional hostPath mounts
   extraHostPathMounts:

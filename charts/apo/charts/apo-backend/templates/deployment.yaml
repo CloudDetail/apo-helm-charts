@@ -25,6 +25,8 @@ spec:
     spec:
       hostNetwork: {{ tpl (toString .Values.hostNetwork) . }}
       dnsPolicy: {{ tpl .Values.dnsPolicy . }}
+      serviceAccountName: {{ include "apo-backend.fullname" . }}
+      serviceAccount: {{ include "apo-backend.fullname" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:

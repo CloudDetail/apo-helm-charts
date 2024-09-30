@@ -83,7 +83,7 @@ apoGoSdkAuto:
   #   requests:
   #     cpu: 100m
   #     memory: 128Mi
-  apoOtelCollectorUrl: "http://localhost:4318"
+  apoOtelCollectorUrl: "localhost:4318"
 
 grafanaAlloy:
   image:
@@ -122,7 +122,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.4.0-attributes"
+    tag: "v0.5.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -199,7 +199,7 @@ apo-otel-collector:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.4.0-attributes"
+    tag: "v0.5.0"
   config:
     apoBackendUrl: "{{ .Values.global.apoServerIP }}"
     apoBackendPort: "{{ .Values.global.apoBackendPort }}"

@@ -82,7 +82,7 @@ data:
         password: {{ tpl .Values.config.clickhousePassword . }}
         database: apo
         ttl: 168h
-        create_schema: true
+        create_schema: false
         logs_table_name: ilogtail_logs
         traces_table_name: otel_traces
         metrics_table_name: otel_metrics
@@ -98,7 +98,7 @@ data:
         password: {{ tpl .Values.config.clickhousePassword . }}
         database: apo
         ttl: 720h
-        create_schema: true
+        create_schema: false
         logs_table_name: k8s_events
         traces_table_name: otel_traces
         metrics_table_name: otel_metrics
