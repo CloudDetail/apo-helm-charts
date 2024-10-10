@@ -1,6 +1,6 @@
 # apo
 
-![Version: 0.5.000](https://img.shields.io/badge/Version-0.5.000-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
+![Version: 0.5.001](https://img.shields.io/badge/Version-0.5.001-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5.1](https://img.shields.io/badge/AppVersion-0.5.1-informational?style=flat-square)
 
 apo deployment charts
 
@@ -36,7 +36,7 @@ apo deployment charts
 | altinity-clickhouse-operator.operator.image.repository | string | `"{{ .Values.global.image.repository }}/clickhouse-operator"` |  |
 | apo-backend.apoBackend.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-backend.apoBackend.image.repository | string | `"{{ .Values.global.image.repository }}/apo-backend"` |  |
-| apo-backend.apoBackend.image.tag | string | `"v0.5.0"` |  |
+| apo-backend.apoBackend.image.tag | string | `"v0.5.1"` |  |
 | apo-backend.apoPolarisAnalyzer.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-backend.apoPolarisAnalyzer.image.repository | string | `"{{ .Values.global.image.repository }}/polaris-analyzer"` |  |
 | apo-backend.apoPolarisAnalyzer.image.tag | string | `"v0.1.1"` |  |
@@ -101,7 +101,7 @@ apo deployment charts
 | apo-jaeger-collector.jaegerQuery.image.tag | float | `1.58` |  |
 | apo-jaeger-collector.remoteStorage.image.pullPolicy | string | `"IfNotPresent"` |  |
 | apo-jaeger-collector.remoteStorage.image.repository | string | `"{{ .Values.global.image.repository }}/jaeger-remote-storage"` |  |
-| apo-jaeger-collector.remoteStorage.image.tag | string | `"v0.1.0"` |  |
+| apo-jaeger-collector.remoteStorage.image.tag | string | `"v0.2.0"` |  |
 | apo-one-agent.apo-nginx-proxy.enabled | bool | `false` |  |
 | apo-one-agent.apo-nginx-proxy.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apo-nginx-proxy.image.repository | string | `"{{ .Values.global.image.repository }}/nginx"` |  |
@@ -131,7 +131,7 @@ apo deployment charts
 | apo-one-agent.apoOtelCollectorAgent.config.apoOtelCollectorUrl | string | `"apo-otel-collector-gateway-svc"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.5.0"` |  |
+| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.5.1"` |  |
 | apo-one-agent.enabled | bool | `false` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc:4315"` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc:4316"` |  |
@@ -143,7 +143,7 @@ apo deployment charts
 | apo-one-agent.odiglet.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-svc.apo:11800"` |  |
 | apo-one-agent.odiglet.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.odiglet.image.repository | string | `"{{ .Values.global.image.repository }}/apo-odiglet"` |  |
-| apo-one-agent.odiglet.image.tag | string | `"v0.5.0"` |  |
+| apo-one-agent.odiglet.image.tag | string | `"v0.5.1"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc.apo:4315"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc.apo:4316"` |  |
 | apo-one-agent.odigos.config.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-gateway-svc.apo:11800"` |  |
@@ -166,7 +166,7 @@ apo deployment charts
 | apo-otel-collector-gateway.enabled | bool | `true` |  |
 | apo-otel-collector-gateway.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-otel-collector-gateway.image.tag | string | `"v0.5.0"` |  |
+| apo-otel-collector-gateway.image.tag | string | `"v0.5.1"` |  |
 | apo-otel-collector-gateway.initImage.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.initImage.repository | string | `"{{ .Values.global.image.repository }}/busybox"` |  |
 | apo-otel-collector-gateway.initImage.tag | string | `"1.36.1"` |  |
@@ -186,6 +186,7 @@ apo deployment charts
 | global.agentCollectorMode[1] | string | `"metrics"` |  |
 | global.agentCollectorMode[2] | string | `"log"` |  |
 | global.clickhouseClusterName | string | `""` |  |
+| global.clickhouseDatabase | string | `"apo"` |  |
 | global.clickhouseRootPassword | string | `"WPKf-e9U.X)K)ezTDo9#"` |  |
 | global.clickhouseRootUsername | string | `"admin"` |  |
 | global.clickhouseUrl | string | `"apo-clickhouse-svc:9000"` |  |

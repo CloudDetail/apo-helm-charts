@@ -80,7 +80,7 @@ data:
         endpoint: "tcp://{{ tpl .Values.config.clickhouseUrl . }}?dial_timeout=10s&compress=lz4"
         username: {{ tpl .Values.config.clickhouseUsername . }}
         password: {{ tpl .Values.config.clickhousePassword . }}
-        database: apo
+        database: {{ tpl .Values.global.clickhouseDatabase . }}
         ttl: 168h
         create_schema: false
         logs_table_name: ilogtail_logs
@@ -96,7 +96,7 @@ data:
         endpoint: "tcp://{{ tpl .Values.config.clickhouseUrl . }}?dial_timeout=10s&compress=lz4"
         username: {{ tpl .Values.config.clickhouseUsername . }}
         password: {{ tpl .Values.config.clickhousePassword . }}
-        database: apo
+        database: {{ tpl .Values.global.clickhouseDatabase . }}
         ttl: 720h
         create_schema: false
         logs_table_name: k8s_events

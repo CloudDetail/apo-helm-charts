@@ -11,6 +11,7 @@ global:
   clickhouseUrl: "apo-clickhouse-svc:9000"
   clickhouseRootUsername: admin
   clickhouseRootPassword: "WPKf-e9U.X)K)ezTDo9#"
+  clickhouseDatabase: "apo"
   clickhouseClusterName: ""
 
 apo-backend:
@@ -25,7 +26,7 @@ apo-backend:
       repository: "{{ .Values.global.image.repository }}/apo-backend"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v0.5.0"
+      tag: "v0.5.1"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -147,7 +148,7 @@ apo-jaeger-collector:
       repository: "{{ .Values.global.image.repository }}/jaeger-remote-storage"
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v0.1.0"
+      tag: "v0.2.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -271,7 +272,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odiglet"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.5.0"
+      tag: "v0.5.1"
     # resources:
     #   limits:
     #     cpu: 500m
@@ -287,7 +288,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.5.0"
+      tag: "v0.5.1"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -360,7 +361,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.5.0"
+    tag: "v0.5.1"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"

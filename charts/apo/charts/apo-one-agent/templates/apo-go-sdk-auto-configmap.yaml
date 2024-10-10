@@ -66,6 +66,7 @@ data:
             - originx-sdk-aut*
             - otel-go-instrum*
             - pinger
+            - node-agent
             - portal
             - root-cause-infe*
           kubeskoop:
@@ -98,6 +99,8 @@ data:
           victoriametrics:
             - victoria-metric*
             - vmagent-prod
+            - vmalert-prod
+            - alertmanager
         java:
           skywalking:
             - "*org.apache.skywalking.oap.server.starter.OAPServerStartUp"

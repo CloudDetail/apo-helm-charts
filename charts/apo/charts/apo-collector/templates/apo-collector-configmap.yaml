@@ -43,7 +43,7 @@ data:
       endpoint: "tcp://{{ tpl .Values.apoCollector.config.clickhouseUrl . }}"
       username: {{ tpl .Values.apoCollector.config.clickhouseUsername . }}
       password: {{ tpl .Values.apoCollector.config.clickhousePassword . }}
-      database: "apo"
+      database: {{ tpl .Values.global.clickhouseDatabase . }}
       cluster: "{{ tpl .Values.global.clickhouseClusterName . }}"
       # (default = 0): The data time-to-live in days, 0 means no ttl.
       ttl_days: 7

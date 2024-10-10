@@ -106,7 +106,7 @@ odiglet:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-odiglet"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.4.1"
+    tag: "v0.5.1"
   # resources:
   #   limits:
   #     cpu: 1000m
@@ -122,7 +122,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.5.0"
+    tag: "v0.5.1"
   # resources: 
   #   limits:
   #     cpu: 1000m

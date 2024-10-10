@@ -9,7 +9,7 @@ data:
     address: {{ tpl .Values.config.clickhouseUrl . }}
     username: {{ tpl .Values.config.clickhouseUsername . }}
     password: {{ tpl .Values.config.clickhousePassword . }}
-    database: apo
+    database: {{ tpl .Values.global.clickhouseDatabase . }}
     spans_table:
     spans_index_table:
     operations_table:
@@ -17,4 +17,5 @@ data:
     metrics_endpoint: localhost:9101
     {{- if .Values.global.clickhouseClusterName }}
     replication: true
+    cluster: {{ tpl .Values.global.clickhouseClusterName . }}
     {{- end }}

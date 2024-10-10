@@ -44,7 +44,7 @@ data:
       address: "{{ tpl .Values.config.clickhouseUrl . }}"
       username: {{ tpl .Values.config.clickhouseUsername . }}
       password: {{ tpl .Values.config.clickhousePassword . }}
-      database: apo
+      database: {{ tpl .Values.global.clickhouseDatabase . }}
       cluster: "{{ .Values.global.clickhouseClusterName }}"
     
     kubernetes:
