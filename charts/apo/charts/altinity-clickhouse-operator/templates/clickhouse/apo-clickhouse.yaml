@@ -24,16 +24,10 @@ spec:
             - name: clickhouse
               image: "{{ tpl .Values.clickhouse.image.repository . }}:23.8"
               volumeMounts:
-                - name: apo-clickhouse-init-apo-sql
-                  mountPath: /docker-entrypoint-initdb.d
                 - name: data-storage-vc-template
                   mountPath: /var/lib/clickhouse
                 - name: log-storage-vc-template
                   mountPath: /var/log/clickhouse-server
-          volumes:
-            - name: apo-clickhouse-init-apo-sql
-              configMap:
-                name: apo-clickhouse-init-apo-sql
 
     volumeClaimTemplates:
       - name: data-storage-vc-template
@@ -58,11 +52,4 @@ spec:
           containers:
             - name: clickhouse
               image: "{{ tpl .Values.clickhouse.image.repository . }}:23.8"
-              volumeMounts:
-                - name: apo-clickhouse-init-apo-sql
-                  mountPath: /docker-entrypoint-initdb.d
-          volumes:
-            - name: apo-clickhouse-init-apo-sql
-              configMap:
-                name: apo-clickhouse-init-apo-sql
 {{- end }}

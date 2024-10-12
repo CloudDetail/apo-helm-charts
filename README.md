@@ -1,6 +1,6 @@
 # apo
 
-![Version: 0.5.001](https://img.shields.io/badge/Version-0.5.001-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5.1](https://img.shields.io/badge/AppVersion-0.5.1-informational?style=flat-square)
+![Version: 0.6.000](https://img.shields.io/badge/Version-0.6.000-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.0](https://img.shields.io/badge/AppVersion-0.6.0-informational?style=flat-square)
 
 apo deployment charts
 
@@ -16,6 +16,7 @@ apo deployment charts
 | file://dep/apo-one-agent | apo-one-agent |  |
 | file://dep/apo-otel-collector-gateway | apo-otel-collector-gateway |  |
 | file://dep/grafana | grafana |  |
+| file://dep/vector | vector |  |
 | file://dep/victoria-metrics-alert | victoria-metrics-alert |  |
 | file://dep/victoria-metrics-single | victoria-metrics-single |  |
 
@@ -36,7 +37,7 @@ apo deployment charts
 | altinity-clickhouse-operator.operator.image.repository | string | `"{{ .Values.global.image.repository }}/clickhouse-operator"` |  |
 | apo-backend.apoBackend.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-backend.apoBackend.image.repository | string | `"{{ .Values.global.image.repository }}/apo-backend"` |  |
-| apo-backend.apoBackend.image.tag | string | `"v0.5.1"` |  |
+| apo-backend.apoBackend.image.tag | string | `"v0.6.0"` |  |
 | apo-backend.apoPolarisAnalyzer.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-backend.apoPolarisAnalyzer.image.repository | string | `"{{ .Values.global.image.repository }}/polaris-analyzer"` |  |
 | apo-backend.apoPolarisAnalyzer.image.tag | string | `"v0.1.1"` |  |
@@ -67,9 +68,9 @@ apo deployment charts
 | apo-collector.apoCollector.config.clickhouseUrl | string | `"{{ .Values.global.clickhouseUrl }}"` |  |
 | apo-collector.apoCollector.config.clickhouseUsername | string | `"{{ .Values.global.clickhouseRootUsername }}"` |  |
 | apo-collector.apoCollector.config.victoriaMetricsUrl | string | `"{{ .Values.global.victoriaMetricsUrl }}"` |  |
-| apo-collector.apoCollector.image.pullPolicy | string | `"IfNotPresent"` |  |
+| apo-collector.apoCollector.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-collector.apoCollector.image.repository | string | `"{{ .Values.global.image.repository }}/apo-collector"` |  |
-| apo-collector.apoCollector.image.tag | string | `"v1.6.0"` |  |
+| apo-collector.apoCollector.image.tag | string | `"v1.6.1"` |  |
 | apo-collector.apoCollector.service.nodePortGrpc | int | `30044` |  |
 | apo-collector.apoCollector.service.nodePortHttp | int | `30090` |  |
 | apo-collector.apoCollector.service.port | int | `29090` |  |
@@ -85,7 +86,7 @@ apo deployment charts
 | apo-front.enabled | bool | `true` |  |
 | apo-front.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-front.image.repository | string | `"{{ .Values.global.image.repository }}/apo-front"` |  |
-| apo-front.image.tag | string | `"v0.5.0"` |  |
+| apo-front.image.tag | string | `"v0.6.0"` |  |
 | apo-front.service.nodePort | int | `31364` |  |
 | apo-front.service.type | string | `"NodePort"` |  |
 | apo-jaeger-collector.config.clickhousePassword | string | `"{{ .Values.global.clickhouseRootPassword }}"` |  |
@@ -112,6 +113,7 @@ apo deployment charts
 | apo-one-agent.apoGoSdkAuto.image.repository | string | `"{{ .Values.global.image.repository }}/sdk-auto"` |  |
 | apo-one-agent.apoGoSdkAuto.image.tag | string | `"v1.1.0"` |  |
 | apo-one-agent.apoIlogtail.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc:4315"` |  |
+| apo-one-agent.apoIlogtail.apoVectorLogUrl | string | `"apo-vector-svc:4310"` |  |
 | apo-one-agent.apoIlogtail.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoIlogtail.image.repository | string | `"{{ .Values.global.image.repository }}/ilogtail"` |  |
 | apo-one-agent.apoIlogtail.image.tag | string | `"v1.5.0"` |  |
@@ -131,7 +133,7 @@ apo deployment charts
 | apo-one-agent.apoOtelCollectorAgent.config.apoOtelCollectorUrl | string | `"apo-otel-collector-gateway-svc"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.5.1"` |  |
+| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.6.0"` |  |
 | apo-one-agent.enabled | bool | `false` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc:4315"` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc:4316"` |  |
@@ -166,7 +168,7 @@ apo deployment charts
 | apo-otel-collector-gateway.enabled | bool | `true` |  |
 | apo-otel-collector-gateway.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-otel-collector-gateway.image.tag | string | `"v0.5.1"` |  |
+| apo-otel-collector-gateway.image.tag | string | `"v0.6.0"` |  |
 | apo-otel-collector-gateway.initImage.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.initImage.repository | string | `"{{ .Values.global.image.repository }}/busybox"` |  |
 | apo-otel-collector-gateway.initImage.tag | string | `"1.36.1"` |  |
@@ -187,6 +189,8 @@ apo deployment charts
 | global.agentCollectorMode[2] | string | `"log"` |  |
 | global.clickhouseClusterName | string | `""` |  |
 | global.clickhouseDatabase | string | `"apo"` |  |
+| global.clickhouseHttpUrl | string | `"apo-clickhouse-svc:8123"` |  |
+| global.clickhouseReplication | string | `"false"` |  |
 | global.clickhouseRootPassword | string | `"WPKf-e9U.X)K)ezTDo9#"` |  |
 | global.clickhouseRootUsername | string | `"admin"` |  |
 | global.clickhouseUrl | string | `"apo-clickhouse-svc:9000"` |  |
@@ -212,6 +216,21 @@ apo deployment charts
 | grafana.image.repository | string | `"grafana"` | Docker image repository |
 | grafana.image.tag | string | `"10.4.1"` |  |
 | grafana.rbac.create | bool | `false` |  |
+| vector.clickhousePassword | string | `"{{ .Values.global.clickhouseRootPassword }}"` |  |
+| vector.clickhouseUrl | string | `"{{ .Values.global.clickhouseUrl }}"` |  |
+| vector.clickhouseUsername | string | `"{{ .Values.global.clickhouseRootUsername }}"` |  |
+| vector.enabled | bool | `true` |  |
+| vector.fullnameOverride | string | `"apo-vector"` |  |
+| vector.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
+| vector.image.repository | string | `"{{ .Values.global.image.repository }}/vector"` |  |
+| vector.image.tag | string | `"0.41.1-distroless-libc"` |  |
+| vector.role | string | `"Stateless-Aggregator"` |  |
+| vector.service.ports[0].name | string | `"datadog-agent"` |  |
+| vector.service.ports[0].nodePort | int | `30310` |  |
+| vector.service.ports[0].port | int | `4310` |  |
+| vector.service.ports[0].protocol | string | `"TCP"` |  |
+| vector.service.ports[0].targetPort | int | `4310` |  |
+| vector.service.type | string | `"NodePort"` |  |
 | victoria-metrics-alert.alertmanager.config.global.resolve_timeout | string | `"5m"` |  |
 | victoria-metrics-alert.alertmanager.config.receivers[0].name | string | `"alert-collector"` |  |
 | victoria-metrics-alert.alertmanager.config.receivers[0].webhook_configs[0].url | string | `"http://apo-backend-svc:8080/api/alerts/inputs/alertmanager"` |  |

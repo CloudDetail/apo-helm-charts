@@ -149,7 +149,7 @@ rules:
       - get
       - patch
       - update
-  - apiGroups: 
+  - apiGroups:
       - "monitoring.coreos.com"
     resources:
       - prometheusrules
@@ -161,7 +161,7 @@ rules:
       - /metrics
     verbs:
       - get
-  - apiGroups: 
+  - apiGroups:
       - "monitoring.coreos.com"
     resources:
       - podmonitors
@@ -171,11 +171,11 @@ rules:
       - get
       - list
       - watch
-  - apiGroups: 
+  - apiGroups:
       - "extensions"
-    resources: 
+    resources:
       - "replicasets"
-    verbs: 
+    verbs:
       - get
       - list
       - watch

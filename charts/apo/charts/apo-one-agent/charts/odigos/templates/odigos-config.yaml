@@ -25,7 +25,7 @@ spec:
     {{- with .Values.collectorGateway.goMemLimitMiB }}
     goMemLimitMiB: {{ . }}
     {{- end }}
-  {{- end }}  
+  {{- end }}
   instrumentorImage: {{ tpl .Values.instrumentor.image.repository . }}
   odigosVersion: {{ .Values.odiglet.image.tag }}
   telemetryEnabled: {{ .Values.telemetry.enabled }}

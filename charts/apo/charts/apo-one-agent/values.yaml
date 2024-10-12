@@ -14,6 +14,7 @@ global:
   apoCollectorPort: 30044
   apoOtelCollectorGatewayGRPCPort: 30317
   apoOtelCollectorGatewayK8SPort: 30319
+  apoVectorLogPort: 30310
 
 nameOverride: ""
 podAnnotations: {}
@@ -53,7 +54,6 @@ apoNodeAgent:
       cpu: 100m
       memory: 128Mi
   apoOtelCollectorUrl: "apo-otel-collector-svc.apo:8080"
-  
 
 apoIlogtail:
   image:
@@ -69,6 +69,7 @@ apoIlogtail:
   #     cpu: 100m
   #     memory: 128Mi
   apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.apo:4317"
+  apoVectorLogUrl: "{{ .Values.global.apoServerIP }}:{{ .Values.global.apoVectorLogPort }}"
 
 apoGoSdkAuto:
   image:
@@ -122,7 +123,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.5.1"
+    tag: "v0.6.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -199,7 +200,7 @@ apo-otel-collector:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.5.0"
+    tag: "v0.6.0"
   config:
     apoBackendUrl: "{{ .Values.global.apoServerIP }}"
     apoBackendPort: "{{ .Values.global.apoBackendPort }}"

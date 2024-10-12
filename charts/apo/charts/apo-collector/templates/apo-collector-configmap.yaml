@@ -44,6 +44,7 @@ data:
       username: {{ tpl .Values.apoCollector.config.clickhouseUsername . }}
       password: {{ tpl .Values.apoCollector.config.clickhousePassword . }}
       database: {{ tpl .Values.global.clickhouseDatabase . }}
+      replication: {{ tpl .Values.global.clickhouseReplication . }}
       cluster: "{{ tpl .Values.global.clickhouseClusterName . }}"
       # (default = 0): The data time-to-live in days, 0 means no ttl.
       ttl_days: 7

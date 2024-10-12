@@ -9,10 +9,12 @@ global:
     - log
   victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
   clickhouseUrl: "apo-clickhouse-svc:9000"
+  clickhouseHttpUrl: "apo-clickhouse-svc:8123"
   clickhouseRootUsername: admin
   clickhouseRootPassword: "WPKf-e9U.X)K)ezTDo9#"
   clickhouseDatabase: "apo"
   clickhouseClusterName: ""
+  clickhouseReplication: "false"
 
 apo-backend:
   enabled: true
@@ -26,7 +28,7 @@ apo-backend:
       repository: "{{ .Values.global.image.repository }}/apo-backend"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v0.5.1"
+      tag: "v0.6.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -72,8 +74,8 @@ apo-collector:
   apoCollector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
-      pullPolicy: IfNotPresent
-      tag: "v1.6.0"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.6.1"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -120,7 +122,7 @@ apo-front:
     repository: "{{ .Values.global.image.repository }}/apo-front"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.5.0"
+    tag: "v0.6.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -219,7 +221,6 @@ apo-one-agent:
     #     cpu: 100m
     #     memory: 128Mi
     apoOtelCollectorUrl: "apo-otel-collector-gateway-svc:8080"
-    
 
   apoIlogtail:
     image:
@@ -235,6 +236,7 @@ apo-one-agent:
     #     cpu: 100m
     #     memory: 128Mi
     apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc:4315"
+    apoVectorLogUrl: "apo-vector-svc:4310"
 
   apoGoSdkAuto:
     image:
@@ -288,7 +290,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.5.1"
+      tag: "v0.6.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -361,7 +363,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.5.1"
+    tag: "v0.6.0"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -453,6 +455,26 @@ grafana:
   #     memory: 128Mi
   rbac:
     create: false
+
+vector:
+  enabled: true
+  image:
+    repository: "{{ .Values.global.image.repository }}/vector"
+    tag: "0.41.1-distroless-libc"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+  service:
+    type: NodePort
+    ports:
+    - name: datadog-agent
+      port: 4310
+      targetPort: 4310
+      nodePort: 30310
+      protocol: TCP
+  role: Stateless-Aggregator
+  fullnameOverride: "apo-vector"
+  clickhouseUrl: "{{ .Values.global.clickhouseUrl }}"
+  clickhouseUsername: "{{ .Values.global.clickhouseRootUsername }}"
+  clickhousePassword: "{{ .Values.global.clickhouseRootPassword }}"
 
 victoria-metrics-alert:
   enabled: true

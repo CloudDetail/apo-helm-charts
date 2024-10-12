@@ -24,3 +24,21 @@ data:
       - Type: flusher_otlp
         Logs:
           Endpoint: {{ tpl .Values.apoIlogtail.apoOtelCollectorGrpcUrl . }}
+  pod_stdout_all.yaml: |
+    enable: true
+    inputs: 
+      - Type: service_docker_stdout
+        ExcludeK8sLabel:
+          app.kubernetes.io/instance: apo
+    processors:
+      - Type: processor_wait_for_signal
+        DisableSignalSampler: true
+        ContentsRename:
+          "__tag__:_container_id_": "_container_id_"
+          "__tag__:__path__": "_source_"
+    flushers:
+      - Type: flusher_http
+        RemoteURL: http://{{ tpl .Values.apoIlogtail.apoVectorLogUrl . }}
+        Convert:
+          Protocol: custom_single
+          Encoding: json

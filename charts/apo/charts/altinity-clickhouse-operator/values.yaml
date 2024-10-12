@@ -41,7 +41,7 @@ metrics:
   # metrics.env -- additional environment variables for the deployment of metrics-exporter containers
   # possible format value [{"name": "SAMPLE", "value": "text"}]
   env: []
-  
+
 clickhouse:
   image:
     repository: registry.cn-hangzhou.aliyuncs.com/originx/clickhouse-server

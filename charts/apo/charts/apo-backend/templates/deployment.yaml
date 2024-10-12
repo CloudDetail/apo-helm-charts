@@ -64,7 +64,7 @@ spec:
           subPath: apo.yml
         {{- if .Values.persistence.enabled }}
         - name: sqlite-storage
-          mountPath: /var/sqlite
+          mountPath: /app/database
         {{- end }}
       - name: polaris-analyzer
         image: "{{ tpl .Values.apoPolarisAnalyzer.image.repository . }}:{{ .Values.apoPolarisAnalyzer.image.tag }}"

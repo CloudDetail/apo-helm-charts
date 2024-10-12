@@ -27,11 +27,7 @@ data:
       max_idle: 60
       max_life_second: 60
       sqllite:
-        {{- if .Values.persistence.enabled }}
-        database: /var/sqllite/database-apo.db
-        {{- else }}
-        database: database-apo.db
-        {{- end }}
+        database: database/database-apo.db
       mysql:
         host: 127.0.0.1
         port: 3306
@@ -46,7 +42,7 @@ data:
       password: {{ tpl .Values.config.clickhousePassword . }}
       database: {{ tpl .Values.global.clickhouseDatabase . }}
       cluster: "{{ .Values.global.clickhouseClusterName }}"
-    
+
     kubernetes:
       auth_type: "serviceAccount"
 

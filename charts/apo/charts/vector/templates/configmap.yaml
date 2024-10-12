@@ -1,0 +1,98 @@
+{{- if not .Values.existingConfigMaps }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "vector.fullname" . }}-config
+  labels:
+    {{- include "vector.labels" . | nindent 4 }}
+data:
+  {{- if .Values.customConfig }}
+  vector.yaml: |
+{{ tpl (toYaml .Values.customConfig) . | indent 4 }}
+  {{- else if or (eq .Values.role "Aggregator") (eq .Values.role "Stateless-Aggregator") }}
+  aggregator.yaml: |
+    sources:
+      http_logs:
+        address: 0.0.0.0:4310
+        encoding: ndjson
+        type: http_server
+    transforms:
+      flatten_logs:
+        inputs:
+        - http_logs
+        source: |
+          del(.dropped_attributes_count)
+          del(.source_type)
+          del(.path)
+          del(.time)
+          .,err = merge(., .contents)
+          .,err = merge(., .tags)
+          del(.contents)
+          del(.tags)
+        type: remap
+      parse_default_java:
+        inputs:
+        - route_logs.default_java_route
+        source: |
+          .msg, err = parse_regex(.content, r' \[(?P<level>.*?)\] \[(?P<thread>.*?)\] \[(?P<method>.*?)\(.*?\)\] - (?P<msg>.*)')
+          if err == null {
+            .content = encode_json(.msg)
+          }
+          del(.msg)
+        type: remap
+      route_logs:
+        inputs:
+        - flatten_logs
+        route:
+          default_java_route: ."k8s.namespace.name" != "apo"
+        type: route
+    sinks:
+      to_default_java:
+        auth:
+          password: {{ .Values.global.clickhouseRootPassword }}
+          strategy: basic
+          user: {{ .Values.global.clickhouseRootUsername }}
+        batch:
+          batch.timeout_secs: 3
+          max_events: 10000
+        database: {{ .Values.global.clickhouseDatabase }}
+        endpoint: http://{{ .Values.global.clickhouseHttpUrl }}
+        format: json_each_row
+        inputs:
+        - parse_default_java
+        skip_unknown_fields: true
+        table: raw_logs_buffer
+        type: clickhouse
+  {{- else if (eq .Values.role "Agent") }}
+  agent.yaml: |
+    data_dir: /vector-data-dir
+    api:
+      enabled: true
+      address: 127.0.0.1:8686
+      playground: false
+    sources:
+      kubernetes_logs:
+        type: kubernetes_logs
+      host_metrics:
+        filesystem:
+          devices:
+            excludes: [binfmt_misc]
+          filesystems:
+            excludes: [binfmt_misc]
+          mountpoints:
+            excludes: ["*/proc/sys/fs/binfmt_misc"]
+        type: host_metrics
+      internal_metrics:
+        type: internal_metrics
+    sinks:
+      prom_exporter:
+        type: prometheus_exporter
+        inputs: [host_metrics, internal_metrics]
+        address: 0.0.0.0:9090
+      stdout:
+        type: console
+        inputs: [kubernetes_logs]
+        encoding:
+          codec: json
+  {{- end }}
+{{- end }}
