@@ -7,7 +7,7 @@ metadata:
 data:
   pod_stdout_file.yaml: |
     enable: true
-    inputs: 
+    inputs:
       - Type: service_docker_stdout
         ExcludeK8sLabel:
           app.kubernetes.io/instance: apo
@@ -30,6 +30,8 @@ data:
       - Type: service_docker_stdout
         ExcludeK8sLabel:
           app.kubernetes.io/instance: apo
+        BeginLineCheckLength: 10
+        BeginLineRegex: "\\d+.*"
     processors:
       - Type: processor_wait_for_signal
         DisableSignalSampler: true

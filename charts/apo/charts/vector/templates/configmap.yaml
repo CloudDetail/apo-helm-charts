@@ -24,15 +24,15 @@ data:
           del(.dropped_attributes_count)
           del(.source_type)
           del(.path)
-          del(.time)
           .,err = merge(., .contents)
           .,err = merge(., .tags)
           del(.contents)
           del(.tags)
+          .timestamp, err = to_string(.time)
         type: remap
       parse_default_java:
         inputs:
-        - route_logs.default_java_route
+        - route_logs._unmatched
         source: |
           .msg, err = parse_regex(.content, r' \[(?P<level>.*?)\] \[(?P<thread>.*?)\] \[(?P<method>.*?)\(.*?\)\] - (?P<msg>.*)')
           if err == null {
@@ -44,7 +44,8 @@ data:
         inputs:
         - flatten_logs
         route:
-          default_java_route: ."k8s.namespace.name" != "apo"
+          default_java_route: | 
+            starts_with(string!(."k8s.pod.name"), "apo")
         type: route
     sinks:
       to_default_java:

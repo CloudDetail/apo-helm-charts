@@ -92,6 +92,7 @@ data:
           # Options: ["pm", "vm"]
           format: vm
           port: 9500
+          cache_size: 500
     notifier:
       enable: false
   log4rs.yml: |

@@ -67,8 +67,6 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-            - name: PROCESS_TYPE
-              value: java,python,node,donet
             - name: PROCESS_TIME
               value: 'true'
           volumeMounts:
@@ -122,27 +120,6 @@ spec:
               mountPath: /usr/local/ilogtail/plugin_logger.xml
               subPath: plugin_logger.xml
         {{- end }}
-        {{- if (has "trace" .Values.global.agentCollectorMode) }}
-        - name: go-sdk-auto
-          image: "{{ tpl .Values.apoGoSdkAuto.image.repository . }}:{{ tpl (toString .Values.apoGoSdkAuto.image.tag) . }}"
-          imagePullPolicy: "{{ tpl .Values.apoGoSdkAuto.image.pullPolicy . }}"
-          ports:
-            - name: http
-              hostPort: 9502
-              containerPort: 9502
-              protocol: TCP
-          env:
-            - name: KINDLING_WRITE_TRACE
-              value: 'true'
-          resources:
-            {{- toYaml .Values.apoGoSdkAuto.resources | nindent 12 }}
-          volumeMounts:
-            - name: apo-go-sdk-auto-config
-              mountPath: /app/sdk-auto.yml
-              subPath: sdk-auto.yml
-          securityContext:
-            privileged: true
-        {{- end }}
         {{- if (has "metrics" .Values.global.agentCollectorMode) }}
         - name: grafana-alloy
           image: "{{ tpl .Values.grafanaAlloy.image.repository . }}:{{ tpl (toString .Values.grafanaAlloy.image.tag) . }}"
@@ -188,6 +165,38 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
+        {{- end }}
+        {{- if (has "trace" .Values.global.agentCollectorMode) }}
+        - name: grafana-beyla
+          image: "{{ tpl .Values.grafanaBeyla.image.repository . }}:{{ tpl (toString .Values.grafanaBeyla.image.tag) . }}"
+          imagePullPolicy: "{{ tpl .Values.grafanaBeyla.image.pullPolicy . }}"
+          ports:
+            - containerPort: 9090
+              name: metrics
+              protocol: TCP
+          env:
+            - name: filter_go_process
+              value: >-
+                sleep,kube,jaeger-agent,prometheus,promtail,grafana-agent,calico,apisix,kube,chaos-,logserver,containerd,image-cri-shim,registry,deepflow,grafanagpx_,docker,runc,lvscare,nginx-ingress-c,otelcol-contrib,node_exporter,otel-go-instrum,otelcol,vmagent-prod,metrics-server,apm-server,elastic-operato,flanneld,flagd-build,dlv,gopls,agent-linux,all-in-one-linu,coredns,etcd,kubectl,kubelet,kindnetd,local-path-prov,camera,ilogtail,management,metadata-provid,meta-agent,originx-gc-agen,originx-sdk-aut,pinger,portal,root-cause-infe,inspector,odiglet,odigosotelcol,exporter,ndm,ndo,provisioner-loc,catalog,olm,xenon,victoria-metric,camera,nginx,alloy,alertmanager,grafana,collector-linux,apo-backend,vector,clickhouse-operator,clickhouse-server,jaeger-remote-storage,apiserver,java,clickhouse,victoria-metrics-prod,node-agent,python,vmalert-prod,query-linux,odigos-instrumentor
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: BEYLA_CONFIG_PATH
+              value: /etc/beyla/config/beyla-config.yml
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: http://$(NODE_IP):4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+          resources:
+            {{- toYaml .Values.grafanaBeyla.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /etc/beyla/config
+              name: beyla-config
+              readOnly: true
+          securityContext:
+            privileged: true
         {{- end }}
         {{- if (has "trace" .Values.global.agentCollectorMode) }}
         - name: apo-odiglet
@@ -244,6 +253,7 @@ spec:
         {{- if or (has "trace" .Values.global.agentCollectorMode) (has "metrics" .Values.global.agentCollectorMode) }}
         - name: apo-otel-collector-agent
           image: "{{ tpl .Values.apoOtelCollectorAgent.image.repository . }}:{{ .Values.apoOtelCollectorAgent.image.tag }}"
+          imagePullPolicy: "{{ tpl .Values.apoOtelCollectorAgent.image.pullPolicy . }}"
           command:
             - ./otelcol
             - '--config'
@@ -268,9 +278,10 @@ spec:
               mountPath: /app/conf
             - name: signal-uds
               mountPath: /opt/signal
+          securityContext:
+            privileged: true
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          imagePullPolicy: IfNotPresent
         {{- end }}
       volumes:
         - name: apo-one-agent-config
@@ -285,13 +296,13 @@ spec:
           configMap:
             name: apo-ilogtail-logger-config
             defaultMode: 420
-        - name: apo-go-sdk-auto-config
-          configMap:
-            name: apo-go-sdk-auto-config
-            defaultMode: 420
         - name: grafana-alloy-config
           configMap:
             name: apo-grafana-alloy-config
+            defaultMode: 420
+        - name: beyla-config
+          configMap:
+            name: apo-grafana-beyla-config
             defaultMode: 420
         - name: apo-otel-collector-agent-config
           configMap:

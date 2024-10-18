@@ -62,10 +62,18 @@ spec:
         - name: apo-backend-config
           mountPath: /app/config/apo.yml
           subPath: apo.yml
-        {{- if .Values.persistence.enabled }}
         - name: sqlite-storage
           mountPath: /app/database
-        {{- end }}
+        readinessProbe:
+          httpGet:
+            path: /api/config/getTTL
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 6
       - name: polaris-analyzer
         image: "{{ tpl .Values.apoPolarisAnalyzer.image.repository . }}:{{ .Values.apoPolarisAnalyzer.image.tag }}"
         imagePullPolicy: {{ tpl .Values.apoBackend.image.pullPolicy . }}
@@ -83,6 +91,7 @@ spec:
         volumeMounts:
         - name: apo-backend-config
           mountPath: /app/config/
+
       volumes:
       - name: apo-backend-config
         configMap:
@@ -92,4 +101,7 @@ spec:
       - name: sqlite-storage
         persistentVolumeClaim:
           claimName: {{ include "apo-backend.fullname" . }}-pvc
+      {{- else }}
+      - name: sqlite-storage
+        emptyDir: {}
       {{- end }}

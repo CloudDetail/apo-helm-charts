@@ -28,7 +28,7 @@ apo-backend:
       repository: "{{ .Values.global.image.repository }}/apo-backend"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v0.6.0"
+      tag: "v0.7.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -122,7 +122,7 @@ apo-front:
     repository: "{{ .Values.global.image.repository }}/apo-front"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.6.0"
+    tag: "v0.7.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -150,7 +150,7 @@ apo-jaeger-collector:
       repository: "{{ .Values.global.image.repository }}/jaeger-remote-storage"
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v0.2.0"
+      tag: "v0.3.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -194,14 +194,14 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.7.0"
-    # resources: 
-    #   limits:
-    #     cpu: 1000m
-    #     memory: 1024Mi
-    #   requests:
-    #     cpu: 100m
-    #     memory: 128Mi
+      tag: "v1.7.2"
+    resources: 
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
     config:
       apoCollectorUrl: apo-collector-svc.apo
       apoCollectorPort: "29090"
@@ -213,13 +213,13 @@ apo-one-agent:
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
       tag: "v1.6.1"
-    # resources:
-    #   limits:
-    #     cpu: 200m
-    #     memory: 128Mi
-    #   requests:
-    #     cpu: 100m
-    #     memory: 128Mi
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
     apoOtelCollectorUrl: "apo-otel-collector-gateway-svc:8080"
 
   apoIlogtail:
@@ -228,60 +228,58 @@ apo-one-agent:
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
       tag: "v1.5.0"
-    # resources: 
-    #   limits:
-    #     cpu: 100m
-    #     memory: 128Mi
-    #   requests:
-    #     cpu: 100m
-    #     memory: 128Mi
+    resources: 
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
     apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc:4315"
     apoVectorLogUrl: "apo-vector-svc:4310"
-
-  apoGoSdkAuto:
-    image:
-      repository: "{{ .Values.global.image.repository }}/sdk-auto"
-      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.1.0"
-    # resources: 
-    #   limits:
-    #     cpu: 100m
-    #     memory: 128Mi
-    #   requests:
-    #     cpu: 100m
-    #     memory: 128Mi
-    apoOtelCollectorUrl: "localhost:4318"
 
   grafanaAlloy:
     image:
       repository: "{{ .Values.global.image.repository }}/grafana-alloy"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.2.1"
-    # resources: 
-    #   limits:
-    #     cpu: 100m
-    #     memory: 128Mi
-    #   requests:
-    #     cpu: 100m
-    #     memory: 128Mi
+      tag: "v1.4.2"
+    resources: 
+      limits:
+        cpu: 2000m
+        memory: 2048Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
     config:
       apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc:4315"
       apoOtelCollectorHttpUrl: "apo-otel-collector-gateway-svc:4316"
+  
+  grafanaBeyla:
+    image:
+      repository: "{{ .Values.global.image.repository }}/apo-beyla"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.8.4-1"
+    resources: 
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
 
   odiglet:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odiglet"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v0.5.1"
-    # resources:
-    #   limits:
-    #     cpu: 500m
-    #     memory: 128Mi
-    #   requests:
-    #     cpu: 10m
-    #     memory: 64Mi
+      resources: 
+        limits:
+          cpu: 2000m
+          memory: 2048Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
     apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.apo:4317"
     apoOtelCollectorHttpUrl: "apo-otel-collector-svc.apo:4318"
     apoOtelCollectorSkywalkingUrl: "apo-otel-collector-svc.apo:11800"
@@ -290,14 +288,14 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.6.0"
-    # resources: 
-    #   limits:
-    #     cpu: 1000m
-    #     memory: 1024Mi
-    #   requests:
-    #     cpu: 100m
-    #     memory: 128Mi
+      tag: "v0.7.0"
+      resources: 
+        limits:
+          cpu: 2000m
+          memory: 2048Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
     config:
       apoCollectorUrl: "apo-collector-svc"
       apoCollectorPort: "29090"
@@ -310,14 +308,14 @@ apo-one-agent:
       image:
         repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
         imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-        tag: "v0.5.0"
-      # resources:
-      #   limits:
-      #     cpu: 500m
-      #     memory: 128Mi
-      #   requests:
-      #     cpu: 10m
-      #     memory: 64Mi
+        tag: "v0.5.1"
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1024Mi
+        requests:
+          cpu: 10m
+          memory: 64Mi
       # targetNamespace 
       # name：目标命名空间
       # value：
@@ -363,7 +361,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.6.0"
+    tag: "v0.7.0"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -385,13 +383,13 @@ apo-otel-collector-gateway:
       targetPort: 4319
       nodePort: 30319
     type: NodePort
-  # resources: 
-  #   limits:
-  #     cpu: 1000m
-  #     memory: 1024Mi
-  #   requests:
-  #     cpu: 100m
-  #     memory: 128Mi
+  resources: 
+    limits:
+      cpu: 3000m
+      memory: 3072Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   rbac:
     create: true
 

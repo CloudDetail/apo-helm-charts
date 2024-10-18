@@ -41,6 +41,7 @@ data:
       username: {{ tpl .Values.config.clickhouseUsername . }}
       password: {{ tpl .Values.config.clickhousePassword . }}
       database: {{ tpl .Values.global.clickhouseDatabase . }}
+      replication: {{ tpl .Values.global.clickhouseReplication . }}
       cluster: "{{ .Values.global.clickhouseClusterName }}"
 
     kubernetes:

@@ -222,7 +222,7 @@ helm install --name <RELEASE_NAME> \
 | serviceAccount.automountToken | bool | `true` | Automount API credentials for Vector's ServiceAccount. |
 | serviceAccount.create | bool | `true` | If true, create a ServiceAccount for Vector. |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to use. If not set and serviceAccount.create is true, a name is generated using the fullname template. |
-| serviceHeadless.enabled | bool | `true` | If true, create and provide a Headless Service resource for Vector. |
+| serviceHeadless.enabled | bool | `false` | If true, create and provide a Headless Service resource for Vector. |
 | shareProcessNamespace | bool | `false` | Specify the [shareProcessNamespace](https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/) options for Vector Pods. |
 | terminationGracePeriodSeconds | int | `60` | Override Vector's terminationGracePeriodSeconds. |
 | tolerations | list | `[]` | Configure Vector Pods to be scheduled on [tainted](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) nodes. |

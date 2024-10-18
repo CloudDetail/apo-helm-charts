@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-grafana-beyla-config
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+data:
+  beyla-config.yml: |
+    discovery:
+      services:
+        - k8s_namespace: .
+    attributes:
+      kubernetes:
+        enable: true
+      select:
+        beyla_network_flow_bytes:
+          include:
+          - k8s.src.owner.type
+          - k8s.dst.owner.type
+          - direction
+    filter:
+      network:
+        k8s_dst_owner_name:
+          not_match: '{*kube*,*jaeger-agent*,*prometheus*,*promtail*,*grafana-agent*,*calico-node*,*apisix-ingress-*,*kube-controller*,*chaos-*,*logserver*,*containerd*,*image-cri-shim*,*registry*,*deepflow-server*,*grafanagpx_*,*docker*,*runc*,*lvscare*,*nginx-ingress-c*,*otelcol-contrib*,*node_exporter*,*otel-go-instrum*,*otelcol*,*vmagent-prod*,*metrics-server*,*apm-server*,*elastic-operato*,*flanneld*,*flagd-build*,*dlv*,*gopls*,*agent-linux*,*all-in-one-linu*,*coredns*,*etcd*,*kubectl*,*kubelet*,*kindnetd*,*local-path-prov*,*camera-apm-adap*,*camera-receiver*,*ilogtail*,*management*,*metadata-provid*,*meta-agent*,*originx-gc-agen*,*originx-sdk-aut*,*pinger*,*portal*,*root-cause-infe*,*inspector*,*app*,*odiglet*,*odigosotelcol*,*exporter*,*ndm*,*ndo*,*provisioner-loc*,*catalog*,*olm*,*xenon*,*victoria-metric*}'
+        k8s_src_owner_name:
+          not_match: '{*kube*,*jaeger-agent*,*prometheus*,*promtail*,*grafana-agent*,*calico-node*,*apisix-ingress-*,*kube-controller*,*chaos-*,*logserver*,*containerd*,*image-cri-shim*,*registry*,*deepflow-server*,*grafanagpx_*,*docker*,*runc*,*lvscare*,*nginx-ingress-c*,*otelcol-contrib*,*node_exporter*,*otel-go-instrum*,*otelcol*,*vmagent-prod*,*metrics-server*,*apm-server*,*elastic-operato*,*flanneld*,*flagd-build*,*dlv*,*gopls*,*agent-linux*,*all-in-one-linu*,*coredns*,*etcd*,*kubectl*,*kubelet*,*kindnetd*,*local-path-prov*,*camera-apm-adap*,*camera-receiver*,*ilogtail*,*management*,*metadata-provid*,*meta-agent*,*originx-gc-agen*,*originx-sdk-aut*,*pinger*,*portal*,*root-cause-infe*,*inspector*,*app*,*odiglet*,*odigosotelcol*,*exporter*,*ndm*,*ndo*,*provisioner-loc*,*catalog*,*olm*,*xenon*,*victoria-metric*}'
+      application:
+        k8s_dst_owner_name:
+          not_match: '{*kube*,*jaeger-agent*,*prometheus*,*promtail*,*grafana-agent*,*calico-node*,*apisix-ingress-*,*kube-controller*,*chaos-*,*logserver*,*containerd*,*image-cri-shim*,*registry*,*deepflow-server*,*grafanagpx_*,*docker*,*runc*,*lvscare*,*nginx-ingress-c*,*otelcol-contrib*,*node_exporter*,*otel-go-instrum*,*otelcol*,*vmagent-prod*,*metrics-server*,*apm-server*,*elastic-operato*,*flanneld*,*flagd-build*,*dlv*,*gopls*,*agent-linux*,*all-in-one-linu*,*coredns*,*etcd*,*kubectl*,*kubelet*,*kindnetd*,*local-path-prov*,*camera-apm-adap*,*camera-receiver*,*ilogtail*,*management*,*metadata-provid*,*meta-agent*,*originx-gc-agen*,*originx-sdk-aut*,*pinger*,*portal*,*root-cause-infe*,*inspector*,*app*,*odiglet*,*odigosotelcol*,*exporter*,*ndm*,*ndo*,*provisioner-loc*,*catalog*,*olm*,*xenon*,*victoria-metric*}'
+        k8s_src_owner_name:
+          not_match: '{*kube*,*jaeger-agent*,*prometheus*,*promtail*,*grafana-agent*,*calico-node*,*apisix-ingress-*,*kube-controller*,*chaos-*,*logserver*,*containerd*,*image-cri-shim*,*registry*,*deepflow-server*,*grafanagpx_*,*docker*,*runc*,*lvscare*,*nginx-ingress-c*,*otelcol-contrib*,*node_exporter*,*otel-go-instrum*,*otelcol*,*vmagent-prod*,*metrics-server*,*apm-server*,*elastic-operato*,*flanneld*,*flagd-build*,*dlv*,*gopls*,*agent-linux*,*all-in-one-linu*,*coredns*,*etcd*,*kubectl*,*kubelet*,*kindnetd*,*local-path-prov*,*camera-apm-adap*,*camera-receiver*,*ilogtail*,*management*,*metadata-provid*,*meta-agent*,*originx-gc-agen*,*originx-sdk-aut*,*pinger*,*portal*,*root-cause-infe*,*inspector*,*app*,*odiglet*,*odigosotelcol*,*exporter*,*ndm*,*ndo*,*provisioner-loc*,*catalog*,*olm*,*xenon*,*victoria-metric*}'
+    # to enable network metrics
+    network:
+      enable: false
+    prometheus_export:
+      port: 9090
+      path: /metrics
