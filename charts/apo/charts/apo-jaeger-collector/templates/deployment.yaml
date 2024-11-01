@@ -78,6 +78,8 @@ spec:
         - name: jaeger-collector
           image: "{{ tpl .Values.jaegerCollector.image.repository . }}:{{ tpl (toString .Values.jaegerCollector.image.tag) . }}"
           imagePullPolicy: {{ tpl .Values.jaegerCollector.image.pullPolicy . }}
+          args:
+            - '--collector.otlp.grpc.max-message-size=8388608'
           ports:
             - name: grpc
               containerPort: 4317

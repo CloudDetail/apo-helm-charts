@@ -383,7 +383,7 @@ Kubernetes: `^1.8.0-0`
 | smtp.existingSecret | string | `""` |  |
 | smtp.passwordKey | string | `"password"` |  |
 | smtp.userKey | string | `"user"` |  |
-| testFramework.enabled | bool | `true` |  |
+| testFramework.enabled | bool | `false` |  |
 | testFramework.image.registry | string | `"docker.io"` | The Docker registry |
 | testFramework.image.repository | string | `"bats/bats"` |  |
 | testFramework.image.tag | string | `"v1.4.1"` |  |

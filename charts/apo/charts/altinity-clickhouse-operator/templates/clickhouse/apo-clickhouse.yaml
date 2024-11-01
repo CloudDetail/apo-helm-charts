@@ -44,6 +44,46 @@ spec:
           resources:
             requests:
               storage: 1Gi
+    
+    volumeClaimTemplates:
+      - name: data-storage-vc-template
+        spec:
+          accessModes:
+{{ toYaml .Values.clickhouse.persistence.data.accessModes | indent 12 }}
+          resources:
+            requests:
+              storage: "{{ .Values.clickhouse.persistence.data.size }}"
+        {{- if .Values.clickhouse.persistence.data.storageClass }}
+        {{- if (eq "-" .Values.clickhouse.persistence.data.storageClass) }}
+          storageClassName: ""
+        {{- else }}
+          storageClassName: "{{ .Values.clickhouse.persistence.data.storageClass }}"
+        {{- end }}
+        {{- end }}
+        {{- with .Values.clickhouse.persistence.data.matchLabels }}
+          selector:
+            matchLabels:
+              {{- toYaml . | nindent 12 }}
+        {{- end }}
+      - name: log-storage-vc-template
+        spec:
+          accessModes:
+{{ toYaml .Values.clickhouse.persistence.log.accessModes | indent 12 }}
+          resources:
+            requests:
+              storage: "{{ .Values.clickhouse.persistence.log.size }}"
+        {{- if .Values.clickhouse.persistence.log.storageClass }}
+        {{- if (eq "-" .Values.clickhouse.persistence.log.storageClass) }}
+          storageClassName: ""
+        {{- else }}
+          storageClassName: "{{ .Values.clickhouse.persistence.log.storageClass }}"
+        {{- end }}
+        {{- end }}
+        {{- with .Values.clickhouse.persistence.log.matchLabels }}
+          selector:
+            matchLabels:
+              {{- toYaml . | nindent 12 }}
+        {{- end }}
 {{- else }}
   templates:
     podTemplates:

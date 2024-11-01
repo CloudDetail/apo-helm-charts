@@ -28,7 +28,7 @@ apo-backend:
       repository: "{{ .Values.global.image.repository }}/apo-backend"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v0.7.0"
+      tag: "v0.8.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -58,10 +58,17 @@ apo-backend:
     clickhouseUsername: "{{ .Values.global.clickhouseRootUsername }}"
     clickhousePassword: "{{ .Values.global.clickhouseRootPassword }}"
   persistence:
+    # -- Create/use Persistent Volume Claim for server component. Empty dir if false
     enabled: false
+
+    # -- StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically
     storageClass: ""
+
+    # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
     accessModes:
       - ReadWriteOnce
+
+    # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
     size: 1Gi
 
 apo-collector:
@@ -75,7 +82,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.6.1"
+      tag: "v1.6.2"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -122,7 +129,7 @@ apo-front:
     repository: "{{ .Values.global.image.repository }}/apo-front"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.7.0"
+    tag: "v0.8.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -194,7 +201,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.7.2"
+      tag: "v1.7.3"
     resources: 
       limits:
         cpu: 1000m
@@ -212,7 +219,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/node-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.6.1"
+      tag: "v1.7.0"
     resources:
       limits:
         cpu: 200m
@@ -267,12 +274,14 @@ apo-one-agent:
       requests:
         cpu: 100m
         memory: 128Mi
+    config:
+      k8sNamespace: "."
 
   odiglet:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odiglet"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.5.1"
+      tag: "v0.5.2"
       resources: 
         limits:
           cpu: 2000m
@@ -280,15 +289,15 @@ apo-one-agent:
         requests:
           cpu: 100m
           memory: 128Mi
-    apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.apo:4317"
-    apoOtelCollectorHttpUrl: "apo-otel-collector-svc.apo:4318"
-    apoOtelCollectorSkywalkingUrl: "apo-otel-collector-svc.apo:11800"
+    apoOtelCollectorGrpcUrl: "apo-otel-collector-svc.{{ .Release.Namespace }}:4317"
+    apoOtelCollectorHttpUrl: "apo-otel-collector-svc.{{ .Release.Namespace }}:4318"
+    apoOtelCollectorSkywalkingUrl: "apo-otel-collector-svc.{{ .Release.Namespace }}:11800"
 
   apoOtelCollectorAgent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.7.0"
+      tag: "v0.8.0"
       resources: 
         limits:
           cpu: 2000m
@@ -322,21 +331,21 @@ apo-one-agent:
       #   enabled: 注入现有的所有服务,但不注入后续新增应用
       #   enabledFuture: 注入现在以及后续的所有服务
       #   disabled: 不注入指定namespace下的服务,用于在instrument-all-namespace时忽略特定的Namespace
-      targetNamespace:
-      - name: default
-        value: disabled
+      # targetNamespace:
+      # - name: default
+      #   value: disabled
       # instrument-all-namespace 是否注入所有namespace
       # 等价于设置所有namespace的enabledFuture
       # 但如果已经设置了ns或者workload的disabled将不会注入
-      instrumentAllNamespace: false
+      instrumentAllNamespace: true
       # force-instrument-all-namespace 是否强制注入所有namespace
       # 和instrument-all-namespace类似,所有ns设置enabledFuture
       # 并忽略所有disabled设置
       forceInstrumentAllNamespace: false
     config:
-      apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc.apo:4315"
-      apoOtelCollectorHttpUrl: "apo-otel-collector-gateway-svc.apo:4316"
-      apoOtelCollectorSkywalkingUrl: "apo-otel-collector-gateway-svc.apo:11800"
+      apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc.{{ .Release.Namespace }}:4315"
+      apoOtelCollectorHttpUrl: "apo-otel-collector-gateway-svc.{{ .Release.Namespace }}:4316"
+      apoOtelCollectorSkywalkingUrl: "apo-otel-collector-gateway-svc.{{ .Release.Namespace }}:11800"
       javaAgentType: "opentelemetry"
 
   apo-nginx-proxy:
@@ -361,7 +370,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.7.0"
+    tag: "v0.8.0"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -413,7 +422,36 @@ altinity-clickhouse-operator:
     username: "{{ .Values.global.clickhouseRootUsername }}"
     password: "{{ .Values.global.clickhouseRootPassword }}"
     persistence:
+      # -- Create/use Persistent Volume Claim for server component. Empty dir if false
       enabled: false
+      
+      data:
+        # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
+        accessModes:
+          - ReadWriteOnce
+
+        # -- StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically
+        storageClass: ""
+
+        # -- Bind Persistent Volume by labels. Must match all labels of targeted PV.
+        matchLabels: {}
+
+        # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
+        size: 16Gi
+      
+      log:
+        # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
+        accessModes:
+          - ReadWriteOnce
+
+        # -- StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically
+        storageClass: ""
+
+        # -- Bind Persistent Volume by labels. Must match all labels of targeted PV.
+        matchLabels: {}
+
+        # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
+        size: 1Gi
 
 grafana:
   enabled: true
@@ -426,7 +464,7 @@ grafana:
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   extraInitContainers: 
   - name: apo-grafana-init-dashboard
-    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.5.0"
+    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.6.0"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
     volumeMounts:
     - name: apo-dashboards
@@ -468,6 +506,13 @@ vector:
       targetPort: 4310
       nodePort: 30310
       protocol: TCP
+  resources: 
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 2000m
+      memory: 2048Mi
   role: Stateless-Aggregator
   fullnameOverride: "apo-vector"
   clickhouseUrl: "{{ .Values.global.clickhouseUrl }}"
@@ -537,7 +582,30 @@ victoria-metrics-single:
       type: ClusterIP
       # nodePort: 30428
     persistentVolume:
+      # -- Create/use Persistent Volume Claim for server component. Empty dir if false
       enabled: false
+
+      # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
+      accessModes:
+        - ReadWriteOnce
+      # -- Persistant volume annotations
+      annotations: {}
+
+      # -- StorageClass to use for persistent volume. Requires server.persistentVolume.enabled: true. If defined, PVC created automatically
+      storageClass: ""
+
+      # -- Existing Claim name. If defined, PVC must be created manually before volume will be bound
+      existingClaim: ""
+
+      # -- Bind Persistent Volume by labels. Must match all labels of targeted PV.
+      matchLabels: {}
+
+      # -- Mount path. Server data Persistent Volume mount root path.
+      mountPath: /storage
+      # -- Mount subpath
+      subPath: ""
+      # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
+      size: 16Gi
     # resources:
     #   limits:
     #     cpu: 2000m

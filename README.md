@@ -1,6 +1,6 @@
 # apo
 
-![Version: 0.6.002](https://img.shields.io/badge/Version-0.6.002-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.2](https://img.shields.io/badge/AppVersion-0.6.2-informational?style=flat-square)
+![Version: 0.8.000](https://img.shields.io/badge/Version-0.8.000-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.8.0](https://img.shields.io/badge/AppVersion-0.8.0-informational?style=flat-square)
 
 apo deployment charts
 
@@ -27,7 +27,15 @@ apo deployment charts
 | altinity-clickhouse-operator.clickhouse.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | altinity-clickhouse-operator.clickhouse.image.repository | string | `"{{ .Values.global.image.repository }}/clickhouse-server"` |  |
 | altinity-clickhouse-operator.clickhouse.password | string | `"{{ .Values.global.clickhouseRootPassword }}"` |  |
-| altinity-clickhouse-operator.clickhouse.persistence.enabled | bool | `false` |  |
+| altinity-clickhouse-operator.clickhouse.persistence.data.accessModes | list | `["ReadWriteOnce"]` | Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/) |
+| altinity-clickhouse-operator.clickhouse.persistence.data.matchLabels | object | `{}` | Bind Persistent Volume by labels. Must match all labels of targeted PV. |
+| altinity-clickhouse-operator.clickhouse.persistence.data.size | string | `"16Gi"` | Size of the volume. Should be calculated based on the metrics you send and retention policy you set. |
+| altinity-clickhouse-operator.clickhouse.persistence.data.storageClass | string | `""` | StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically |
+| altinity-clickhouse-operator.clickhouse.persistence.enabled | bool | `false` | Create/use Persistent Volume Claim for server component. Empty dir if false |
+| altinity-clickhouse-operator.clickhouse.persistence.log.accessModes | list | `["ReadWriteOnce"]` | Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/) |
+| altinity-clickhouse-operator.clickhouse.persistence.log.matchLabels | object | `{}` | Bind Persistent Volume by labels. Must match all labels of targeted PV. |
+| altinity-clickhouse-operator.clickhouse.persistence.log.size | string | `"1Gi"` | Size of the volume. Should be calculated based on the metrics you send and retention policy you set. |
+| altinity-clickhouse-operator.clickhouse.persistence.log.storageClass | string | `""` | StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically |
 | altinity-clickhouse-operator.clickhouse.username | string | `"{{ .Values.global.clickhouseRootUsername }}"` |  |
 | altinity-clickhouse-operator.enabled | bool | `true` |  |
 | altinity-clickhouse-operator.metrics.enabled | bool | `true` |  |
@@ -37,7 +45,7 @@ apo deployment charts
 | altinity-clickhouse-operator.operator.image.repository | string | `"{{ .Values.global.image.repository }}/clickhouse-operator"` |  |
 | apo-backend.apoBackend.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-backend.apoBackend.image.repository | string | `"{{ .Values.global.image.repository }}/apo-backend"` |  |
-| apo-backend.apoBackend.image.tag | string | `"v0.7.0"` |  |
+| apo-backend.apoBackend.image.tag | string | `"v0.8.0"` |  |
 | apo-backend.apoPolarisAnalyzer.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-backend.apoPolarisAnalyzer.image.repository | string | `"{{ .Values.global.image.repository }}/polaris-analyzer"` |  |
 | apo-backend.apoPolarisAnalyzer.image.tag | string | `"v0.1.1"` |  |
@@ -49,10 +57,10 @@ apo deployment charts
 | apo-backend.initImage.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-backend.initImage.repository | string | `"{{ .Values.global.image.repository }}/busybox"` |  |
 | apo-backend.initImage.tag | string | `"1.36.1"` |  |
-| apo-backend.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| apo-backend.persistence.enabled | bool | `false` |  |
-| apo-backend.persistence.size | string | `"1Gi"` |  |
-| apo-backend.persistence.storageClass | string | `""` |  |
+| apo-backend.persistence.accessModes | list | `["ReadWriteOnce"]` | Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/) |
+| apo-backend.persistence.enabled | bool | `false` | Create/use Persistent Volume Claim for server component. Empty dir if false |
+| apo-backend.persistence.size | string | `"1Gi"` | Size of the volume. Should be calculated based on the metrics you send and retention policy you set. |
+| apo-backend.persistence.storageClass | string | `""` | StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically |
 | apo-backend.service.nodePort | int | `31363` |  |
 | apo-backend.service.type | string | `"NodePort"` |  |
 | apo-collector.apoApmAdapter.config.jaegerCollectorUrl | string | `"apo-jaeger-collector-svc:16686"` |  |
@@ -70,7 +78,7 @@ apo deployment charts
 | apo-collector.apoCollector.config.victoriaMetricsUrl | string | `"{{ .Values.global.victoriaMetricsUrl }}"` |  |
 | apo-collector.apoCollector.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-collector.apoCollector.image.repository | string | `"{{ .Values.global.image.repository }}/apo-collector"` |  |
-| apo-collector.apoCollector.image.tag | string | `"v1.6.1"` |  |
+| apo-collector.apoCollector.image.tag | string | `"v1.6.2"` |  |
 | apo-collector.apoCollector.service.nodePortGrpc | int | `30044` |  |
 | apo-collector.apoCollector.service.nodePortHttp | int | `30090` |  |
 | apo-collector.apoCollector.service.port | int | `29090` |  |
@@ -86,7 +94,7 @@ apo deployment charts
 | apo-front.enabled | bool | `true` |  |
 | apo-front.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-front.image.repository | string | `"{{ .Values.global.image.repository }}/apo-front"` |  |
-| apo-front.image.tag | string | `"v0.7.0"` |  |
+| apo-front.image.tag | string | `"v0.8.0"` |  |
 | apo-front.service.nodePort | int | `31364` |  |
 | apo-front.service.type | string | `"NodePort"` |  |
 | apo-jaeger-collector.config.clickhousePassword | string | `"{{ .Values.global.clickhouseRootPassword }}"` |  |
@@ -120,7 +128,7 @@ apo deployment charts
 | apo-one-agent.apoNodeAgent.apoOtelCollectorUrl | string | `"apo-otel-collector-gateway-svc:8080"` |  |
 | apo-one-agent.apoNodeAgent.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoNodeAgent.image.repository | string | `"{{ .Values.global.image.repository }}/node-agent"` |  |
-| apo-one-agent.apoNodeAgent.image.tag | string | `"v1.6.1"` |  |
+| apo-one-agent.apoNodeAgent.image.tag | string | `"v1.7.0"` |  |
 | apo-one-agent.apoNodeAgent.resources.limits.cpu | string | `"200m"` |  |
 | apo-one-agent.apoNodeAgent.resources.limits.memory | string | `"128Mi"` |  |
 | apo-one-agent.apoNodeAgent.resources.requests.cpu | string | `"100m"` |  |
@@ -130,7 +138,7 @@ apo deployment charts
 | apo-one-agent.apoOneAgent.config.javaAgentType | string | `"opentelemetry"` |  |
 | apo-one-agent.apoOneAgent.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.apoOneAgent.image.repository | string | `"{{ .Values.global.image.repository }}/ebpf-agent"` |  |
-| apo-one-agent.apoOneAgent.image.tag | string | `"v1.7.2"` |  |
+| apo-one-agent.apoOneAgent.image.tag | string | `"v1.7.3"` |  |
 | apo-one-agent.apoOneAgent.resources.limits.cpu | string | `"1000m"` |  |
 | apo-one-agent.apoOneAgent.resources.limits.memory | string | `"1024Mi"` |  |
 | apo-one-agent.apoOneAgent.resources.requests.cpu | string | `"100m"` |  |
@@ -145,7 +153,7 @@ apo deployment charts
 | apo-one-agent.apoOtelCollectorAgent.image.resources.limits.memory | string | `"2048Mi"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.resources.requests.cpu | string | `"100m"` |  |
 | apo-one-agent.apoOtelCollectorAgent.image.resources.requests.memory | string | `"128Mi"` |  |
-| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.7.0"` |  |
+| apo-one-agent.apoOtelCollectorAgent.image.tag | string | `"v0.8.0"` |  |
 | apo-one-agent.enabled | bool | `false` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc:4315"` |  |
 | apo-one-agent.grafanaAlloy.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc:4316"` |  |
@@ -156,6 +164,7 @@ apo deployment charts
 | apo-one-agent.grafanaAlloy.resources.limits.memory | string | `"2048Mi"` |  |
 | apo-one-agent.grafanaAlloy.resources.requests.cpu | string | `"100m"` |  |
 | apo-one-agent.grafanaAlloy.resources.requests.memory | string | `"128Mi"` |  |
+| apo-one-agent.grafanaBeyla.config.k8sNamespace | string | `"."` |  |
 | apo-one-agent.grafanaBeyla.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.grafanaBeyla.image.repository | string | `"{{ .Values.global.image.repository }}/apo-beyla"` |  |
 | apo-one-agent.grafanaBeyla.image.tag | string | `"v1.8.4-1"` |  |
@@ -163,32 +172,30 @@ apo deployment charts
 | apo-one-agent.grafanaBeyla.resources.limits.memory | string | `"1024Mi"` |  |
 | apo-one-agent.grafanaBeyla.resources.requests.cpu | string | `"100m"` |  |
 | apo-one-agent.grafanaBeyla.resources.requests.memory | string | `"128Mi"` |  |
-| apo-one-agent.odiglet.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-svc.apo:4317"` |  |
-| apo-one-agent.odiglet.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-svc.apo:4318"` |  |
-| apo-one-agent.odiglet.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-svc.apo:11800"` |  |
+| apo-one-agent.odiglet.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-svc.{{ .Release.Namespace }}:4317"` |  |
+| apo-one-agent.odiglet.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-svc.{{ .Release.Namespace }}:4318"` |  |
+| apo-one-agent.odiglet.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-svc.{{ .Release.Namespace }}:11800"` |  |
 | apo-one-agent.odiglet.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.odiglet.image.repository | string | `"{{ .Values.global.image.repository }}/apo-odiglet"` |  |
 | apo-one-agent.odiglet.image.resources.limits.cpu | string | `"2000m"` |  |
 | apo-one-agent.odiglet.image.resources.limits.memory | string | `"2048Mi"` |  |
 | apo-one-agent.odiglet.image.resources.requests.cpu | string | `"100m"` |  |
 | apo-one-agent.odiglet.image.resources.requests.memory | string | `"128Mi"` |  |
-| apo-one-agent.odiglet.image.tag | string | `"v0.5.1"` |  |
-| apo-one-agent.odigos.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc.apo:4315"` |  |
-| apo-one-agent.odigos.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc.apo:4316"` |  |
-| apo-one-agent.odigos.config.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-gateway-svc.apo:11800"` |  |
+| apo-one-agent.odiglet.image.tag | string | `"v0.5.2"` |  |
+| apo-one-agent.odigos.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-gateway-svc.{{ .Release.Namespace }}:4315"` |  |
+| apo-one-agent.odigos.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-gateway-svc.{{ .Release.Namespace }}:4316"` |  |
+| apo-one-agent.odigos.config.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-gateway-svc.{{ .Release.Namespace }}:11800"` |  |
 | apo-one-agent.odigos.config.javaAgentType | string | `"opentelemetry"` |  |
 | apo-one-agent.odigos.enabled | bool | `true` |  |
 | apo-one-agent.odigos.instrumentor.forceInstrumentAllNamespace | bool | `false` |  |
 | apo-one-agent.odigos.instrumentor.image.imagePullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-one-agent.odigos.instrumentor.image.repository | string | `"{{ .Values.global.image.repository }}/apo-odigos-instrumentor"` |  |
 | apo-one-agent.odigos.instrumentor.image.tag | string | `"v0.5.1"` |  |
-| apo-one-agent.odigos.instrumentor.instrumentAllNamespace | bool | `false` |  |
+| apo-one-agent.odigos.instrumentor.instrumentAllNamespace | bool | `true` |  |
 | apo-one-agent.odigos.instrumentor.resources.limits.cpu | string | `"1000m"` |  |
 | apo-one-agent.odigos.instrumentor.resources.limits.memory | string | `"1024Mi"` |  |
 | apo-one-agent.odigos.instrumentor.resources.requests.cpu | string | `"10m"` |  |
 | apo-one-agent.odigos.instrumentor.resources.requests.memory | string | `"64Mi"` |  |
-| apo-one-agent.odigos.instrumentor.targetNamespace[0].name | string | `"default"` |  |
-| apo-one-agent.odigos.instrumentor.targetNamespace[0].value | string | `"disabled"` |  |
 | apo-otel-collector-gateway.config.apoBackendPort | string | `"8080"` |  |
 | apo-otel-collector-gateway.config.apoBackendUrl | string | `"apo-backend-svc"` |  |
 | apo-otel-collector-gateway.config.clickhousePassword | string | `"{{ .Values.global.clickhouseRootPassword }}"` |  |
@@ -199,7 +206,7 @@ apo deployment charts
 | apo-otel-collector-gateway.enabled | bool | `true` |  |
 | apo-otel-collector-gateway.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.image.repository | string | `"{{ .Values.global.image.repository }}/apo-otel-collector"` |  |
-| apo-otel-collector-gateway.image.tag | string | `"v0.7.0"` |  |
+| apo-otel-collector-gateway.image.tag | string | `"v0.8.0"` |  |
 | apo-otel-collector-gateway.initImage.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apo-otel-collector-gateway.initImage.repository | string | `"{{ .Values.global.image.repository }}/busybox"` |  |
 | apo-otel-collector-gateway.initImage.tag | string | `"1.36.1"` |  |
@@ -241,7 +248,7 @@ apo deployment charts
 | grafana.datasources."datasources.yaml".datasources[0].uid | string | `"APO-VictoriaMetric"` |  |
 | grafana.datasources."datasources.yaml".datasources[0].url | string | `"{{ .Values.global.victoriaMetricsUrl }}"` |  |
 | grafana.enabled | bool | `true` |  |
-| grafana.extraInitContainers[0].image | string | `"{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.5.0"` |  |
+| grafana.extraInitContainers[0].image | string | `"{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v0.6.0"` |  |
 | grafana.extraInitContainers[0].imagePullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | grafana.extraInitContainers[0].name | string | `"apo-grafana-init-dashboard"` |  |
 | grafana.extraInitContainers[0].volumeMounts[0].mountPath | string | `"/tmp/dashboards"` |  |
@@ -259,6 +266,10 @@ apo deployment charts
 | vector.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | vector.image.repository | string | `"{{ .Values.global.image.repository }}/vector"` |  |
 | vector.image.tag | string | `"0.41.1-distroless-libc"` |  |
+| vector.resources.limits.cpu | string | `"2000m"` |  |
+| vector.resources.limits.memory | string | `"2048Mi"` |  |
+| vector.resources.requests.cpu | string | `"100m"` |  |
+| vector.resources.requests.memory | string | `"128Mi"` |  |
 | vector.role | string | `"Stateless-Aggregator"` |  |
 | vector.service.ports[0].name | string | `"datadog-agent"` |  |
 | vector.service.ports[0].nodePort | int | `30310` |  |
@@ -296,7 +307,15 @@ apo deployment charts
 | victoria-metrics-single.server.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | victoria-metrics-single.server.image.repository | string | `"{{ .Values.global.image.repository }}/victoria-metrics"` |  |
 | victoria-metrics-single.server.image.tag | string | `"v1.101.0"` |  |
-| victoria-metrics-single.server.persistentVolume.enabled | bool | `false` |  |
+| victoria-metrics-single.server.persistentVolume.accessModes | list | `["ReadWriteOnce"]` | Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/) |
+| victoria-metrics-single.server.persistentVolume.annotations | object | `{}` | Persistant volume annotations |
+| victoria-metrics-single.server.persistentVolume.enabled | bool | `false` | Create/use Persistent Volume Claim for server component. Empty dir if false |
+| victoria-metrics-single.server.persistentVolume.existingClaim | string | `""` | Existing Claim name. If defined, PVC must be created manually before volume will be bound |
+| victoria-metrics-single.server.persistentVolume.matchLabels | object | `{}` | Bind Persistent Volume by labels. Must match all labels of targeted PV. |
+| victoria-metrics-single.server.persistentVolume.mountPath | string | `"/storage"` | Mount path. Server data Persistent Volume mount root path. |
+| victoria-metrics-single.server.persistentVolume.size | string | `"16Gi"` | Size of the volume. Should be calculated based on the metrics you send and retention policy you set. |
+| victoria-metrics-single.server.persistentVolume.storageClass | string | `""` | StorageClass to use for persistent volume. Requires server.persistentVolume.enabled: true. If defined, PVC created automatically |
+| victoria-metrics-single.server.persistentVolume.subPath | string | `""` | Mount subpath |
 | victoria-metrics-single.server.service.type | string | `"ClusterIP"` |  |
 
 ----------------------------------------------

@@ -21,7 +21,15 @@ Helm chart to deploy [altinity-clickhouse-operator](https://github.com/Altinity/
 | clickhouse.image.pullPolicy | string | `"IfNotPresent"` |  |
 | clickhouse.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/originx/clickhouse-server"` |  |
 | clickhouse.password | string | `"Apo@123456"` |  |
-| clickhouse.persistence.enabled | bool | `false` |  |
+| clickhouse.persistence.data.accessModes | list | `["ReadWriteOnce"]` | Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/) |
+| clickhouse.persistence.data.matchLabels | object | `{}` | Bind Persistent Volume by labels. Must match all labels of targeted PV. |
+| clickhouse.persistence.data.size | string | `"16Gi"` | Size of the volume. Should be calculated based on the metrics you send and retention policy you set. |
+| clickhouse.persistence.data.storageClass | string | `""` | StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically |
+| clickhouse.persistence.enabled | bool | `false` | Create/use Persistent Volume Claim for server component. Empty dir if false |
+| clickhouse.persistence.log.accessModes | list | `["ReadWriteOnce"]` | Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/) |
+| clickhouse.persistence.log.matchLabels | object | `{}` | Bind Persistent Volume by labels. Must match all labels of targeted PV. |
+| clickhouse.persistence.log.size | string | `"1Gi"` | Size of the volume. Should be calculated based on the metrics you send and retention policy you set. |
+| clickhouse.persistence.log.storageClass | string | `""` | StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically |
 | clickhouse.service.ports[0].name | string | `"http"` |  |
 | clickhouse.service.ports[0].port | int | `8123` |  |
 | clickhouse.service.ports[0].protocol | string | `"TCP"` |  |

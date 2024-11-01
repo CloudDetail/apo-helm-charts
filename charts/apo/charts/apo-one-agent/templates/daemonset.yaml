@@ -67,6 +67,10 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
+            - name: PROCESS_TYPE
+              value: java,python,node,donet,go-demo
+            - name: K8S_NAMESPACE_WHITELIST
+              value: default,go-auto
             - name: PROCESS_TIME
               value: 'true'
           volumeMounts:
@@ -195,6 +199,16 @@ spec:
             - mountPath: /etc/beyla/config
               name: beyla-config
               readOnly: true
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /opt/beyla-support
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
           securityContext:
             privileged: true
         {{- end }}

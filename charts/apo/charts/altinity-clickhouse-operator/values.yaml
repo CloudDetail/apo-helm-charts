@@ -64,7 +64,36 @@ clickhouse:
       port: 9009
       targetPort: 9009
   persistence:
+    # -- Create/use Persistent Volume Claim for server component. Empty dir if false
     enabled: false
+    
+    data:
+      # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
+      accessModes:
+        - ReadWriteOnce
+
+      # -- StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically
+      storageClass: ""
+
+      # -- Bind Persistent Volume by labels. Must match all labels of targeted PV.
+      matchLabels: {}
+
+      # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
+      size: 16Gi
+    
+    log:
+      # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
+      accessModes:
+        - ReadWriteOnce
+
+      # -- StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically
+      storageClass: ""
+
+      # -- Bind Persistent Volume by labels. Must match all labels of targeted PV.
+      matchLabels: {}
+
+      # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
+      size: 1Gi
 
 # imagePullSecrets -- image pull secret for private images in clickhouse-operator pod
 #  possible value format [{"name":"your-secret-name"}]

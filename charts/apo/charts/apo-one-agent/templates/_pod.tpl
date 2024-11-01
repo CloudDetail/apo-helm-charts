@@ -3,16 +3,8 @@ Configure apo-one-agent variables according to different modes
 */}}
 {{- define "apo-one-agent.envAndVolume" -}}
 env:
-- name: DISABLE_JAVA_AGENT
-  value: 'false'
-- name: ENABLE_ELASTIC_APM_ATTACH
-  value: 'false'
-- name: ELASTIC_APM_SEND_DATA
-  value: 'true'
 - name: enable_uprobe
   value: 'true'
-- name: APM_SERVER_URL
-  value: http://elastic-apm-server-svc.elastic-stack:8200
 - name: CACHE_SECOND
   value: '30'
 - name: RUST_BACKTRACE
@@ -27,8 +19,6 @@ env:
   value: '1000'
 - name: switch_agg_num
   value: '2'
-- name: is_only_polaris
-  value: 'false'
 - name: MY_NODE_IP
   valueFrom:
     fieldRef:
@@ -41,8 +31,6 @@ env:
       fieldPath: spec.nodeName
 - name: ASYNC_PROFILER_PARAMS
   value: '-e traceid -o sw_otel'
-- name: enable_mysql_polaris
-  value: 'false'
 volumeMounts:
 - name: apo-one-agent-config
   mountPath: /app/config

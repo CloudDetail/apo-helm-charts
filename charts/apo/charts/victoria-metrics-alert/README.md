@@ -171,26 +171,19 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.config.alerts.groups[0].rules[1].for | string | `"1m"` |  |
 | server.config.alerts.groups[0].rules[1].labels.group | string | `"app"` |  |
 | server.config.alerts.groups[0].rules[1].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[0].rules[2].alert | string | `"日志错误数相比昨天升高20%以上"` |  |
-| server.config.alerts.groups[0].rules[2].annotations.description | string | `"VALUE = {{ $value }}\nLABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[0].rules[2].expr | string | `"((sum by(container_id, node_name, pid) (increase(originx_logparser_level_count_total{level=~\"error|critical\"}[1m])) + sum by(container_id, node_name, pid) (increase(originx_logparser_exception_count_total{}[1m])) or vector(0)) - (sum by(container_id, node_name, pid) (increase(originx_logparser_level_count_total{level=~\"error|critical\"}[1m] offset 24h)) + sum by(container_id, node_name, pid) (increase(originx_logparser_exception_count_total{}[1m] offset 24h)) or vector(0)))/(sum by(container_id, node_name, pid) (increase(originx_logparser_level_count_total{level=~\"error|critical\"}[1m] offset 24h)) + sum by(container_id, node_name, pid) (increase(originx_logparser_exception_count_total{}[1m] offset 24h)) or vector(0)) - 1 > 0.2"` |  |
+| server.config.alerts.groups[0].rules[2].alert | string | `"请求错误率超过0%"` |  |
+| server.config.alerts.groups[0].rules[2].annotations.description | string | `"请求错误率超过0%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[0].rules[2].annotations.summary | string | `"请求错误率超过0% (服务名 {{ $labels.svc_name }}, 服务端点 {{ $labels.content_key }})"` |  |
+| server.config.alerts.groups[0].rules[2].expr | string | `"sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error=\"true\"}[1m]))/ sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m])) > 0"` |  |
 | server.config.alerts.groups[0].rules[2].for | string | `"1m"` |  |
 | server.config.alerts.groups[0].rules[2].labels.group | string | `"app"` |  |
 | server.config.alerts.groups[0].rules[2].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[0].rules[3].alert | string | `"平均请求延时超过1s"` |  |
-| server.config.alerts.groups[0].rules[3].annotations.description | string | `"平均请求延时超过1s\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[0].rules[3].annotations.summary | string | `"平均请求延时超过1s (服务名 {{ $labels.svc_name }}, 服务端点 {{ $labels.content_key }})"` |  |
-| server.config.alerts.groups[0].rules[3].expr | string | `"sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m]))/ sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))/1000000 > 1000"` |  |
+| server.config.alerts.groups[0].rules[3].alert | string | `"日志错误数相比昨天升高20%以上"` |  |
+| server.config.alerts.groups[0].rules[3].annotations.description | string | `"VALUE = {{ $value }}\nLABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[0].rules[3].expr | string | `"((sum(increase(originx_logparser_level_count_total{level=~\"error|critical\", namespace!~\"apo|deepflow|originx\"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name) + sum(increase(originx_logparser_exception_count_total{namespace!~\"apo|deepflow|originx\"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name)) or sum(increase(originx_logparser_level_count_total{level=~\"error|critical\", namespace!~\"apo|deepflow|originx\"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name) or sum(increase(originx_logparser_exception_count_total{namespace!~\"apo|deepflow|originx\"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name)) / ((sum(increase(originx_logparser_level_count_total{level=~\"error|critical\", namespace!~\"apo|deepflow|originx\"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name) + sum(increase(originx_logparser_exception_count_total{namespace!~\"apo|deepflow|originx\"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name)) or sum(increase(originx_logparser_level_count_total{level=~\"error|critical\", namespace!~\"apo|deepflow|originx\"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name) or sum(increase(originx_logparser_exception_count_total{namespace!~\"apo|deepflow|originx\"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name)) > 1.2"` |  |
 | server.config.alerts.groups[0].rules[3].for | string | `"1m"` |  |
 | server.config.alerts.groups[0].rules[3].labels.group | string | `"app"` |  |
 | server.config.alerts.groups[0].rules[3].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[0].rules[4].alert | string | `"请求错误率超过0%"` |  |
-| server.config.alerts.groups[0].rules[4].annotations.description | string | `"请求错误率超过0%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[0].rules[4].annotations.summary | string | `"请求错误率超过0% (服务名 {{ $labels.svc_name }}, 服务端点 {{ $labels.content_key }})"` |  |
-| server.config.alerts.groups[0].rules[4].expr | string | `"sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error=\"true\"}[1m]))/ sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m])) > 0"` |  |
-| server.config.alerts.groups[0].rules[4].for | string | `"1m"` |  |
-| server.config.alerts.groups[0].rules[4].labels.group | string | `"app"` |  |
-| server.config.alerts.groups[0].rules[4].labels.severity | string | `"warning"` |  |
 | server.config.alerts.groups[1].name | string | `"主机相关"` |  |
 | server.config.alerts.groups[1].rules[0].alert | string | `"磁盘不足20%"` |  |
 | server.config.alerts.groups[1].rules[0].annotations.description | string | `"Disk is almost full (< 20% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
@@ -227,85 +220,69 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.config.alerts.groups[1].rules[4].for | string | `"1m"` |  |
 | server.config.alerts.groups[1].rules[4].labels.group | string | `"infra"` |  |
 | server.config.alerts.groups[1].rules[4].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[1].rules[5].alert | string | `"CPU高IO Wait"` |  |
-| server.config.alerts.groups[1].rules[5].annotations.description | string | `"CPU iowait > 10%. A high iowait means that you are disk or network bound.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[1].rules[5].annotations.summary | string | `"Host CPU high iowait (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[1].rules[5].expr | string | `"(avg by (instance_name) (rate(node_cpu_seconds_total{mode=\"iowait\"}[5m])) * 100 > 10) * on(instance_name) group_left (nodename) node_uname_info{nodename=~\".+\"}"` |  |
-| server.config.alerts.groups[1].rules[5].for | string | `"0m"` |  |
+| server.config.alerts.groups[1].rules[5].alert | string | `"异常磁盘IO利用率"` |  |
+| server.config.alerts.groups[1].rules[5].annotations.description | string | `"Time spent in IO is too high on {{ $labels.instance_name }}. Check storage for issues.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[1].rules[5].annotations.summary | string | `"Host unusual disk IO (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[1].rules[5].expr | string | `"(rate(node_disk_io_time_seconds_total[1m]) > 0.5) * on(instance_name) group_left (nodename) node_uname_info{nodename=~\".+\"}"` |  |
+| server.config.alerts.groups[1].rules[5].for | string | `"1m"` |  |
 | server.config.alerts.groups[1].rules[5].labels.group | string | `"infra"` |  |
 | server.config.alerts.groups[1].rules[5].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[1].rules[6].alert | string | `"异常磁盘IO利用率"` |  |
-| server.config.alerts.groups[1].rules[6].annotations.description | string | `"Time spent in IO is too high on {{ $labels.instance_name }}. Check storage for issues.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[1].rules[6].annotations.summary | string | `"Host unusual disk IO (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[1].rules[6].expr | string | `"(rate(node_disk_io_time_seconds_total[1m]) > 0.5) * on(instance_name) group_left (nodename) node_uname_info{nodename=~\".+\"}"` |  |
+| server.config.alerts.groups[1].rules[6].alert | string | `"CPU高IO Wait"` |  |
+| server.config.alerts.groups[1].rules[6].annotations.description | string | `"CPU iowait > 10%. A high iowait means that you are disk or network bound.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[1].rules[6].annotations.summary | string | `"Host CPU high iowait (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[1].rules[6].expr | string | `"(avg by (instance_name) (rate(node_cpu_seconds_total{mode=\"iowait\"}[5m])) * 100 > 10) * on(instance_name) group_left (nodename) node_uname_info{nodename=~\".+\"}"` |  |
 | server.config.alerts.groups[1].rules[6].for | string | `"1m"` |  |
 | server.config.alerts.groups[1].rules[6].labels.group | string | `"infra"` |  |
 | server.config.alerts.groups[1].rules[6].labels.severity | string | `"warning"` |  |
+| server.config.alerts.groups[1].rules[7].alert | string | `"文件描述符使用率超过85%"` |  |
+| server.config.alerts.groups[1].rules[7].annotations.description | string | `"VALUE = {{ $value }}\nLABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[1].rules[7].expr | string | `"(100 * node_filefd_allocated / node_filefd_maximum > 85) * on(instance_name) group_left (nodename) node_uname_info{nodename=~\".+\"}"` |  |
+| server.config.alerts.groups[1].rules[7].for | string | `"1m"` |  |
+| server.config.alerts.groups[1].rules[7].labels.group | string | `"infra"` |  |
+| server.config.alerts.groups[1].rules[7].labels.severity | string | `"warning"` |  |
 | server.config.alerts.groups[2].name | string | `"网络相关"` |  |
 | server.config.alerts.groups[2].rules[0].alert | string | `"网络RTT延时超过50ms"` |  |
 | server.config.alerts.groups[2].rules[0].annotations.description | string | `"RTT is high (> 50 ms)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
 | server.config.alerts.groups[2].rules[0].annotations.summary | string | `"RTT is high (src_ip {{ $labels.src_ip }} dst_ip {{ $labels.dst_ip }})"` |  |
-| server.config.alerts.groups[2].rules[0].expr | string | `"kindling_network_rtt{} * 1000 > 50"` |  |
+| server.config.alerts.groups[2].rules[0].expr | string | `"kindling_network_rtt{namespace!~\"apo|deepflow|originx\"} * 1000 > 50"` |  |
 | server.config.alerts.groups[2].rules[0].for | string | `"1m"` |  |
 | server.config.alerts.groups[2].rules[0].labels.group | string | `"network"` |  |
 | server.config.alerts.groups[2].rules[0].labels.severity | string | `"warning"` |  |
 | server.config.alerts.groups[3].name | string | `"容器相关"` |  |
-| server.config.alerts.groups[3].rules[0].alert | string | `"容器被Killed"` |  |
-| server.config.alerts.groups[3].rules[0].annotations.description | string | `"A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[0].annotations.summary | string | `"Container killed (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[0].expr | string | `"time() - container_last_seen > 60"` |  |
-| server.config.alerts.groups[3].rules[0].for | string | `"0m"` |  |
+| server.config.alerts.groups[3].rules[0].alert | string | `"容器内存使用率超过80%"` |  |
+| server.config.alerts.groups[3].rules[0].annotations.description | string | `"Container Memory usage is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[3].rules[0].annotations.summary | string | `"Container High Memory usage (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[3].rules[0].expr | string | `"(sum(container_memory_working_set_bytes{name!=\"\",namespace!~\"apo|deepflow|originx\"}) BY (container, pod, namespace, node_name) / sum(container_spec_memory_limit_bytes{namespace!~\"apo|deepflow|originx\"} > 0) BY (container, pod, namespace, node_name) * 100) > 80"` |  |
+| server.config.alerts.groups[3].rules[0].for | string | `"2m"` |  |
 | server.config.alerts.groups[3].rules[0].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[0].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[1].alert | string | `"容器消亡"` |  |
-| server.config.alerts.groups[3].rules[1].annotations.description | string | `"A container is absent for 5 min\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[1].annotations.summary | string | `"Container absent (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[1].expr | string | `"absent(container_last_seen)"` |  |
-| server.config.alerts.groups[3].rules[1].for | string | `"5m"` |  |
+| server.config.alerts.groups[3].rules[1].alert | string | `"容器被Killed"` |  |
+| server.config.alerts.groups[3].rules[1].annotations.description | string | `"A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[3].rules[1].annotations.summary | string | `"Container killed (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[3].rules[1].expr | string | `"time() - container_last_seen{namespace!~\"apo|deepflow|originx\"} > 60"` |  |
 | server.config.alerts.groups[3].rules[1].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[1].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[2].alert | string | `"容器CPU使用率超过80%"` |  |
-| server.config.alerts.groups[3].rules[2].annotations.description | string | `"Container CPU utilization is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[2].annotations.summary | string | `"Container High CPU utilization (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[2].expr | string | `"(sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (pod, container) / sum(container_spec_cpu_quota{container!=\"\"}/container_spec_cpu_period{container!=\"\"}) by (pod, container) * 100) > 80"` |  |
-| server.config.alerts.groups[3].rules[2].for | string | `"2m"` |  |
+| server.config.alerts.groups[3].rules[2].alert | string | `"容器消亡"` |  |
+| server.config.alerts.groups[3].rules[2].annotations.description | string | `"A container is absent for 5 min\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[3].rules[2].annotations.summary | string | `"Container absent (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[3].rules[2].expr | string | `"absent(container_last_seen{namespace!~\"apo|deepflow|originx\"})"` |  |
+| server.config.alerts.groups[3].rules[2].for | string | `"5m"` |  |
 | server.config.alerts.groups[3].rules[2].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[2].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[3].alert | string | `"容器内存使用率超过80%"` |  |
-| server.config.alerts.groups[3].rules[3].annotations.description | string | `"Container Memory usage is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[3].annotations.summary | string | `"Container High Memory usage (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[3].expr | string | `"(sum(container_memory_working_set_bytes{name!=\"\"}) BY (instance_name, name) / sum(container_spec_memory_limit_bytes > 0) BY (instance_name, name) * 100) > 80"` |  |
-| server.config.alerts.groups[3].rules[3].for | string | `"2m"` |  |
+| server.config.alerts.groups[3].rules[3].alert | string | `"容器高cpu_cfs_throttled"` |  |
+| server.config.alerts.groups[3].rules[3].annotations.description | string | `"Container is being throttled\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[3].rules[3].annotations.summary | string | `"Container high throttle rate (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[3].rules[3].expr | string | `"sum(increase(container_cpu_cfs_throttled_periods_total{container!=\"\", namespace!~\"apo|deepflow|originx\"}[5m])) by (container, pod, namespace) / sum(increase(container_cpu_cfs_periods_total{namespace!~\"apo|deepflow|originx\"}[5m])) by (container, pod, namespace) > (25 / 100)"` |  |
+| server.config.alerts.groups[3].rules[3].for | string | `"5m"` |  |
 | server.config.alerts.groups[3].rules[3].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[3].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[4].alert | string | `"容器持久卷使用率超过80%"` |  |
-| server.config.alerts.groups[3].rules[4].annotations.description | string | `"Container Volume usage is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[4].annotations.summary | string | `"Container Volume usage (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[4].expr | string | `"(1 - (sum(container_fs_inodes_free{name!=\"\"}) BY (instance_name) / sum(container_fs_inodes_total) BY (instance_name))) * 100 > 80"` |  |
+| server.config.alerts.groups[3].rules[4].alert | string | `"容器CPU使用率超过80%"` |  |
+| server.config.alerts.groups[3].rules[4].annotations.description | string | `"Container CPU utilization is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[3].rules[4].annotations.summary | string | `"Container High CPU utilization (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[3].rules[4].expr | string | `"(sum(rate(container_cpu_usage_seconds_total{container!=\"\", namespace!~\"apo|deepflow|originx\"}[5m])) by (namespace, pod, container) / sum(container_spec_cpu_quota{container!=\"\", namespace!~\"apo|deepflow|originx\"}/container_spec_cpu_period{container!=\"\", namespace!~\"apo|deepflow|originx\"}) by (namespace, pod, container) * 100) > 80"` |  |
 | server.config.alerts.groups[3].rules[4].for | string | `"2m"` |  |
 | server.config.alerts.groups[3].rules[4].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[4].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[5].alert | string | `"容器高cpu_cfs_throttled"` |  |
-| server.config.alerts.groups[3].rules[5].annotations.description | string | `"Container is being throttled\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[5].annotations.summary | string | `"Container high throttle rate (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[5].expr | string | `"sum(increase(container_cpu_cfs_throttled_periods_total{container!=\"\"}[5m])) by (container, pod, namespace) / sum(increase(container_cpu_cfs_periods_total[5m])) by (container, pod, namespace) > (25 / 100)"` |  |
-| server.config.alerts.groups[3].rules[5].for | string | `"5m"` |  |
-| server.config.alerts.groups[3].rules[5].labels.group | string | `"container"` |  |
-| server.config.alerts.groups[3].rules[5].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[6].alert | string | `"容器CPU使用率低于20%"` |  |
-| server.config.alerts.groups[3].rules[6].annotations.description | string | `"Container CPU utilization is under 20% for 1 week. Consider reducing the allocated CPU.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[6].annotations.summary | string | `"Container Low CPU utilization (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[6].expr | string | `"(sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (pod, container) / sum(container_spec_cpu_quota{container!=\"\"}/container_spec_cpu_period{container!=\"\"}) by (pod, container) * 100) < 20"` |  |
-| server.config.alerts.groups[3].rules[6].for | string | `"7d"` |  |
-| server.config.alerts.groups[3].rules[6].labels.group | string | `"container"` |  |
-| server.config.alerts.groups[3].rules[6].labels.severity | string | `"info"` |  |
-| server.config.alerts.groups[3].rules[7].alert | string | `"容器内存使用率低于20%"` |  |
-| server.config.alerts.groups[3].rules[7].annotations.description | string | `"Container Memory usage is under 20% for 1 week. Consider reducing the allocated memory.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[7].annotations.summary | string | `"Container Low Memory usage (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[7].expr | string | `"(sum(container_memory_working_set_bytes{name!=\"\"}) BY (instance_name, name) / sum(container_spec_memory_limit_bytes > 0) BY (instance_name, name) * 100) < 20"` |  |
-| server.config.alerts.groups[3].rules[7].for | string | `"7d"` |  |
-| server.config.alerts.groups[3].rules[7].labels.group | string | `"container"` |  |
-| server.config.alerts.groups[3].rules[7].labels.severity | string | `"info"` |  |
 | server.configMap | string | `""` |  |
 | server.datasource.basicAuth | object | `{"password":"","username":""}` | Basic auth for datasource |
 | server.datasource.bearer.token | string | `""` | Token with Bearer token. You can use one of token or tokenFile. You don't need to add "Bearer" prefix string |
