@@ -1,8 +1,17 @@
 global:
+  edition: ee
   image:
     # kindlingx official mirror repository: registry.cn-hangzhou.aliyuncs.com/kindlingx
     repository: "registry.cn-hangzhou.aliyuncs.com/kindlingx"
+    eeRepository: "registry.cn-hangzhou.aliyuncs.com/kindlingx"
     pullPolicy: "Always"
+  # APO采集模式
+  # - trace 全量采集，自动注入Trace采集探针
+  # - trace-collcetor 使用 collector 接受外部探针Trace数据
+  # - trace-sidecar 不接受外部Trace数据，直接从外部API中读取数据，使用本模式需要配置外部API数据源
+  # - metrics 全量采集指标数据
+  # - log 全量日志采集，故障现场日志采集
+  # - log-sample 故障现场日志采集，不采集全量日志
   agentCollectorMode:
     - trace
     - metrics
@@ -89,6 +98,7 @@ grafanaAlloy:
     apoOtelCollectorHttpUrl: "apo-otel-collector-svc:4318"
 
 grafanaBeyla:
+  enabled: true
   image:
     repository: "{{ .Values.global.image.repository }}/apo-beyla"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
@@ -101,17 +111,17 @@ grafanaBeyla:
       cpu: 100m
       memory: 128Mi
   config:
-    k8sNamespace: "."
+    k8sNamespace: "^/(/?/!apo$).*"
 
 odiglet:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-odiglet"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.5.2"
+    tag: "v1.0.0"
   resources:
     limits:
-      cpu: 1000m
-      memory: 1024Mi
+      cpu: 200m
+      memory: 200Mi
     requests:
       cpu: 10m
       memory: 64Mi
@@ -123,7 +133,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v0.6.1"
+    tag: "v1.0.0"
   resources: 
     limits:
       cpu: 1000m
@@ -137,13 +147,30 @@ apoOtelCollectorAgent:
     apoOtelCollectorUrl: "apo-otel-collector-svc"
     apoOtelCollectorGRPCPort: "4317"
 
+# ce 版本 originx-gc-agent不被启用
+originxGcAgent:
+  image:
+    repository: "{{ .Values.global.image.eeRepository }}/originx-gc-agent"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    tag: "v1.4.1"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+  config:
+    apoCollectorUrl: "{{ .Values.global.apoProxyUrl }}"
+    apoCollectorPort: "{{ .Values.global.apoProxyPort }}"
+
 odigos:
   enabled: true
   instrumentor:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
       imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.5.1"
+      tag: "v1.0.0"
     resources:
       limits:
         cpu: 1000m
@@ -202,7 +229,7 @@ apo-otel-collector:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.6.1"
+    tag: "v1.0.0"
   config:
     apoBackendUrl: "{{ .Values.global.apoServerIP }}"
     apoBackendPort: "{{ .Values.global.apoBackendPort }}"

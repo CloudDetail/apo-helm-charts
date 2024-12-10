@@ -27,6 +27,7 @@ Odigos Helm Chart for Kubernetes
 | ignoredNamespaces[3] | string | `"istio-system"` |  |
 | ignoredNamespaces[4] | string | `"linkerd"` |  |
 | ignoredNamespaces[5] | string | `"kube-node-lease"` |  |
+| ignoredNamespaces[6] | string | `"apo"` |  |
 | image.imagePullPolicy | string | `"IfNotPresent"` |  |
 | image.tag | string | `"v1.0.89"` |  |
 | imagePullSecrets | list | `[]` |  |
@@ -38,8 +39,6 @@ Odigos Helm Chart for Kubernetes
 | instrumentor.image.tag | string | `"v1.0.75-webhook"` |  |
 | instrumentor.instrumentAllNamespace | bool | `false` |  |
 | instrumentor.resources | object | `{}` |  |
-| instrumentor.targetNamespace[0].name | string | `"default"` |  |
-| instrumentor.targetNamespace[0].value | string | `"disabled"` |  |
 | instrumentor.tolerations | list | `[]` |  |
 | odiglet.affinity | object | `{}` |  |
 | odiglet.image.enterpriseRepository | string | `"keyval/odigos-enterprise-odiglet"` |  |

@@ -259,7 +259,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.config.alerts.groups[3].rules[1].alert | string | `"容器被Killed"` |  |
 | server.config.alerts.groups[3].rules[1].annotations.description | string | `"A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
 | server.config.alerts.groups[3].rules[1].annotations.summary | string | `"Container killed (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[1].expr | string | `"time() - container_last_seen{namespace!~\"apo|deepflow|originx\"} > 60"` |  |
+| server.config.alerts.groups[3].rules[1].expr | string | `"(time() - last_over_time(container_last_seen{namespace!~\"apo|deepflow|originx\"}[5m]) > 60) * on (node_name) group_left () (up{job=\"integrations/kubernetes/cadvisor\"})"` |  |
 | server.config.alerts.groups[3].rules[1].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[1].labels.severity | string | `"warning"` |  |
 | server.config.alerts.groups[3].rules[2].alert | string | `"容器消亡"` |  |

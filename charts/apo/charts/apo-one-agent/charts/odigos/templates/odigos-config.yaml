@@ -33,6 +33,7 @@ spec:
   psp: {{ .Values.psp.enabled }}
   ignoredNamespaces:
     {{- toYaml .Values.ignoredNamespaces | nindent 8 }}
+        - {{ .Release.Namespace }}
   ignoredContainers:
     {{- toYaml .Values.ignoredContainers | nindent 8 }}
   defaultSDKs:

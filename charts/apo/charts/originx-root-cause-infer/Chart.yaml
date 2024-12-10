@@ -1,0 +1,5 @@
+apiVersion: v2
+name: originx-root-cause-infer
+version: "0.1.0"
+type: application
+description: originx-root-cause-infer deployment charts

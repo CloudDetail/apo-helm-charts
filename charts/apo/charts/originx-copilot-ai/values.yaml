@@ -1,0 +1,72 @@
+nameOverride: ""
+replicas: "1"
+hostNetwork: "false"
+dnsPolicy: "ClusterFirst"
+
+image:
+  registry: registry.cn-hangzhou.aliyuncs.com/originx
+  repository: originx-copilot
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+  
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+service:
+  type: ClusterIP
+  port: 10088
+  targetPort: 10088
+  nodePort: null
+
+config:
+  apoBackendUrl: http://apo-backend-svc:8080
+  apoPolarisBackendUrl: http://apo-polaris-analyzer-svc:5000
+  originxRootCauseInferUrl: http://originx-root-cause-infer-svc:8080
+  configmap:
+    llmType: openai
+    llmConfig:
+      openai:
+        api_key: []
+        model: []
+        stream: []
+        base_url: []
+        temperature: []
+        top_p: []
+
+    # openai官方url https://api.openai.com/v1
+    # 豆包url https://ark.cn-beijing.volces.com/api/v3 替换api_key和model
+    # deepseek url https://api.deepseek.com
+
+    # spark:
+    #   url: wss://spark-api.xf-yun.com/v1.1/chat
+    #   app_id: 
+    #   api_key: 
+    #   api_secret: 
+    #   domain: lite
+    #   stream: true  
+
+    # coze:
+    #   api_key:
+    #   api_base:
+    #   bot_id:
+    #   user:
+    #   conversation_id:
+    #   stream:
+
+    # qianfan:
+    #   api_key: 
+    #   secret_key: 
+    #   model: ERNIE-Speed-Pro-128K
+    #   stream: true  
+
+    # zhipu:
+    #   api_key: 
+    #   model: glm-4-air
+    #   stream: true
+    #   temperature: 0.7
+    #   top_p: 0.7

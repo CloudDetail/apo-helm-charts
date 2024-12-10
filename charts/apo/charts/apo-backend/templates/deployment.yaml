@@ -13,10 +13,8 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         {{- include "apo-backend.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
@@ -50,7 +48,7 @@ spec:
           echo "INFO: ClickHouse 连接测试通过"
       containers:
       - name: apo-backend
-        image: "{{ tpl .Values.apoBackend.image.repository . }}:{{ default .Chart.AppVersion .Values.apoBackend.image.tag }}"
+        image: "{{- include "apo-backend.image" . }}"
         imagePullPolicy: {{ tpl .Values.apoBackend.image.pullPolicy . }}
         ports:
         - name: http
@@ -66,7 +64,7 @@ spec:
           mountPath: /app/database
         readinessProbe:
           httpGet:
-            path: /api/config/getTTL
+            path: /api/health
             port: http
             scheme: HTTP
           initialDelaySeconds: 5

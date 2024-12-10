@@ -4,7 +4,7 @@ Configure apo-one-agent variables according to different modes
 {{- define "apo-one-agent.envAndVolume" -}}
 env:
 - name: enable_uprobe
-  value: 'true'
+  value: 'false'
 - name: CACHE_SECOND
   value: '30'
 - name: RUST_BACKTRACE
@@ -29,8 +29,23 @@ env:
     fieldRef:
       apiVersion: v1
       fieldPath: spec.nodeName
+{{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
+{{- if eq .Values.global.edition "ee" }}
+- name: ASYNC_PROFILER_PARAMS
+  value: '-e traceid -e lock'
+{{- else }}
+- name: ASYNC_PROFILER_PARAMS
+  value: '-e traceid'
+{{- end }}
+{{- else }}
+{{- if eq .Values.global.edition "ee" }}
+- name: ASYNC_PROFILER_PARAMS
+  value: '-e traceid -o sw_otel -e lock'
+{{- else }}
 - name: ASYNC_PROFILER_PARAMS
   value: '-e traceid -o sw_otel'
+{{- end }}
+{{- end }}
 volumeMounts:
 - name: apo-one-agent-config
   mountPath: /app/config

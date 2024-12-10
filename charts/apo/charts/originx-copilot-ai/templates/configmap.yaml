@@ -1,0 +1,13 @@
+{{- if eq .Values.global.edition "ee" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "originx-copilot-ai.fullname" . }}-config
+  labels:
+    {{- include "originx-copilot-ai.labels" . | nindent 4 }}
+data:
+  config.yaml: |-
+    {{- include "originx-copilot-ai.config" .| nindent 4 }}
+  prompt.yaml: |-
+    {{- include "originx-copilot-ai.prompt" .| nindent 4 }}
+{{- end }}

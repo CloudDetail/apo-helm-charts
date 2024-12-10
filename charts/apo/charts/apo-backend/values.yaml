@@ -1,6 +1,5 @@
 nameOverride: ""
 replicas: "1"
-podAnnotations: {}
 hostNetwork: "false"
 dnsPolicy: "ClusterFirst"
 
@@ -12,7 +11,7 @@ initImage:
 
 apoBackend:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/apo-backend
+    registry: registry.cn-hangzhou.aliyuncs.com/kindlingx
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
@@ -29,7 +28,7 @@ apoBackend:
   #   memory: 128Mi
 apoPolarisAnalyzer:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/polaris-analyzer
+    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/polaris-analyzer
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""

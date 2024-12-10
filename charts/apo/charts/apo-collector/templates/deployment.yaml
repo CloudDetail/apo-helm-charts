@@ -11,10 +11,9 @@ spec:
       {{- include "apo-collector.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/apo-collcetor-config: {{ include (print $.Template.BasePath "/apo-collector-configmap.yaml") . | sha256sum }}
+        checksum/apo-apm-adapter-config: {{ include (print $.Template.BasePath "/apo-apm-adapter-configmap.yaml") . | sha256sum }}
       labels:
         {{- include "apo-collector.selectorLabels" . | nindent 8 }}
     spec:

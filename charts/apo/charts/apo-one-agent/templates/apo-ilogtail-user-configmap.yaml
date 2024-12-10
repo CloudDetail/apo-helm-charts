@@ -24,6 +24,7 @@ data:
       - Type: flusher_otlp
         Logs:
           Endpoint: {{ tpl .Values.apoIlogtail.apoOtelCollectorGrpcUrl . }}
+  {{- if (has "log" .Values.global.agentCollectorMode) }}
   pod_stdout_all.yaml: |
     enable: true
     inputs:
@@ -45,3 +46,4 @@ data:
         Convert:
           Protocol: custom_single
           Encoding: json
+  {{- end }}

@@ -449,16 +449,16 @@ server:
                     LABELS = {{ $labels }}
               summary: Container High Memory usage (instance_name {{ $labels.instance_name }})
           - alert: 容器被Killed
-            expr: time() - container_last_seen{namespace!~"apo|deepflow|originx"} > 60
+            annotations:
+              description: |-
+                A container has disappeared
+                  VALUE = {{ $value }}
+                  LABELS = {{ $labels }}
+              summary: Container killed (instance_name {{ $labels.instance_name }})
+            expr: (time() - last_over_time(container_last_seen{namespace!~"apo|deepflow|originx"}[5m]) > 60) * on (node_name) group_left () (up{job="integrations/kubernetes/cadvisor"})
             labels:
               group: container
               severity: warning
-            annotations:
-              description: |-
-                  A container has disappeared
-                    VALUE = {{ $value }}
-                    LABELS = {{ $labels }}
-              summary: Container killed (instance_name {{ $labels.instance_name }})
           - alert: 容器消亡
             expr: absent(container_last_seen{namespace!~"apo|deepflow|originx"})
             for: 5m

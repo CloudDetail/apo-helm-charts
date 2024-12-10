@@ -6,38 +6,4 @@ metadata:
     {{- include "apo-collector.labels" . | nindent 4 }}
 data:
   apm-adapter.yml: |
-    adapter:
-      # 暴露HTTP端口号.
-      http_port: {{ tpl (toString .Values.apoApmAdapter.service.port) . }}
-      # 设置HTTP请求超时时间，超时则直接返回.
-      timeout: 10
-      # APM系统对接.
-      trace_api:
-        # 开启apm对接列表
-        apm_list: [skywalking, jaeger, elastic]
-        # Skywalking配置
-        skywalking:
-          address: {{ tpl .Values.apoApmAdapter.config.skywalkingAddress . }}
-          user: ""
-          password: ""
-        # Jaeger配置
-        jaeger:
-          address: {{ tpl .Values.apoApmAdapter.config.jaegerCollectorUrl . }}/jaeger
-        # Tingyun3相关配置
-        nbs3:
-          address: "10.10.10.10:8080"
-          user: ""
-          password: ""
-        # Arms相关配置
-        arms:
-          address: "arms.cn-hangzhou.aliyuncs.com"
-          access_key: ""
-          access_secret: ""
-        elastic:
-          # 可以添加协议前缀'https://'或'http://'，默认http
-          address: "elasticsearch-master:9200"
-          user: ""
-          password: ""
-        # Pinpoint配置
-        pinpoint:
-          address: {{ tpl .Values.apoApmAdapter.config.pinpointAddress . }}
+    {{ toYaml .Values.apoApmAdapter.config | nindent 4 }}

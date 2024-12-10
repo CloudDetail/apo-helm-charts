@@ -15,6 +15,7 @@ data:
     #   train-ticket: enabledFuture
     #   originx: enabled
     namespace:
+      {{ .Release.Namespace }}: disabled
     {{- range .Values.instrumentor.targetNamespace }}
       {{ .name }}: {{ .value }}
     {{- end }}

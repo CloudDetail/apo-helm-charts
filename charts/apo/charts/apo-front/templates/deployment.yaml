@@ -13,10 +13,8 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         {{- include "apo-front.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
@@ -25,7 +23,7 @@ spec:
     spec:
       containers:
       - name: apo-front
-        image: "{{ tpl .Values.image.repository . }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+        image: "{{- include "apo-front.image" . }}"
         imagePullPolicy: {{ tpl .Values.image.pullPolicy . }}
         ports:
           - name: http

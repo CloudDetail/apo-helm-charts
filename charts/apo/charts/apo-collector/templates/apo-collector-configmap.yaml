@@ -26,6 +26,25 @@ data:
     promethues:
       address: {{ tpl .Values.apoCollector.config.victoriaMetricsUrl . }}
       storage: "vm"
+      # 每个Histogram最多保存多少个不同Labels，超过则清理
+      cache_size: 5000
+      # Send API
+      # VM - /api/v1/import/prometheus
+      # Prom - /api/v1/write
+      send_api: "/api/v1/import/prometheus"
+      # 主动发送指标间隔（秒），设置为0则表示关闭主动推送.
+      send_interval: 15
+      {{- if has "trace-sidecar" .Values.global.agentCollectorMode }}
+      # 是否生成Client的Red指标
+      generate_client_metric: true
+      {{- else}}
+      # 是否生成Client的Red指标
+      generate_client_metric: false
+      {{- end }}
+      # 是否暴露/metric接口用于promethues主动采集
+      open_api_metrics: false
+      # Promethues场景下需指定分桶.
+      latency_histogram_buckets: [5ms, 10ms, 20ms, 30ms, 50ms, 80ms, 100ms, 150ms, 200ms, 300ms, 400ms, 500ms, 800ms, 1200ms, 3s, 5s, 10s, 15s, 20s, 30s, 40s, 50s, 60s]
 
     es:
       host: http://elasticsearch-master:9200
@@ -49,17 +68,20 @@ data:
       # (default = 0): The data time-to-live in days, 0 means no ttl.
       ttl_days: 7
       ttl_config:
-      - tables: ["service_relation", "service_topology"]
+      - tables: ["service_relationship", "service_client"]
         ttl: 30
       - tables: ["alert_event"]
         ttl: 7
       hash_config:
-        - tables: ["error_propagation", "error_report", "onoff_metric", "service_topology", "slow_report", "span_trace"]
+        - tables: ["error_propagation", "error_report", "service_relationship", "onoff_metric", "slow_report", "span_trace"]
           hash: "cityHash64(trace_id)"
+      export_service_client: false
       # Wait for N seconds to flush datas to clickhouse.
       flush_seconds: 5
 
     analyzer:
+      # URL收敛算法：httpMethod / topUrl
+      http_parser: topUrl
       # 设置单次Trace缓存时间(秒),超过该时间还没有收到入口Trace则清除.
       cache_second: 60
       # 设置执行分析流程的线程数.

@@ -42,6 +42,7 @@ data:
         proxy_set_header X-Frame-Options "allow-from http://localhost:8080";
         proxy_buffering off;
       }
+
       # 代理 API 请求到后端服务
       location /api/ {
           proxy_pass {{ tpl .Values.config.apoBackendUrl . }}/api/;
@@ -53,7 +54,30 @@ data:
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection "upgrade";
       }
-
+      
+      {{- if eq .Values.global.edition "ee" }}
+      location /originx/api/ {
+          rewrite ^/originx/api/(.*) /$1 break;
+          proxy_pass http://originx-root-cause-infer-svc:8080/;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+      }
+      location /ai/api/ {
+          proxy_pass http://originx-copilot-ai-svc:10088/api/;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+      }
+      {{- end }}
       location /alert {
         rewrite ^/alert/(.*) /$1 break;
         proxy_pass http://apo-victoria-metrics-alert-server:8880/;

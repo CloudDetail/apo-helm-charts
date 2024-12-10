@@ -1,0 +1,73 @@
+{{- if eq .Values.global.edition "ee" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: originx-root-cause-infer-config
+data:
+  infer-config.yml: |
+    controller:
+      port: 8080
+      portal_address: 
+
+    configserver:
+      address: center-api-server-svc:8080
+
+    mutated:
+      # Set Mutated Span Duration Percent Threshold. [0 ~ 100]%.
+      ratio_threshold: 20
+      # Set percentile to query
+      query_p9x_val: 0.9
+      # Get Durations for Self Node Pod P9x
+      p9x_durations_pod: ["1h", "1d"]
+      # Get Durations for All related Node Pods P9x
+      p9x_durations_node: ["1d"]
+      waterline_filter_type: "p99"
+
+    datasource:
+      profiling:
+        ch_config:
+          address: "{{ .Values.global.clickhouseUrl }}"
+          username: {{ .Values.global.clickhouseRootUsername }}
+          password: {{ .Values.global.clickhouseRootPassword }}
+          database: "{{ .Values.global.clickhouseDatabase }}"
+          cluster: "{{ .Values.global.clickhouseClusterName }}"
+      promethues:
+        address: "{{ .Values.global.victoriaMetricsUrl }}"
+      clickhouse:
+        address: "tcp://deepflow-clickhouse:9000"
+        username: ""
+        password: ""
+      deepflowmysql:
+        address: "{{ .Values.global.deepflow.mysql.address }}"
+        username: {{ .Values.global.deepflow.mysql.username }}
+        password: {{ .Values.global.deepflow.mysql.password }}
+        dbname: {{ .Values.global.deepflow.mysql.dbname }}
+
+    k8s:
+      # Set "Enable" false if you want to run the agent in the non-Kubernetes environment.
+      # Otherwise, the agent will panic if it can't connect to the API-server.
+      enable: false
+      # apiType controls which source to get K8s metadata, support 'kube-apiserver' and 'metadata-provider' now
+      api_type: metadata_provider
+      kube_apiserver_config:
+        kube_auth_type: serviceAccount
+        kube_config_dir: /root/.kube/config
+        # enable_fetch_replicaset controls whether to fetch ReplicaSet information.
+        # The default value is false. It should be enabled if the ReplicaSet
+        # is used to control pods in the third-party CRD except for Deployment.
+        enable_fetch_replicaset: false
+      metadata_provider_config:
+        # set `enable_trace` as true only if you need to debug the metadata from metadata_provider
+        # each k8sMetadata fetched from metadata_provider will be printed into console
+        enable_trace: false
+        # check service endpoint by `kubectl get endpoints metadata-provider  -n kindling``
+        endpoint: ""
+      # GraceDeletePeriod controls the delay interval after receiving delete event.
+      # The unit is seconds, and the default value is 60 seconds.
+      # Should not be lower than 30 seconds.
+      grace_delete_period: 60
+    adapter:
+      trace_address: "apo-apm-adapter-svc:8079"
+      timeout: 10
+      get_detail_types: ["arms"]
+{{- end }}

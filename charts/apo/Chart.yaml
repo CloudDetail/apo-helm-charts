@@ -1,7 +1,7 @@
 apiVersion: v2
 name: apo
-version: "0.8.000"
-appVersion: "0.8.0"
+version: "1.0.001"
+appVersion: "1.0.0"
 type: application
 description: apo deployment charts
 
@@ -30,6 +30,12 @@ dependencies:
   - name: grafana
     condition: grafana.enabled
     repository: "file://dep/grafana"
+  - name: originx-copilot-ai
+    condition: originx-copilot-ai.enabled
+    repository: "file://dep/originx-copilot-ai"
+  - name: originx-root-cause-infer
+    condition: originx-root-cause-infer.enabled
+    repository: "file://dep/originx-root-cause-infer"
   - name: vector
     condition: vectors.enabled
     repository: "file://dep/vector"

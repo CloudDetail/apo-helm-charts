@@ -10,10 +10,14 @@ spec:
       {{- include "apo-one-agent.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/apo-grafana-alloy-config: {{ include (print $.Template.BasePath "/apo-grafana-alloy-configmap.yaml") . | sha256sum }}
+        checksum/apo-grafana-beyla-config: {{ include (print $.Template.BasePath "/apo-grafana-beyla-configmap.yaml") . | sha256sum }}
+        checksum/apo-ilogtail-logger-config: {{ include (print $.Template.BasePath "/apo-ilogtail-logger-configmap.yaml") . | sha256sum }}
+        checksum/apo-ilogtail-user-config: {{ include (print $.Template.BasePath "/apo-ilogtail-user-configmap.yaml") . | sha256sum }}
+        checksum/apo-odigos-own-telemetry-otel-config: {{ include (print $.Template.BasePath "/apo-odigos-own-telemetry-otel-config.yaml") . | sha256sum }}
+        checksum/apo-one-agent-config: {{ include (print $.Template.BasePath "/apo-one-agent-configmap.yaml") . | sha256sum }}
+        checksum/apo-otel-collector-agent-config: {{ include (print $.Template.BasePath "/apo-otel-collector-agent-configmap.yaml") . | sha256sum }}
       labels:
         {{- include "apo-one-agent.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
@@ -27,7 +31,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "apo-one-agent.serviceAccountName" . }}
       containers:
-        {{- if and .Values.apoOneAgent.enabled (has "trace" .Values.global.agentCollectorMode) }}
+        {{- if and .Values.apoOneAgent.enabled (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode)) }}
         - name: ebpf-agent
           image: "{{ tpl .Values.apoOneAgent.image.repository . }}:{{ tpl (toString (default .Chart.AppVersion .Values.apoOneAgent.image.tag)) . }}"
           imagePullPolicy: "{{ tpl .Values.apoOneAgent.image.pullPolicy . }}"
@@ -46,7 +50,7 @@ spec:
           securityContext:
             privileged: true
         {{- end }}
-        {{- if (has "metrics" .Values.global.agentCollectorMode) }}
+        {{- if and .Values.apoOneAgent.enabled (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode)) }}
         - name: node-agent
           image: "{{ tpl .Values.apoNodeAgent.image.repository . }}:{{ tpl (toString .Values.apoNodeAgent.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.apoNodeAgent.image.pullPolicy . }}"
@@ -81,7 +85,7 @@ spec:
           securityContext:
             privileged: true
         {{- end }}
-        {{- if (has "log" .Values.global.agentCollectorMode) }}
+        {{- if or (has "log" .Values.global.agentCollectorMode) (has "log-sample" .Values.global.agentCollectorMode) }}
         - name: ilogtail
           image: "{{ tpl .Values.apoIlogtail.image.repository . }}:{{ tpl (toString .Values.apoIlogtail.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.apoIlogtail.image.pullPolicy . }}"
@@ -103,7 +107,7 @@ spec:
             - name: cpu_usage_limit
               value: '1'
             - name: mem_usage_limit
-              value: '512'
+              value: '1024'
           resources:
             {{- toYaml .Values.apoIlogtail.resources | nindent 12 }}
           volumeMounts:
@@ -124,7 +128,7 @@ spec:
               mountPath: /usr/local/ilogtail/plugin_logger.xml
               subPath: plugin_logger.xml
         {{- end }}
-        {{- if (has "metrics" .Values.global.agentCollectorMode) }}
+        {{- if or (has "metrics" .Values.global.agentCollectorMode) (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode)) }}
         - name: grafana-alloy
           image: "{{ tpl .Values.grafanaAlloy.image.repository . }}:{{ tpl (toString .Values.grafanaAlloy.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.grafanaAlloy.image.pullPolicy . }}"
@@ -170,7 +174,7 @@ spec:
             successThreshold: 1
             failureThreshold: 3
         {{- end }}
-        {{- if (has "trace" .Values.global.agentCollectorMode) }}
+        {{- if and (has "trace" .Values.global.agentCollectorMode) (eq .Values.grafanaBeyla.enabled true) }}
         - name: grafana-beyla
           image: "{{ tpl .Values.grafanaBeyla.image.repository . }}:{{ tpl (toString .Values.grafanaBeyla.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.grafanaBeyla.image.pullPolicy . }}"
@@ -296,6 +300,37 @@ spec:
             privileged: true
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+        {{- end }}
+        {{- if eq .Values.global.edition "ee" }}
+        {{- if and .Values.apoOneAgent.enabled (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode)) }}
+        - name: originx-gc-agent
+          image: "{{ tpl .Values.originxGcAgent.image.repository . }}:{{ .Values.originxGcAgent.image.tag }}"
+          imagePullPolicy: "{{ tpl .Values.originxGcAgent.image.pullPolicy . }}"
+          env:
+            - name: RECEIVER_HOST
+              value: "{{ tpl .Values.originxGcAgent.config.apoCollectorUrl . }}"
+            - name: RECEIVER_PORT
+              value: "{{ tpl .Values.originxGcAgent.config.apoCollectorPort . }}"
+            - name: MY_NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          resources:
+            {{- toYaml .Values.originxGcAgent.resources | nindent 12 }}
+          volumeMounts:
+            - name: apo-one-agent-config
+              mountPath: /app/config
+            - name: signal-uds
+              mountPath: /opt/signal
+          securityContext:
+            privileged: true
+        {{- end }}
         {{- end }}
       volumes:
         - name: apo-one-agent-config

@@ -9,11 +9,11 @@ apo-backend deployment charts
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | apoBackend.image.pullPolicy | string | `"IfNotPresent"` |  |
-| apoBackend.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/originx/apo-backend"` |  |
+| apoBackend.image.registry | string | `"registry.cn-hangzhou.aliyuncs.com/kindlingx"` |  |
 | apoBackend.image.tag | string | `""` |  |
 | apoBackend.resources | object | `{}` |  |
 | apoPolarisAnalyzer.image.pullPolicy | string | `"IfNotPresent"` |  |
-| apoPolarisAnalyzer.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/originx/polaris-analyzer"` |  |
+| apoPolarisAnalyzer.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/kindlingx/polaris-analyzer"` |  |
 | apoPolarisAnalyzer.image.tag | string | `""` |  |
 | apoPolarisAnalyzer.resources | object | `{}` |  |
 | config.clickhousePassword | string | `"Apo@123456"` |  |
@@ -30,7 +30,6 @@ apo-backend deployment charts
 | persistence.enabled | bool | `false` |  |
 | persistence.size | string | `"1Gi"` |  |
 | persistence.storageClass | string | `""` |  |
-| podAnnotations | object | `{}` |  |
 | replicas | string | `"1"` |  |
 | service.nodePort | int | `31363` |  |
 | service.type | string | `"NodePort"` |  |

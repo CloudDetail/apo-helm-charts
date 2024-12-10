@@ -32,17 +32,31 @@ data:
       redmetrics:
         server_enabled: true
         db_enabled: true
+        # 是否生成 Http/Rpc 对外调用指标
+        external_enabled: true
+        # 是否生成 Mq中间件调用指标
+        mq_enabled: true
         dimensions_cache_size: 1000
         max_services_to_track: 256
         max_operations_to_track_per_service: 2048
         metrics_flush_interval: 15s
+        # vm(VictoriaMetrics) or prom(Promethues)
+        metrics_type: "vm"
+        # Promethues场景下需指定分桶.
+        latency_histogram_buckets: [5ms, 10ms, 20ms, 30ms, 50ms, 80ms, 100ms, 150ms, 200ms, 300ms, 400ms, 500ms, 800ms, 1200ms, 3s, 5s, 10s, 15s, 20s, 30s, 40s, 50s, 60s]
+        # URL收敛算法：httpMethod / topUrl
+        http_parser: topUrl
     processors:
       batch:
         send_batch_size: 10000
         timeout: 2s
       backsampling:
         # 通知Ebpf采集OnOffMetric和Profile，设为0或不设置则关闭.
+        {{- if eq .Values.global.edition "ee" }}
+        ebpf_port: 9500
+        {{- else }}
         ebpf_port: 0
+        {{- end }}
         sampler:
           normal_top_sample: false
           normal_sample_wait_time: 60
@@ -80,6 +94,25 @@ data:
         metrics:
           level: none
       extensions: [pprof, fill_proc]
+      {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
+      pipelines:
+        traces:
+          receivers: [otlp, skywalking]
+          processors: [batch]
+          exporters: [otlp]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp]
+        metrics/sw:
+          receivers: [skywalking]
+          processors: []
+          exporters: [nop]
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp]
+      {{- else }}
       pipelines:
         traces:
           receivers: [otlp, skywalking]
@@ -97,3 +130,4 @@ data:
           receivers: [otlp]
           processors: [batch]
           exporters: [otlp]
+      {{- end }}     

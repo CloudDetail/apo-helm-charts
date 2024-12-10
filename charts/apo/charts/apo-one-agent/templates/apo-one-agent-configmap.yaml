@@ -22,11 +22,19 @@ data:
         # Set the max wait time(s) for traceId.
         java_trace_wait_second: 300
         # 是否生成RED指标.
+        {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
+        enable_app_red_metrics: true
+        {{- else }}
         enable_app_red_metrics: false
+        {{- end }}
         enable_sql_red_metrics: false
     processors:
       sampleprocessor:
+        {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
+        enable: true
+        {{- else }}
         enable: false
+        {{- end }}
         # 是否将hasException数据打标为Error，默认关闭.
         exception_as_error: true
         # Options: ["tailbase", "single"].
@@ -44,7 +52,11 @@ data:
         # open_error_sampling is the switch for whether to collect error trace for diff.
         open_error_sampling: true
         # 是否开启保存全链路profiling数据，仅对慢链路有效，默认为false
+        {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
+        enable_tail_base_profiling: false
+        {{- else }}
         enable_tail_base_profiling: true
+        {{- end }}
         # sample_trace_repeat_num is the times of recheck trace is sampled.
         sample_trace_repeat_num: 5
         # Set the max wait time for sampled traceIds.
@@ -94,7 +106,11 @@ data:
           port: 9500
           cache_size: 500
     notifier:
+      {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
+      enable: true
+      {{- else }}
       enable: false
+      {{- end }}
   log4rs.yml: |
     refresh_rate: 30 seconds
     appenders:

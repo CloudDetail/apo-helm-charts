@@ -13,5 +13,7 @@
 
 Official Website:   https://apo.kindlingx.com/
 APO Frontend:       http://<NodeIP>:31364
+- UserName：admin
+- PassWord：APO2024@admin
 Grafana:            http://<NodeIP>:31364/#/system-dashboard
 ==================================================

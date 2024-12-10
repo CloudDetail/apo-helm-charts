@@ -54,14 +54,16 @@ data:
         {
           __address__ = "localhost:9408",
         },
+        {{- if (has "log" .Values.global.agentCollectorMode) }}
         {
           __address__ = "localhost:9499",
         },
+        {{- end }}
         ]
       forward_to = [otelcol.receiver.prometheus.default.receiver]
       scrape_interval = "10s"
     }
-
+    {{- if (has "metrics" .Values.global.agentCollectorMode) }}
     prometheus.scrape "scrape_metrics" {
       targets = prometheus.exporter.unix.local_system.targets
       forward_to = [prometheus.relabel.example.receiver]
@@ -90,3 +92,4 @@ data:
       }
       forward_to = [prometheus.relabel.example.receiver]
     }
+    {{- end }}

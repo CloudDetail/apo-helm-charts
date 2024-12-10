@@ -1,0 +1,45 @@
+{{- if eq .Values.global.edition "ee" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "originx-copilot-ai.fullname" . }}
+  labels:
+    {{- include "originx-copilot-ai.labels" . | nindent 4 }}
+spec:
+  replicas: {{ tpl (toString .Values.replicas) . }}
+  selector:
+    matchLabels:
+      {{- include "originx-copilot-ai.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        {{- include "originx-copilot-ai.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      hostNetwork: {{ tpl (toString .Values.hostNetwork) . }}
+      dnsPolicy: {{ tpl .Values.dnsPolicy . }}
+      containers:
+        - name: originx-copilot-ai
+          image: "{{ tpl .Values.image.registry . }}/{{ tpl .Values.image.repository . }}:{{ tpl .Values.image.tag . }}"
+          imagePullPolicy: "{{ tpl .Values.image.pullPolicy . }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort | toString }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: originx-copilot-ai-config
+              mountPath: /app/config/
+      volumes:
+        - name: originx-copilot-ai-config
+          configMap:
+            name: {{ include "originx-copilot-ai.fullname" . }}-config
+            defaultMode: 420
+{{- end }}

@@ -9,9 +9,25 @@ apo-collector deployment charts
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
-| apoApmAdapter.config.jaegerCollectorUrl | string | `"apo-jaeger-collector-svc:16686"` |  |
-| apoApmAdapter.config.pinpointAddress | string | `""` |  |
-| apoApmAdapter.config.skywalkingAddress | string | `""` |  |
+| apoApmAdapter.config.adapter.http_port | int | `8079` |  |
+| apoApmAdapter.config.adapter.timeout | int | `10` |  |
+| apoApmAdapter.config.adapter.trace_api.apm_list[0] | string | `"skywalking"` |  |
+| apoApmAdapter.config.adapter.trace_api.apm_list[1] | string | `"jaeger"` |  |
+| apoApmAdapter.config.adapter.trace_api.apm_list[2] | string | `"elastic"` |  |
+| apoApmAdapter.config.adapter.trace_api.arms.access_key | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.arms.access_secret | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.arms.address | string | `"arms.cn-hangzhou.aliyuncs.com"` |  |
+| apoApmAdapter.config.adapter.trace_api.elastic.address | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.elastic.password | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.elastic.user | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.jaeger.address | string | `"apo-jaeger-collector-svc:16686/jaeger"` |  |
+| apoApmAdapter.config.adapter.trace_api.nbs3.address | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.nbs3.password | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.nbs3.user | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.pinpoint.address | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.skywalking.address | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.skywalking.password | string | `""` |  |
+| apoApmAdapter.config.adapter.trace_api.skywalking.user | string | `""` |  |
 | apoApmAdapter.image.pullPolicy | string | `"IfNotPresent"` |  |
 | apoApmAdapter.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/originx/apm-adapter"` |  |
 | apoApmAdapter.image.tag | string | `""` |  |

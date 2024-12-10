@@ -1,0 +1,20 @@
+{{- if eq .Values.global.edition "ee" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "originx-copilot-ai.fullname" . }}-svc
+  labels:
+    {{- include "originx-copilot-ai.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: originx-copilot-ai
+      protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "originx-copilot-ai.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.service.type }}
+{{- end }}
