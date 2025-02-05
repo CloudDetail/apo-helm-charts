@@ -9,9 +9,12 @@ dependencies:
   - name: apo-nginx-proxy
     condition: apo-nginx-proxy.enabled
     repository: ""
+    version: '*.*.*'
   - name: apo-otel-collector
     condition: apo-otel-collector.enabled
     repository: ""
+    version: '*.*.*'
   - name: odigos
     condition: odigos.enabled
     repository: ""
+    version: '*.*.*'

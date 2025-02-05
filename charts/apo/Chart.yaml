@@ -9,39 +9,52 @@ dependencies:
   - name: altinity-clickhouse-operator
     condition: altinity-clickhouse-operator.enabled
     repository: ""
+    version: '*.*.*'
   - name: apo-backend
     condition: apo-backend.enabled
     repository: ""
+    version: '*.*.*'
   - name: apo-collector
     condition: apo-collector.enabled
     repository: ""
+    version: '*.*.*'
   - name: apo-front
     condition: apo-front.enabled
     repository: ""
+    version: '*.*.*'
   - name: apo-jaeger-collector
     condition: apo-jaeger-collector.enabled
     repository: ""
+    version: '*.*.*'
   - name: apo-one-agent
     condition: apo-one-agent.enabled
     repository: ""
+    version: '*.*.*'
   - name: apo-otel-collector-gateway
     condition: apo-otel-collector-gateway.enabled
     repository: ""
+    version: '*.*.*'
   - name: grafana
     condition: grafana.enabled
     repository: ""
+    version: '*.*.*'
   - name: originx-copilot-ai
     condition: originx-copilot-ai.enabled
     repository: ""
+    version: '*.*.*'
   - name: originx-root-cause-infer
     condition: originx-root-cause-infer.enabled
     repository: ""
+    version: '*.*.*'
   - name: vector
     condition: vectors.enabled
     repository: ""
+    version: '*.*.*'
   - name: victoria-metrics-alert
     condition: victoria-metrics-alert.enabled
     repository: ""
+    version: '*.*.*'
   - name: victoria-metrics-single
     condition: victoria-metrics-single.enabled
     repository: ""
+    version: '*.*.*'
