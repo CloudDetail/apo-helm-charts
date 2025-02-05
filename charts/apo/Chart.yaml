@@ -8,40 +8,53 @@ description: apo deployment charts
 dependencies:
   - name: altinity-clickhouse-operator
     condition: altinity-clickhouse-operator.enabled
-    repository: "file://dep/altinity-clickhouse-operator"
+    repository: ""
+    version: '*.*.*'
   - name: apo-backend
     condition: apo-backend.enabled
-    repository: "file://dep/apo-backend"
+    repository: ""
+    version: '*.*.*'
   - name: apo-collector
     condition: apo-collector.enabled
-    repository: "file://dep/apo-collector"
+    repository: ""
+    version: '*.*.*'
   - name: apo-front
     condition: apo-front.enabled
-    repository: "file://dep/apo-front"
+    repository: ""
+    version: '*.*.*'
   - name: apo-jaeger-collector
     condition: apo-jaeger-collector.enabled
-    repository: "file://dep/apo-jaeger-collector"
+    repository: ""
+    version: '*.*.*'
   - name: apo-one-agent
     condition: apo-one-agent.enabled
-    repository: "file://dep/apo-one-agent"
+    repository: ""
+    version: '*.*.*'
   - name: apo-otel-collector-gateway
     condition: apo-otel-collector-gateway.enabled
-    repository: "file://dep/apo-otel-collector-gateway"
+    repository: ""
+    version: '*.*.*'
   - name: grafana
     condition: grafana.enabled
-    repository: "file://dep/grafana"
+    repository: ""
+    version: '*.*.*'
   - name: originx-copilot-ai
     condition: originx-copilot-ai.enabled
-    repository: "file://dep/originx-copilot-ai"
+    repository: ""
+    version: '*.*.*'
   - name: originx-root-cause-infer
     condition: originx-root-cause-infer.enabled
-    repository: "file://dep/originx-root-cause-infer"
+    repository: ""
+    version: '*.*.*'
   - name: vector
     condition: vectors.enabled
-    repository: "file://dep/vector"
+    repository: ""
+    version: '*.*.*'
   - name: victoria-metrics-alert
     condition: victoria-metrics-alert.enabled
-    repository: "file://dep/victoria-metrics-alert"
+    repository: ""
+    version: '*.*.*'
   - name: victoria-metrics-single
     condition: victoria-metrics-single.enabled
-    repository: "file://dep/victoria-metrics-single"
+    repository: ""
+    version: '*.*.*'

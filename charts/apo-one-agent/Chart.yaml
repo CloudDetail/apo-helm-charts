@@ -8,10 +8,13 @@ description: apo-one-agent deployment charts
 dependencies:
   - name: apo-nginx-proxy
     condition: apo-nginx-proxy.enabled
-    repository: "file://dep/apo-nginx-proxy"
+    repository: ""
+    version: '*.*.*'
   - name: apo-otel-collector
     condition: apo-otel-collector.enabled
-    repository: "file://dep/apo-otel-collector"
+    repository: ""
+    version: '*.*.*'
   - name: odigos
     condition: odigos.enabled
-    repository: "file://dep/odigos"
+    repository: ""
+    version: '*.*.*'
