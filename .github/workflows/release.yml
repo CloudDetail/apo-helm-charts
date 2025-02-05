@@ -30,3 +30,19 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: "https://oss-cn-hangzhou.aliyuncs.com"
+          access-key-id: "${{ secrets.ALIYUN_OSS_ACCESS_KEY }}"
+          access-key-secret: "${{ secrets.ALIYUN_OSS_SECRETS_KEY }}"
+
+      - name: Sync Helm index to Aliyun OSS
+        run: |
+          curl -o index.current https://apo-charts.oss-cn-hangzhou.aliyuncs.com/index.yaml||true
+          helm repo index .cr-release-packages/ --url https://apo-charts.oss-cn-hangzhou.aliyuncs.com/ --merge index.current
+          ossutil cp -rf .cr-release-packages/index.yaml oss://apo-charts/
+          for file in $(ls  .cr-release-packages/apo-*.tgz)
+            do 
+               ossutil cp -rf $file oss://apo-charts/
+            done
