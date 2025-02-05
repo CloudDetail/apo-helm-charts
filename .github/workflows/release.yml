@@ -11,6 +11,7 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    environment: Secrets
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,3 +31,18 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Set up aliyun ossutil
+        run: |
+          sudo -v ; curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
+          ossutil config -e https://oss-cn-hangzhou.aliyuncs.com -i ${{ secrets.ALIYUN_OSS_ACCESS_KEY }} -k ${{ secrets.ALIYUN_OSS_SECRETS_KEY }} -L CH
+
+      - name: Sync Helm index to Aliyun OSS
+        run: |
+          curl -o index.current https://apo-charts.oss-cn-hangzhou.aliyuncs.com/index.yaml||true
+          helm repo index .cr-release-packages/ --url https://apo-charts.oss-cn-hangzhou.aliyuncs.com/ --merge index.current
+          ossutil cp -rf .cr-release-packages/index.yaml oss://apo-charts/
+          for file in $(ls  .cr-release-packages/apo-*.tgz)
+            do 
+               ossutil cp -rf $file oss://apo-charts/
+            done
