@@ -9,13 +9,13 @@ data:
     address: {{ tpl .Values.config.clickhouseUrl . }}
     username: {{ tpl .Values.config.clickhouseUsername . }}
     password: {{ tpl .Values.config.clickhousePassword . }}
-    database: {{ tpl .Values.global.clickhouseDatabase . }}
+    database: {{ .Values.global.clickhouse.database }}
     spans_table:
     spans_index_table:
     operations_table:
     ttl: 7
     metrics_endpoint: localhost:9101
-    {{- if .Values.global.clickhouseClusterName }}
-    replication: {{ tpl .Values.global.clickhouseReplication . }}
-    cluster: {{ tpl .Values.global.clickhouseClusterName . }}
+    {{- if .Values.global.clickhouse.clusterName }}
+    replication: {{ .Values.global.clickhouse.replication }}
+    cluster: {{ .Values.global.clickhouse.clusterName }}
     {{- end }}

@@ -10,7 +10,10 @@ data:
     inputs:
       - Type: service_docker_stdout
         ExcludeK8sLabel:
+          clickhouse.altinity.com/namespace: apo
           app.kubernetes.io/instance: apo
+        BeginLineCheckLength: 10 # 新增配置
+        BeginLineRegex: "\\d+.*" # 新增配置
     processors:
       - Type: processor_log_to_prom_metric
         PromPort: ":9499"

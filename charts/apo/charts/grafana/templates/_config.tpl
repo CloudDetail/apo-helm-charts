@@ -35,12 +35,14 @@ grafana.ini: |
   {{- end }}
 {{- end }}
 
+{{/*
 {{- range $key, $value := .Values.datasources }}
 {{- if not (hasKey $value "secret") }}
 {{ $key }}: |
   {{- tpl (toYaml $value | nindent 2) $root }}
 {{- end }}
 {{- end }}
+*/}}
 
 {{- range $key, $value := .Values.notifiers }}
 {{- if not (hasKey $value "secret") }}

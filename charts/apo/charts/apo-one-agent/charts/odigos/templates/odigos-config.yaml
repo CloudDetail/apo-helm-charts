@@ -37,9 +37,9 @@ spec:
   ignoredContainers:
     {{- toYaml .Values.ignoredContainers | nindent 8 }}
   defaultSDKs:
-    dotnet:
-      sdkTier: community
-      sdkType: native
+    # dotnet:
+    #   sdkTier: community
+    #   sdkType: native
     {{- if eq .Values.config.javaAgentType "skywalking" }}
     java:
       sdkTier: community
@@ -56,19 +56,19 @@ spec:
     javascript:
       sdkTier: community
       sdkType: native
-    python:
-      sdkTier: community
-      sdkType: native
+    # python:
+    #   sdkTier: community
+    #   sdkType: native
   supportedSDKs:
-    dotnet:
-      - sdkTier: community
-        sdkType: native
+    # dotnet:
+    #   - sdkTier: community
+    #     sdkType: native
     java:
       - sdkTier: community
         sdkType: native
     javascript:
       - sdkTier: community
         sdkType: native
-    python:
-      - sdkTier: community
-        sdkType: native
+    # python:
+    #   - sdkTier: community
+    #     sdkType: native

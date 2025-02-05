@@ -15,6 +15,7 @@ spec:
         checksum/apo-grafana-beyla-config: {{ include (print $.Template.BasePath "/apo-grafana-beyla-configmap.yaml") . | sha256sum }}
         checksum/apo-ilogtail-logger-config: {{ include (print $.Template.BasePath "/apo-ilogtail-logger-configmap.yaml") . | sha256sum }}
         checksum/apo-ilogtail-user-config: {{ include (print $.Template.BasePath "/apo-ilogtail-user-configmap.yaml") . | sha256sum }}
+        checksum/apo-node-agent-config: {{ include (print $.Template.BasePath "/apo-node-agent-configmap.yaml") . | sha256sum }}
         checksum/apo-odigos-own-telemetry-otel-config: {{ include (print $.Template.BasePath "/apo-odigos-own-telemetry-otel-config.yaml") . | sha256sum }}
         checksum/apo-one-agent-config: {{ include (print $.Template.BasePath "/apo-one-agent-configmap.yaml") . | sha256sum }}
         checksum/apo-otel-collector-agent-config: {{ include (print $.Template.BasePath "/apo-otel-collector-agent-configmap.yaml") . | sha256sum }}
@@ -59,8 +60,6 @@ spec:
               containerPort: 9408
               protocol: TCP
           env:
-            - name: FETCH_SOURCE_ADDR
-              value: {{ tpl (toString .Values.apoNodeAgent.apoOtelCollectorUrl) . }}
             - name: MY_NODE_IP
               valueFrom:
                 fieldRef:
@@ -71,17 +70,12 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-            - name: PROCESS_TYPE
-              value: java,python,node,donet,go-demo
-            - name: K8S_NAMESPACE_WHITELIST
-              value: default,go-auto
-            - name: PROCESS_TIME
-              value: 'true'
-          volumeMounts:
-            - name: proc-vol
-              mountPath: /proc
           resources:
             {{- toYaml .Values.apoNodeAgent.resources | nindent 12 }}
+          volumeMounts:
+            - name: apo-node-agent-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
           securityContext:
             privileged: true
         {{- end }}
@@ -345,6 +339,10 @@ spec:
           configMap:
             name: apo-ilogtail-logger-config
             defaultMode: 420
+        - name: apo-node-agent-config
+          configMap:
+            name: apo-node-agent-config
+            defaultMode: 420
         - name: grafana-alloy-config
           configMap:
             name: apo-grafana-alloy-config
@@ -430,3 +428,26 @@ spec:
         - name: kernel-debug
           hostPath:
             path: /sys/kernel/debug
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

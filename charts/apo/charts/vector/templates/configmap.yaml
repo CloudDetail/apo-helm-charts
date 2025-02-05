@@ -50,14 +50,14 @@ data:
     sinks:
       to_default_java:
         auth:
-          password: {{ .Values.global.clickhouseRootPassword }}
+          password: {{ .Values.global.clickhouse.password }}
           strategy: basic
-          user: {{ .Values.global.clickhouseRootUsername }}
+          user: {{ .Values.global.clickhouse.username }}
         batch:
           batch.timeout_secs: 3
           max_events: 10000
-        database: {{ .Values.global.clickhouseDatabase }}
-        endpoint: http://{{ .Values.global.clickhouseHttpUrl }}
+        database: {{ .Values.global.clickhouse.database }}
+        endpoint: http://{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.httpPort }}
         format: json_each_row
         inputs:
         - parse_default_java

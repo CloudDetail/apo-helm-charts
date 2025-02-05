@@ -459,18 +459,6 @@ server:
             labels:
               group: container
               severity: warning
-          - alert: 容器消亡
-            expr: absent(container_last_seen{namespace!~"apo|deepflow|originx"})
-            for: 5m
-            labels:
-              group: container
-              severity: warning
-            annotations:
-              description: |-
-                  A container is absent for 5 min
-                    VALUE = {{ $value }}
-                    LABELS = {{ $labels }}
-              summary: Container absent (instance_name {{ $labels.instance_name }})
           - alert: 容器高cpu_cfs_throttled
             expr: sum(increase(container_cpu_cfs_throttled_periods_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace) / sum(increase(container_cpu_cfs_periods_total{namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace) > (25 / 100)
             for: 5m

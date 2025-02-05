@@ -78,14 +78,16 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 128Mi
-nodeSelector: {}
 serviceAccount:
   name: apo-otel-collector-gateway
 
 config:
   metaServerUrl: "apo-meta-server-svc:8080"
   jaegerCollectorUrl: "http://apo-jaeger-collector-svc:4317"
-  victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
   clickhouseUrl: "apo-clickhouse-svc:9000"
   clickhouseUsername: "admin"
   clickhousePassword: "Apo@123456"
+
+nodeSelector: {}
+affinity: {}
+tolerations: []

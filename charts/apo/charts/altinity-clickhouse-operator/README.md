@@ -18,8 +18,10 @@ Helm chart to deploy [altinity-clickhouse-operator](https://github.com/Altinity/
 |-----|------|---------|-------------|
 | additionalResources | list | `[]` | list of additional resources to create (are processed via `tpl` function), useful for create ClickHouse clusters together with clickhouse-operator, look `kubectl explain chi` for details |
 | affinity | object | `{}` | affinity for scheduler pod assignment, look `kubectl explain pod.spec.affinity` for details |
+| clickhouse.affinity | object | `{}` |  |
 | clickhouse.image.pullPolicy | string | `"IfNotPresent"` |  |
 | clickhouse.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/originx/clickhouse-server"` |  |
+| clickhouse.nodeSelector | object | `{}` |  |
 | clickhouse.password | string | `"Apo@123456"` |  |
 | clickhouse.persistence.data.accessModes | list | `["ReadWriteOnce"]` | Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/) |
 | clickhouse.persistence.data.matchLabels | object | `{}` | Bind Persistent Volume by labels. Must match all labels of targeted PV. |
@@ -43,6 +45,7 @@ Helm chart to deploy [altinity-clickhouse-operator](https://github.com/Altinity/
 | clickhouse.service.ports[2].protocol | string | `"TCP"` |  |
 | clickhouse.service.ports[2].targetPort | int | `9009` |  |
 | clickhouse.service.type | string | `"ClusterIP"` |  |
+| clickhouse.tolerations | list | `[]` |  |
 | clickhouse.username | string | `"admin"` |  |
 | configs | object | check the values.yaml file for the config content, auto-generated from latest operator release | clickhouse-operator configs |
 | dashboards.additionalLabels | object | `{"grafana_dashboard":""}` | labels to add to a secret with dashboards |

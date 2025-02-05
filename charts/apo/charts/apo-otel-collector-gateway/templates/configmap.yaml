@@ -42,7 +42,7 @@ data:
             endpoint: 0.0.0.0:12800 # 接收从前端/ nginx 等 HTTP 协议上报的 Trace 数据
     processors:
       batch:
-        send_batch_size: 10000
+        send_batch_size: 5000
         timeout: 2s
       metadata:
         # The indicator prefix that needs to be filled with K8s information
@@ -73,7 +73,11 @@ data:
         tls:
           insecure: true
       prometheusremotewrite:
-        endpoint: "{{ tpl .Values.config.victoriaMetricsUrl . }}/api/v1/write"
+        {{- if eq .Values.global.victoriaMetrics.mode "single" }}
+        endpoint: "{{ .Values.global.victoriaMetrics.single.url }}/api/v1/write"
+        {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
+        endpoint: "{{ .Values.global.victoriaMetrics.cluster.insertUrl }}/api/v1/write"
+        {{- end }}
         tls:
           insecure: true
         resource_to_telemetry_conversion:
@@ -82,7 +86,7 @@ data:
         endpoint: "tcp://{{ tpl .Values.config.clickhouseUrl . }}?dial_timeout=10s&compress=lz4"
         username: {{ tpl .Values.config.clickhouseUsername . }}
         password: {{ tpl .Values.config.clickhousePassword . }}
-        database: {{ tpl .Values.global.clickhouseDatabase . }}
+        database: {{ .Values.global.clickhouse.database }}
         ttl: 168h
         create_schema: false
         logs_table_name: ilogtail_logs
@@ -98,7 +102,7 @@ data:
         endpoint: "tcp://{{ tpl .Values.config.clickhouseUrl . }}?dial_timeout=10s&compress=lz4"
         username: {{ tpl .Values.config.clickhouseUsername . }}
         password: {{ tpl .Values.config.clickhousePassword . }}
-        database: {{ tpl .Values.global.clickhouseDatabase . }}
+        database: {{ .Values.global.clickhouse.database }}
         ttl: 720h
         create_schema: false
         logs_table_name: k8s_events

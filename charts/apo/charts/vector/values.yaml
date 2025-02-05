@@ -158,6 +158,7 @@ command: []
 
 # args -- Override Vector's default arguments.
 args:
+  - "-w"
   - --config-dir
   - "/etc/vector/"
 

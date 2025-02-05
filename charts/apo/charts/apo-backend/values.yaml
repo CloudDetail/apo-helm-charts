@@ -43,17 +43,23 @@ apoPolarisAnalyzer:
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
 service:
   type: NodePort
   nodePort: 31363
+
 config:
-  victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
   clickhouseUrl: "apo-clickhouse-svc:9000"
   clickhouseUsername: "admin"
-  clickhousePassword: "Apo@123456"
+  clickhousePassword: "WPKf-e9U.X)K)ezTDo9#"
+
 persistence:
   enabled: false
   storageClass: ""
   accessModes:
     - ReadWriteOnce
   size: 1Gi
+
+nodeSelector: {}
+affinity: {}
+tolerations: []

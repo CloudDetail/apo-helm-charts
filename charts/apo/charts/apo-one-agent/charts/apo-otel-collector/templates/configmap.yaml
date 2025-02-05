@@ -28,7 +28,7 @@ data:
             endpoint: 0.0.0.0:12800 # 接收从前端/ nginx 等 HTTP 协议上报的 Trace 数据
     processors:
       batch:
-        send_batch_size: 10000
+        send_batch_size: 5000
         timeout: 2s
       metadata:
         # The indicator prefix that needs to be filled with K8s information

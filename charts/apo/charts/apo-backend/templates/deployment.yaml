@@ -33,7 +33,7 @@ spec:
         imagePullPolicy: {{ tpl .Values.initImage.pullPolicy . }}
         env:
         - name: CLICKHOUSE_URL
-          value: {{ tpl .Values.global.clickhouseUrl . }}
+          value: {{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}
         command:
         - sh
         - -c
@@ -81,7 +81,11 @@ spec:
           protocol: TCP
         env:
         - name: PROMETHEUS_ADDRESS
-          value: "{{ tpl .Values.config.victoriaMetricsUrl . }}"
+          {{- if eq .Values.global.victoriaMetrics.mode "single" }}
+          value: {{ .Values.global.victoriaMetrics.single.url }}
+          {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
+          value: {{ .Values.global.victoriaMetrics.cluster.selectUrl }}
+          {{- end }}
         - name: PROMETHEUS_STORAGE
           value: vm
         resources:
@@ -89,7 +93,6 @@ spec:
         volumeMounts:
         - name: apo-backend-config
           mountPath: /app/config/
-
       volumes:
       - name: apo-backend-config
         configMap:
@@ -102,4 +105,27 @@ spec:
       {{- else }}
       - name: sqlite-storage
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}

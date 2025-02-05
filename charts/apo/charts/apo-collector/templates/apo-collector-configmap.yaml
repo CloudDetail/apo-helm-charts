@@ -24,7 +24,11 @@ data:
       debug: true
 
     promethues:
-      address: {{ tpl .Values.apoCollector.config.victoriaMetricsUrl . }}
+      {{- if eq .Values.global.victoriaMetrics.mode "single" }}
+      address: {{ .Values.global.victoriaMetrics.single.url }}
+      {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
+      address: {{ .Values.global.victoriaMetrics.cluster.selectUrl }}
+      {{- end }}
       storage: "vm"
       # 每个Histogram最多保存多少个不同Labels，超过则清理
       cache_size: 5000
@@ -33,7 +37,7 @@ data:
       # Prom - /api/v1/write
       send_api: "/api/v1/import/prometheus"
       # 主动发送指标间隔（秒），设置为0则表示关闭主动推送.
-      send_interval: 15
+      send_interval: 0
       {{- if has "trace-sidecar" .Values.global.agentCollectorMode }}
       # 是否生成Client的Red指标
       generate_client_metric: true
@@ -41,6 +45,8 @@ data:
       # 是否生成Client的Red指标
       generate_client_metric: false
       {{- end }}
+      # 生成的Client Red指标是否补充URL信息
+      client_metric_with_url: true
       # 是否暴露/metric接口用于promethues主动采集
       open_api_metrics: false
       # Promethues场景下需指定分桶.
@@ -62,9 +68,9 @@ data:
       endpoint: "tcp://{{ tpl .Values.apoCollector.config.clickhouseUrl . }}"
       username: {{ tpl .Values.apoCollector.config.clickhouseUsername . }}
       password: {{ tpl .Values.apoCollector.config.clickhousePassword . }}
-      database: {{ tpl .Values.global.clickhouseDatabase . }}
-      replication: {{ tpl .Values.global.clickhouseReplication . }}
-      cluster: "{{ tpl .Values.global.clickhouseClusterName . }}"
+      database: {{ .Values.global.clickhouse.database }}
+      replication: {{ .Values.global.clickhouse.replication }}
+      cluster: "{{ .Values.global.clickhouse.clusterName }}"
       # (default = 0): The data time-to-live in days, 0 means no ttl.
       ttl_days: 7
       ttl_config:

@@ -31,11 +31,11 @@ data:
       }
 
       location /grafana/ {
-        proxy_pass {{ tpl .Values.config.apoGrafanaUrl . }}/grafana/;
+        proxy_pass {{ tpl .Values.config.apoGrafanaUrl . }};
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -98,4 +98,48 @@ data:
       location = /50x.html {
           root   /usr/share/nginx/html;
       }
+    }
+
+  nginx.conf: |
+    user  nginx;
+    worker_processes  auto;
+
+    error_log  /var/log/nginx/error.log notice;
+    pid        /var/run/nginx.pid;
+
+    events {
+        worker_connections  1024;
+    }
+
+    http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '{"@timestamp":"$time_iso8601",'
+                          '"client_ip":"$remote_addr",'
+                          '"server_ip":"$server_addr",'
+                          '"domain":"$server_name",'
+                          '"request_method":"$request_method",'
+                          '"path":"$uri",'
+                          '"top_path":"$uri",'
+                          '"query":"$args",'
+                          '"request_length":$request_length,'
+                          '"responsetime":$request_time,'
+                          '"response_length":$body_bytes_sent,'
+                          '"referer":"$http_referer",'
+                          '"http_user_agent":"$http_user_agent",'
+                          '"status":$status,'
+                          '"upstreamhost":"$upstream_addr",'
+                          '"upstreamtime":"$upstream_response_time"'
+                          '}';
+        access_log  /var/log/nginx/access.log  main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        keepalive_timeout  65;
+
+        #gzip  on;
+
+        include /etc/nginx/conf.d/*.conf;
     }

@@ -40,15 +40,19 @@ data:
       address: "{{ tpl .Values.config.clickhouseUrl . }}"
       username: {{ tpl .Values.config.clickhouseUsername . }}
       password: {{ tpl .Values.config.clickhousePassword . }}
-      database: {{ tpl .Values.global.clickhouseDatabase . }}
-      replication: {{ tpl .Values.global.clickhouseReplication . }}
-      cluster: "{{ .Values.global.clickhouseClusterName }}"
+      database: {{ .Values.global.clickhouse.database }}
+      replication: {{ .Values.global.clickhouse.replication }}
+      cluster: "{{ .Values.global.clickhouse.clusterName }}"
 
     kubernetes:
       auth_type: "serviceAccount"
 
     promethues:
-      address: "{{ tpl .Values.config.victoriaMetricsUrl . }}"
+    {{- if eq .Values.global.victoriaMetrics.mode "single" }}
+      address: {{ .Values.global.victoriaMetrics.single.url }}
+    {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
+      address: {{ .Values.global.victoriaMetrics.cluster.selectUrl }}
+    {{- end }}
       # vm / prom
       storage: vm
 
@@ -84,5 +88,5 @@ data:
     user:
       anonymous_user:
         username: anonymous
-        enable: false
+        enable: {{ tpl .Values.config.anonymousUserEnabled . }}
         role: admin

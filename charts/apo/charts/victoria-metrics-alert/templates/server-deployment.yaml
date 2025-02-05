@@ -4,9 +4,6 @@
 {{- fail "at least one item in `.server.config.alerts.groups` or `.server.extraArgs.rule` must be set " -}}
 {{- end -}}
 {{- end -}}
-{{- if eq .Values.server.datasource.url "" -}}
-{{- fail "server.datasource.url datasource URL must be specified" -}}
-{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,7 +55,13 @@ spec:
           image: "{{ tpl .Values.server.image.repository . }}:{{ default .Chart.AppVersion .Values.server.image.tag }}{{- with .Values.server.image.variant }}-{{ . }}{{- end }}"
           args:
             - -rule=/config/alert-rules.yaml
-            - -datasource.url={{ tpl .Values.server.datasource.url . }}
+            {{- if eq .Values.global.victoriaMetrics.mode "single" }}
+            - -datasource.url={{ .Values.global.victoriaMetrics.single.url }}
+            {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
+            - -datasource.url={{ .Values.global.victoriaMetrics.cluster.selectUrl }}
+            - -remoteRead.url={{ .Values.global.victoriaMetrics.cluster.selectUrl }}
+            - -remoteWrite.url={{ .Values.global.victoriaMetrics.cluster.insertUrl }}
+            {{- end }}
             {{- if or .Values.server.datasource.basicAuth.password .Values.server.datasource.basicAuth.username  }}
             - -datasource.basicAuth.password={{ .Values.server.datasource.basicAuth.password}}
             - -datasource.basicAuth.username={{ .Values.server.datasource.basicAuth.username}}
@@ -174,21 +177,32 @@ spec:
         {{- with .Values.server.extraContainers }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with .Values.server.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- if .Values.server.priorityClassName }}
       priorityClassName: {{ .Values.server.priorityClassName | quote }}
       {{- end }}
-      {{- with .Values.server.affinity }}
-      affinity:
-        {{ toYaml . | nindent 8 }}
+      {{- if .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
       {{- end }}
-    {{- with .Values.server.tolerations }}
+      {{- if .Values.server.affinity }}
+      {{- with .Values.server.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.server.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+{{ toYaml .Values.server.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}
       volumes:
         - name: alerts-config
           configMap:

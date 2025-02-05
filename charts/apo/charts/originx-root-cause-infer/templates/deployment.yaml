@@ -31,7 +31,7 @@ spec:
         imagePullPolicy: {{ tpl .Values.initImage.pullPolicy . }}
         env:
         - name: CLICKHOUSE_URL
-          value: {{ tpl .Values.global.clickhouseUrl . }}
+          value: {{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}
         command:
         - sh
         - -c
@@ -64,4 +64,27 @@ spec:
         - name: originx-root-cause-infer-config
           configMap:
             name: originx-root-cause-infer-config
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}
 {{- end }}

@@ -160,17 +160,28 @@ containers:
 {{ toYaml . | indent 2 }}
 {{- end }}
 terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-{{- with .Values.nodeSelector }}
+{{- if .Values.nodeSelector }}
 nodeSelector:
-{{ toYaml . | indent 2 }}
+{{ toYaml .Values.nodeSelector | indent 2 }}
+{{- else if .Values.global.nodeSelector }}
+nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 2 }}
 {{- end }}
+{{- if .Values.affinity }}
 {{- with .Values.affinity }}
-affinity:
-{{ toYaml . | indent 2 }}
+affinity: {{ toYaml . | nindent 2 }}
 {{- end }}
-{{- with .Values.tolerations }}
+{{- else if .Values.global.affinity }}
+{{- with .Values.global.affinity }}
+affinity: {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+{{- if .Values.tolerations }}
 tolerations:
-{{ toYaml . | indent 2 }}
+{{ toYaml .Values.tolerations | indent 2 }}
+{{- else if .Values.global.tolerations }}
+tolerations:
+{{ toYaml .Values.global.tolerations | indent 2 }}
 {{- end }}
 {{- with  .Values.topologySpreadConstraints }}
 topologySpreadConstraints:

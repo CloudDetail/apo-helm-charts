@@ -26,3 +26,7 @@ config:
   apoJaegerCollectorUrl: "http://apo-jaeger-collector-svc:16686"
   apoGrafanaUrl: "http://apo-grafana-svc:80"
   apoBackendUrl: "http://apo-backend-svc:8080" 
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -38,7 +38,6 @@ apo-collector deployment charts
 | apoCollector.config.clickhousePassword | string | `"Apo@123456"` |  |
 | apoCollector.config.clickhouseUrl | string | `"apo-clickhouse-svc:9000"` |  |
 | apoCollector.config.clickhouseUsername | string | `"admin"` |  |
-| apoCollector.config.victoriaMetricsUrl | string | `"http://apo-victoria-metrics-single-server-svc:8428"` |  |
 | apoCollector.image.pullPolicy | string | `"IfNotPresent"` |  |
 | apoCollector.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/originx/apo-collector"` |  |
 | apoCollector.image.tag | string | `""` |  |
@@ -53,7 +52,6 @@ apo-collector deployment charts
 | config.clickhousePassword | string | `"Apo@123456"` |  |
 | config.clickhouseUrl | string | `"apo-clickhouse-svc:9000"` |  |
 | config.clickhouseUsername | string | `"admin"` |  |
-| config.victoriaMetricsUrl | string | `"http://apo-victoria-metrics-single-server-svc:8428"` |  |
 | fullnameOverride | string | `""` |  |
 | imagePullSecrets | list | `[]` |  |
 | initImage.pullPolicy | string | `"IfNotPresent"` |  |

@@ -20,7 +20,7 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-nodeSelector: {}
+
 serviceAccount:
   name: apo-otel-collector
 
@@ -35,3 +35,7 @@ service:
 config:
   apoCollectorUrl: "localhost"
   apoCollectorPort: "29090"
+
+nodeSelector: {}
+affinity: {}
+tolerations: []

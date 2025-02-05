@@ -47,7 +47,6 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-nodeSelector: {}
 serviceAccount:
   name: apo-otel-collector
 
@@ -57,3 +56,7 @@ config:
   apoOtelCollectorGatewayURL: "{{ .Values.global.apoServerIP }}"
   apoOtelCollectorGatewayGRPCPort: "{{ .Values.global.apoOtelCollectorGatewayGRPCPort }}"
   apoOtelCollectorGatewayK8SPort: "{{ .Values.global.apoOtelCollectorGatewayK8SPort }}"
+
+nodeSelector: {}
+affinity: {}
+tolerations: []

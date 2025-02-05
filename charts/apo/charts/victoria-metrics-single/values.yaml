@@ -61,6 +61,7 @@ server:
     envflag.enable: "true"
     envflag.prefix: VM_
     loggerFormat: json
+    
 
   # Additional hostPath mounts
   extraHostPathMounts:

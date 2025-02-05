@@ -30,7 +30,7 @@ remoteStorage:
 
 jaegerQuery:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/jaeger-query
+    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/jaeger-query
     pullPolicy: IfNotPresent
     tag: 1.58
   resources: {}
@@ -47,7 +47,7 @@ jaegerQuery:
 
 jaegerCollector:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/jaeger-collector
+    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/jaeger-collector
     pullPolicy: IfNotPresent
     tag: 1.59-latest
   resources: {}
@@ -65,4 +65,8 @@ jaegerCollector:
 config:
   clickhouseUrl: "tcp://apo-clickhouse-svc:9000"
   clickhouseUsername: "admin"
-  clickhousePassword: "Apo@123456"
+  clickhousePassword: "WPKf-e9U.X)K)ezTDo9#"
+
+nodeSelector: {}
+affinity: {}
+tolerations: []

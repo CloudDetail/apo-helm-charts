@@ -72,8 +72,9 @@ instrumentor:
   #   requests:
   #     cpu: 10m
   #     memory: 64Mi
-  tolerations: []
+  nodeSelector: {}
   affinity: {}
+  tolerations: []
   # targetNamespace 
   # name：目标命名空间
   # value：

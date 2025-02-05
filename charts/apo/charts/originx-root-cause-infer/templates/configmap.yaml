@@ -26,17 +26,17 @@ data:
     datasource:
       profiling:
         ch_config:
-          address: "{{ .Values.global.clickhouseUrl }}"
-          username: {{ .Values.global.clickhouseRootUsername }}
-          password: {{ .Values.global.clickhouseRootPassword }}
-          database: "{{ .Values.global.clickhouseDatabase }}"
-          cluster: "{{ .Values.global.clickhouseClusterName }}"
+          address: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"
+          username: {{ .Values.global.clickhouse.username }}
+          password: {{ .Values.global.clickhouse.password }}
+          database: "{{ .Values.global.clickhouse.database }}"
+          cluster: "{{ .Values.global.clickhouse.clusterName }}"
       promethues:
         address: "{{ .Values.global.victoriaMetricsUrl }}"
       clickhouse:
-        address: "tcp://deepflow-clickhouse:9000"
-        username: ""
-        password: ""
+        address: "{{ .Values.global.deepflow.clickhouse.address }}"
+        username: "{{ .Values.global.deepflow.clickhouse.username }}"
+        password: "{{ .Values.global.deepflow.clickhouse.password }}"
       deepflowmysql:
         address: "{{ .Values.global.deepflow.mysql.address }}"
         username: {{ .Values.global.deepflow.mysql.username }}

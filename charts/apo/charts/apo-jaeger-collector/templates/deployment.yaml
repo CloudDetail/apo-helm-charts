@@ -29,7 +29,7 @@ spec:
         imagePullPolicy: {{ tpl .Values.initImage.pullPolicy . }}
         env:
         - name: CLICKHOUSE_URL
-          value: {{ tpl .Values.global.clickhouseUrl . }}
+          value: {{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}
         command:
         - sh
         - -c
@@ -77,7 +77,7 @@ spec:
           image: "{{ tpl .Values.jaegerCollector.image.repository . }}:{{ tpl (toString .Values.jaegerCollector.image.tag) . }}"
           imagePullPolicy: {{ tpl .Values.jaegerCollector.image.pullPolicy . }}
           args:
-            - '--collector.otlp.grpc.max-message-size=8388608'
+            - '--collector.otlp.grpc.max-message-size=33554432'
           ports:
             - name: grpc
               containerPort: 4317
@@ -99,3 +99,26 @@ spec:
           configMap:
             name: {{ include "apo-jaeger-collector.fullname" . }}-config
             defaultMode: 420
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

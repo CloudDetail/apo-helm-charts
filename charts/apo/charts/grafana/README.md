@@ -130,6 +130,8 @@ Kubernetes: `^1.8.0-0`
 | extraContainers | string | `""` |  |
 | extraEmptyDirMounts[0].mountPath | string | `"/tmp/dashboards"` |  |
 | extraEmptyDirMounts[0].name | string | `"apo-dashboards"` |  |
+| extraEmptyDirMounts[1].mountPath | string | `"/var/lib/grafana/plugins"` |  |
+| extraEmptyDirMounts[1].name | string | `"apo-plugins"` |  |
 | extraExposePorts | list | `[]` |  |
 | extraInitContainers[0].image | string | `"registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-grafana-init-dashboards:v0.4.0"` |  |
 | extraInitContainers[0].imagePullPolicy | string | `"Always"` |  |

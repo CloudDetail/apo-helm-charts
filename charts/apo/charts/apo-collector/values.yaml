@@ -33,7 +33,6 @@ apoCollector:
     nodePortGrpc: 30044
     nodePortHttp: 30090
   config:
-    victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
     clickhouseUrl: "apo-clickhouse-svc:9000"
     clickhouseUsername: "admin"
     clickhousePassword: "Apo@123456"
@@ -60,57 +59,57 @@ apoApmAdapter:
     port: 8079
   config:
     adapter:
-      # 暴露HTTP端口号.
+      # Expose HTTP port. 
       http_port: 8079
-      # 设置HTTP请求超时时间，超时则直接返回.
-      timeout: 10
-      # APM系统对接.
+      # Set HTTP request timeout; if it times out, a response is returned directly.  
+      timeout: 10  
+      # APM system integration.  
       trace_api:
-        # 开启apm对接列表
+        # Enable the APM integration list  
         apm_list: [skywalking, jaeger, elastic]
-        # Skywalking配置
+        # Skywalking configuration
         skywalking:
-          address: ""
-          user: ""
-          password: ""
-        # Jaeger配置
+          # No need to include the http or https protocol prefix.
+          address: ""  
+          user: ""  
+          password: ""  
+        # Jaeger configuration  
         jaeger:
-          address: apo-jaeger-collector-svc:16686/jaeger
-        # Tingyun3相关配置
+          # No need to include the http or https protocol prefix.
+          address: apo-jaeger-collector-svc:16686/jaeger  
+        # Tingyun3-related configuration  
         nbs3:
-          address: ""
-          user: ""
-          password: ""
-        # Arms相关配置
+          # No need to include the http or https protocol prefix.
+          address: ""  
+          user: ""  
+          password: ""  
+        # Arms-related configuration  
         arms:
-          address: "arms.cn-hangzhou.aliyuncs.com"
-          access_key: ""
-          access_secret: ""
-        elastic:
-          # 可以添加协议前缀'https://'或'http://'，默认http
-          address: ""
-          user: ""
-          password: ""
-        # Pinpoint配置
+          # No need to include the http or https protocol prefix.
+          address: "arms.cn-hangzhou.aliyuncs.com"  
+          access_key: ""  
+          access_secret: ""  
+        elastic:  
+          # You can add protocol prefixes 'https://' or 'http://', default is http  
+          address: ""  
+          user: ""  
+          password: ""  
+        # Pinpoint configuration  
         pinpoint:
-          address: ""
+          # No need to include the http or https protocol prefix.
+          address: ""  
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
 config:
-  victoriaMetricsUrl: "http://apo-victoria-metrics-single-server-svc:8428"
   clickhouseUrl: "apo-clickhouse-svc:9000"
   clickhouseUsername: "admin"
   clickhousePassword: "Apo@123456"
   apmAdapterUrl: "http://apo-apm-adapter-svc:8079"
   apoBackendUrl: "http://apo-backend-svc:8080"
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -94,6 +94,15 @@ clickhouse:
 
       # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
       size: 1Gi
+  
+  # nodeSelector -- node for scheduler pod assignment, look `kubectl explain pod.spec.nodeSelector` for details
+  nodeSelector: {}
+
+  # tolerations -- tolerations for scheduler pod assignment, look `kubectl explain pod.spec.tolerations` for details
+  tolerations: []
+
+  # affinity -- affinity for scheduler pod assignment, look `kubectl explain pod.spec.affinity` for details
+  affinity: {}
 
 # imagePullSecrets -- image pull secret for private images in clickhouse-operator pod
 #  possible value format [{"name":"your-secret-name"}]

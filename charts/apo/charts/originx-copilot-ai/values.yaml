@@ -70,3 +70,7 @@ config:
     #   stream: true
     #   temperature: 0.7
     #   top_p: 0.7
+
+nodeSelector: {}
+affinity: {}
+tolerations: []

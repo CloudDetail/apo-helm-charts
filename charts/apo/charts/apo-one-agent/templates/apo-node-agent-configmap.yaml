@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-node-agent-config
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    metric: 
+      ping_span: 5 # get network rtt every 5s
+      pid_span: 1 # get process info every 1min
+      lru_cache_size: 50000 # metric cache size
+      process_time: true # enable collector process time metric
+
+    whitelist:
+      process_type: [java,python,node] # match process cmdline, if not config match all
+      k8s_namespace: [] # match k8s namespace, if not config match all
+
+    k8s_metadata:
+      fetch_source_addr: {{ tpl (toString .Values.apoNodeAgent.apoOtelCollectorUrl) . }} # metadata fetch source addr
+      auth_type: # kube_auth_type, support kubeConfig
+      kube_config: # kube_auth_config, kubeConfig file path, only used when kube_auth_type is kubeConfig
+
+    middleware_port: # match middleware port
+      rabbitmq: [5672] 
+      kafka: [9092]
+      activemq: [61616]
+      rocketmq: [10911]
+      mysql: [3306]
+      postgresql: [5432]
+      mongodb: [27017]

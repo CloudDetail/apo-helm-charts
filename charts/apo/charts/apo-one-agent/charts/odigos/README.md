@@ -38,6 +38,7 @@ Odigos Helm Chart for Kubernetes
 | instrumentor.image.repository | string | `"keyval/odigos-instrumentor"` |  |
 | instrumentor.image.tag | string | `"v1.0.75-webhook"` |  |
 | instrumentor.instrumentAllNamespace | bool | `false` |  |
+| instrumentor.nodeSelector | object | `{}` |  |
 | instrumentor.resources | object | `{}` |  |
 | instrumentor.tolerations | list | `[]` |  |
 | odiglet.affinity | object | `{}` |  |

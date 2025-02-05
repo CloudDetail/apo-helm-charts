@@ -48,7 +48,7 @@ data:
         http_parser: topUrl
     processors:
       batch:
-        send_batch_size: 10000
+        send_batch_size: 5000
         timeout: 2s
       backsampling:
         # 通知Ebpf采集OnOffMetric和Profile，设为0或不设置则关闭.

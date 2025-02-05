@@ -12,4 +12,26 @@ metadata:
   {{- end }}
 data:
   {{- include "grafana.configData" . | nindent 2 }}
+  datasources.yaml: |-
+    apiVersion: 1
+    datasources: 
+    - name: APO-VictoriaMetric
+      type: prometheus
+      {{- if eq .Values.global.victoriaMetrics.mode "single" }}
+      url: "{{ .Values.global.victoriaMetrics.single.url }}"
+      {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
+      url: "{{ .Values.global.victoriaMetrics.cluster.selectUrl }}"
+      {{- end }}
+      access: proxy
+      isDefault: true
+      uid: APO-VictoriaMetric
+    - jsonData:
+        port: "{{ .Values.global.clickhouse.nativePort }}"
+        server: "{{ .Values.global.clickhouse.host }}"
+        username: "{{ .Values.global.clickhouse.username }}"
+      name: APO-Clickhouse
+      secureJsonData:
+        password: "{{ .Values.global.clickhouse.password }}"
+      type: grafana-clickhouse-datasource
+      uid: APO-Clickhouse
 {{- end }}

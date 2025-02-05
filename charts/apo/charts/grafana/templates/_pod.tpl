@@ -899,20 +899,9 @@ containers:
         mountPath: "/var/lib/grafana/dashboards/{{ . }}"
       {{- end }}
       {{- end }}
-      {{- with .Values.datasources }}
-      {{- $datasources := . }}
-      {{- range (keys . | sortAlpha) }}
-      {{- if (or (hasKey (index $datasources .) "secret")) }} {{/*check if current datasource should be handeled as secret */}}
-      - name: config-secret
-        mountPath: "/etc/grafana/provisioning/datasources/{{ . }}"
-        subPath: {{ . | quote }}
-      {{- else }}
       - name: config
-        mountPath: "/etc/grafana/provisioning/datasources/{{ . }}"
-        subPath: {{ . | quote }}
-      {{- end }}
-      {{- end }}
-      {{- end }}
+        mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+        subPath: datasources.yaml
       {{- with .Values.notifiers }}
       {{- $notifiers := . }}
       {{- range (keys . | sortAlpha) }}
@@ -1106,21 +1095,32 @@ containers:
 {{- with .Values.extraContainers }}
   {{- tpl . $ | nindent 2 }}
 {{- end }}
-{{- with .Values.nodeSelector }}
-nodeSelector:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-{{- with .Values.affinity }}
-affinity:
-  {{- tpl (toYaml .) $root | nindent 2 }}
-{{- end }}
 {{- with .Values.topologySpreadConstraints }}
 topologySpreadConstraints:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- with .Values.tolerations }}
+{{- if .Values.nodeSelector }}
+nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 2 }}
+{{- else if .Values.global.nodeSelector }}
+nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 2 }}
+{{- end }}
+{{- if .Values.affinity }}
+{{- with .Values.affinity }}
+affinity: {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- else if .Values.global.affinity }}
+{{- with .Values.global.affinity }}
+affinity: {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+{{- if .Values.tolerations }}
 tolerations:
-  {{- toYaml . | nindent 2 }}
+{{ toYaml .Values.tolerations | indent 2 }}
+{{- else if .Values.global.tolerations }}
+tolerations:
+{{ toYaml .Values.global.tolerations | indent 2 }}
 {{- end }}
 volumes:
   - name: config

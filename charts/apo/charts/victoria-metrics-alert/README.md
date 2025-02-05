@@ -262,27 +262,20 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.config.alerts.groups[3].rules[1].expr | string | `"(time() - last_over_time(container_last_seen{namespace!~\"apo|deepflow|originx\"}[5m]) > 60) * on (node_name) group_left () (up{job=\"integrations/kubernetes/cadvisor\"})"` |  |
 | server.config.alerts.groups[3].rules[1].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[1].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[2].alert | string | `"容器消亡"` |  |
-| server.config.alerts.groups[3].rules[2].annotations.description | string | `"A container is absent for 5 min\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[2].annotations.summary | string | `"Container absent (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[2].expr | string | `"absent(container_last_seen{namespace!~\"apo|deepflow|originx\"})"` |  |
+| server.config.alerts.groups[3].rules[2].alert | string | `"容器高cpu_cfs_throttled"` |  |
+| server.config.alerts.groups[3].rules[2].annotations.description | string | `"Container is being throttled\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[3].rules[2].annotations.summary | string | `"Container high throttle rate (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[3].rules[2].expr | string | `"sum(increase(container_cpu_cfs_throttled_periods_total{container!=\"\", namespace!~\"apo|deepflow|originx\"}[5m])) by (container, pod, namespace) / sum(increase(container_cpu_cfs_periods_total{namespace!~\"apo|deepflow|originx\"}[5m])) by (container, pod, namespace) > (25 / 100)"` |  |
 | server.config.alerts.groups[3].rules[2].for | string | `"5m"` |  |
 | server.config.alerts.groups[3].rules[2].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[2].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[3].alert | string | `"容器高cpu_cfs_throttled"` |  |
-| server.config.alerts.groups[3].rules[3].annotations.description | string | `"Container is being throttled\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[3].annotations.summary | string | `"Container high throttle rate (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[3].expr | string | `"sum(increase(container_cpu_cfs_throttled_periods_total{container!=\"\", namespace!~\"apo|deepflow|originx\"}[5m])) by (container, pod, namespace) / sum(increase(container_cpu_cfs_periods_total{namespace!~\"apo|deepflow|originx\"}[5m])) by (container, pod, namespace) > (25 / 100)"` |  |
-| server.config.alerts.groups[3].rules[3].for | string | `"5m"` |  |
+| server.config.alerts.groups[3].rules[3].alert | string | `"容器CPU使用率超过80%"` |  |
+| server.config.alerts.groups[3].rules[3].annotations.description | string | `"Container CPU utilization is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| server.config.alerts.groups[3].rules[3].annotations.summary | string | `"Container High CPU utilization (instance_name {{ $labels.instance_name }})"` |  |
+| server.config.alerts.groups[3].rules[3].expr | string | `"(sum(rate(container_cpu_usage_seconds_total{container!=\"\", namespace!~\"apo|deepflow|originx\"}[5m])) by (namespace, pod, container) / sum(container_spec_cpu_quota{container!=\"\", namespace!~\"apo|deepflow|originx\"}/container_spec_cpu_period{container!=\"\", namespace!~\"apo|deepflow|originx\"}) by (namespace, pod, container) * 100) > 80"` |  |
+| server.config.alerts.groups[3].rules[3].for | string | `"2m"` |  |
 | server.config.alerts.groups[3].rules[3].labels.group | string | `"container"` |  |
 | server.config.alerts.groups[3].rules[3].labels.severity | string | `"warning"` |  |
-| server.config.alerts.groups[3].rules[4].alert | string | `"容器CPU使用率超过80%"` |  |
-| server.config.alerts.groups[3].rules[4].annotations.description | string | `"Container CPU utilization is above 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
-| server.config.alerts.groups[3].rules[4].annotations.summary | string | `"Container High CPU utilization (instance_name {{ $labels.instance_name }})"` |  |
-| server.config.alerts.groups[3].rules[4].expr | string | `"(sum(rate(container_cpu_usage_seconds_total{container!=\"\", namespace!~\"apo|deepflow|originx\"}[5m])) by (namespace, pod, container) / sum(container_spec_cpu_quota{container!=\"\", namespace!~\"apo|deepflow|originx\"}/container_spec_cpu_period{container!=\"\", namespace!~\"apo|deepflow|originx\"}) by (namespace, pod, container) * 100) > 80"` |  |
-| server.config.alerts.groups[3].rules[4].for | string | `"2m"` |  |
-| server.config.alerts.groups[3].rules[4].labels.group | string | `"container"` |  |
-| server.config.alerts.groups[3].rules[4].labels.severity | string | `"warning"` |  |
 | server.configMap | string | `""` |  |
 | server.datasource.basicAuth | object | `{"password":"","username":""}` | Basic auth for datasource |
 | server.datasource.bearer.token | string | `""` | Token with Bearer token. You can use one of token or tokenFile. You don't need to add "Bearer" prefix string |

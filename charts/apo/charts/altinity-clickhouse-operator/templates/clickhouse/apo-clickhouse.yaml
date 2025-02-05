@@ -54,10 +54,9 @@ spec:
             requests:
               storage: "{{ .Values.clickhouse.persistence.data.size }}"
         {{- if .Values.clickhouse.persistence.data.storageClass }}
-        {{- if (eq "-" .Values.clickhouse.persistence.data.storageClass) }}
-          storageClassName: ""
+        {{- if (eq "" (tpl .Values.clickhouse.persistence.data.storageClass .)) }}
         {{- else }}
-          storageClassName: "{{ .Values.clickhouse.persistence.data.storageClass }}"
+          storageClassName: "{{ tpl .Values.clickhouse.persistence.data.storageClass . }}"
         {{- end }}
         {{- end }}
         {{- with .Values.clickhouse.persistence.data.matchLabels }}
@@ -73,10 +72,9 @@ spec:
             requests:
               storage: "{{ .Values.clickhouse.persistence.log.size }}"
         {{- if .Values.clickhouse.persistence.log.storageClass }}
-        {{- if (eq "-" .Values.clickhouse.persistence.log.storageClass) }}
-          storageClassName: ""
+        {{- if (eq "" (tpl .Values.clickhouse.persistence.log.storageClass .)) }}
         {{- else }}
-          storageClassName: "{{ .Values.clickhouse.persistence.log.storageClass }}"
+          storageClassName: "{{ tpl .Values.clickhouse.persistence.log.storageClass . }}"
         {{- end }}
         {{- end }}
         {{- with .Values.clickhouse.persistence.log.matchLabels }}

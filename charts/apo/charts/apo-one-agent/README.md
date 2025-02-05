@@ -1,6 +1,6 @@
 # apo-one-agent
 
-![Version: 1.0.001](https://img.shields.io/badge/Version-1.0.001-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+![Version: 1.3.000](https://img.shields.io/badge/Version-1.3.000-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.3.0](https://img.shields.io/badge/AppVersion-1.3.0-informational?style=flat-square)
 
 apo-one-agent deployment charts
 
@@ -16,6 +16,7 @@ apo-one-agent deployment charts
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| affinity | object | `{}` |  |
 | apo-nginx-proxy.config.apoCollectorPort | string | `"{{ .Values.global.apoCollectorPort }}"` |  |
 | apo-nginx-proxy.config.apoCollectorUrl | string | `"{{ .Values.global.apoServerIP }}"` |  |
 | apo-nginx-proxy.enabled | bool | `true` |  |
@@ -61,7 +62,7 @@ apo-one-agent deployment charts
 | apoIlogtail.apoVectorLogUrl | string | `"{{ .Values.global.apoServerIP }}:{{ .Values.global.apoVectorLogPort }}"` |  |
 | apoIlogtail.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apoIlogtail.image.repository | string | `"{{ .Values.global.image.repository }}/ilogtail"` |  |
-| apoIlogtail.image.tag | string | `"v1.5.0"` |  |
+| apoIlogtail.image.tag | string | `"v1.5.2"` |  |
 | apoIlogtail.resources.limits.cpu | string | `"1000m"` |  |
 | apoIlogtail.resources.limits.memory | string | `"1024Mi"` |  |
 | apoIlogtail.resources.requests.cpu | string | `"100m"` |  |
@@ -69,7 +70,7 @@ apo-one-agent deployment charts
 | apoNodeAgent.apoOtelCollectorUrl | string | `"apo-otel-collector-svc:8080"` |  |
 | apoNodeAgent.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | apoNodeAgent.image.repository | string | `"{{ .Values.global.image.repository }}/node-agent"` |  |
-| apoNodeAgent.image.tag | string | `"v1.7.0"` |  |
+| apoNodeAgent.image.tag | string | `"v1.8.0"` |  |
 | apoNodeAgent.resources.limits.cpu | string | `"200m"` |  |
 | apoNodeAgent.resources.limits.memory | string | `"128Mi"` |  |
 | apoNodeAgent.resources.requests.cpu | string | `"100m"` |  |
@@ -97,6 +98,7 @@ apo-one-agent deployment charts
 | apoOtelCollectorAgent.resources.requests.cpu | string | `"100m"` |  |
 | apoOtelCollectorAgent.resources.requests.memory | string | `"128Mi"` |  |
 | dnsPolicy | string | `"ClusterFirstWithHostNet"` |  |
+| global.affinity | object | `{}` | Pod affinity |
 | global.agentCollectorMode[0] | string | `"trace"` |  |
 | global.agentCollectorMode[1] | string | `"metrics"` |  |
 | global.agentCollectorMode[2] | string | `"log"` |  |
@@ -112,17 +114,19 @@ apo-one-agent deployment charts
 | global.image.eeRepository | string | `"registry.cn-hangzhou.aliyuncs.com/kindlingx"` |  |
 | global.image.pullPolicy | string | `"Always"` |  |
 | global.image.repository | string | `"registry.cn-hangzhou.aliyuncs.com/kindlingx"` |  |
+| global.nodeSelector | object | `{}` | Pod's node selector. Ref: [https://kubernetes.io/docs/user-guide/node-selection/](https://kubernetes.io/docs/user-guide/node-selection/) |
+| global.tolerations | list | `[]` | Node tolerations for server scheduling to nodes with taints. Ref: [https://kubernetes.io/docs/concepts/configuration/assign-pod-node/](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/) |
 | grafanaAlloy.config.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-svc:4317"` |  |
 | grafanaAlloy.config.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-svc:4318"` |  |
 | grafanaAlloy.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | grafanaAlloy.image.repository | string | `"{{ .Values.global.image.repository }}/grafana-alloy"` |  |
-| grafanaAlloy.image.tag | string | `"v1.4.2"` |  |
+| grafanaAlloy.image.tag | string | `"v1.4.2-1"` |  |
 | grafanaAlloy.resources.limits.cpu | string | `"2000m"` |  |
 | grafanaAlloy.resources.limits.memory | string | `"2048Mi"` |  |
 | grafanaAlloy.resources.requests.cpu | string | `"100m"` |  |
 | grafanaAlloy.resources.requests.memory | string | `"128Mi"` |  |
-| grafanaBeyla.config.k8sNamespace | string | `"^/(/?/!apo$).*"` |  |
-| grafanaBeyla.enabled | bool | `true` |  |
+| grafanaBeyla.config.k8sNamespace | string | `"^/(/?/!{{ .Release.Namespace }}$).*"` |  |
+| grafanaBeyla.enabled | bool | `false` |  |
 | grafanaBeyla.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | grafanaBeyla.image.repository | string | `"{{ .Values.global.image.repository }}/apo-beyla"` |  |
 | grafanaBeyla.image.tag | string | `"v1.8.4-1"` |  |
@@ -131,12 +135,13 @@ apo-one-agent deployment charts
 | grafanaBeyla.resources.requests.cpu | string | `"100m"` |  |
 | grafanaBeyla.resources.requests.memory | string | `"128Mi"` |  |
 | nameOverride | string | `""` |  |
+| nodeSelector | object | `{}` |  |
 | odiglet.apoOtelCollectorGrpcUrl | string | `"apo-otel-collector-svc.{{ .Release.Namespace }}:4317"` |  |
 | odiglet.apoOtelCollectorHttpUrl | string | `"apo-otel-collector-svc.{{ .Release.Namespace }}:4318"` |  |
 | odiglet.apoOtelCollectorSkywalkingUrl | string | `"apo-otel-collector-svc.{{ .Release.Namespace }}:11800"` |  |
 | odiglet.image.pullPolicy | string | `"{{ .Values.global.image.pullPolicy }}"` |  |
 | odiglet.image.repository | string | `"{{ .Values.global.image.repository }}/apo-odiglet"` |  |
-| odiglet.image.tag | string | `"v1.0.0"` |  |
+| odiglet.image.tag | string | `"v1.0.2"` |  |
 | odiglet.resources.limits.cpu | string | `"200m"` |  |
 | odiglet.resources.limits.memory | string | `"200Mi"` |  |
 | odiglet.resources.requests.cpu | string | `"10m"` |  |
@@ -169,6 +174,7 @@ apo-one-agent deployment charts
 | serviceAccount.additionalLabels | object | `{}` |  |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the created service account. |
 | serviceAccount.name | string | `nil` |  |
+| tolerations | list | `[]` |  |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
