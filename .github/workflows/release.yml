@@ -33,11 +33,7 @@ jobs:
 
       - name: Set up aliyun ossutil
         run: |
-          curl -o ossutil64 http://gosspublic.alicdn.com/ossutil/1.6.7/ossutil64
-          chmod +x ossutil64
-          mkdir -p $HOME/.local/bin
-          mv ossutil64 $HOME/.local/bin/ossutil
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          sudo -v ; curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
           ossutil config -e https://oss-cn-hangzhou.aliyuncs.com -i ${{ secrets.ALIYUN_OSS_ACCESS_KEY }} -k ${{ secrets.ALIYUN_OSS_SECRETS_KEY }} -L CH
 
       - name: Sync Helm index to Aliyun OSS
