@@ -33,23 +33,23 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       
       - name: Check no chart changes
-        id: check01
         run: |
           if compgen -G ".cr-release-packages/apo-*.tgz" > /dev/null; then
             echo "Chart changes, continuing workflow..."
+            echo "chartChangeFlag=0" >> $GITHUB_ENV
           else
             echo "No chart changes, exiting successfully."
-            exit 1
+            echo "chartChangeFlag=1" >> $GITHUB_ENV
           fi
 
       - name: Set up aliyun ossutil
-        if: steps.check01.conclusion == 'success'
+        if: ${{ env.chartChangeFlag == '0' }}
         run: |
           sudo -v ; curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
           ossutil config -e https://oss-cn-hangzhou.aliyuncs.com -i ${{ secrets.ALIYUN_OSS_ACCESS_KEY }} -k ${{ secrets.ALIYUN_OSS_SECRETS_KEY }} -L CH
 
       - name: Sync Helm index to Aliyun OSS
-        if: steps.check01.conclusion == 'success'
+        if: ${{ env.chartChangeFlag == '0' }}
         run: |
           curl -o index.current https://apo-charts.oss-cn-hangzhou.aliyuncs.com/index.yaml||true
           helm repo index .cr-release-packages/ --url https://apo-charts.oss-cn-hangzhou.aliyuncs.com/ --merge index.current
