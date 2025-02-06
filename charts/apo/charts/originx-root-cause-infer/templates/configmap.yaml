@@ -31,8 +31,13 @@ data:
           password: {{ .Values.global.clickhouse.password }}
           database: "{{ .Values.global.clickhouse.database }}"
           cluster: "{{ .Values.global.clickhouse.clusterName }}"
+      {{- if eq .Values.global.victoriaMetrics.mode "single" }}
       promethues:
-        address: "{{ .Values.global.victoriaMetricsUrl }}"
+        address: "{{ .Values.global.victoriaMetrics.single.url }}"
+      {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
+      promethues:
+        address: "{{ .Values.global.victoriaMetrics.cluster.selectUrl }}"
+      {{- end }}
       clickhouse:
         address: "{{ .Values.global.deepflow.clickhouse.address }}"
         username: "{{ .Values.global.deepflow.clickhouse.username }}"
