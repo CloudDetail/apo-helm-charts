@@ -2,7 +2,7 @@
 
 An automated observability platform for cloud-native developers.
 
-This repository contains [Helm](https://helm.sh/) charts for DeepFlow project.
+This repository contains [Helm](https://helm.sh/) charts for APO project.
 
 ## Usage
 
