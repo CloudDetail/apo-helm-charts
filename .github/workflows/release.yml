@@ -31,6 +31,15 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      
+      - name: Check no chart changes
+        run: |
+          if compgen -G ".cr-release-packages/apo-*.tgz" > /dev/null; then
+            echo "Chart changes, continuing workflow..."
+          else
+            echo "No chart changes, exiting successfully."
+            exit 0
+          fi
 
       - name: Set up aliyun ossutil
         run: |
