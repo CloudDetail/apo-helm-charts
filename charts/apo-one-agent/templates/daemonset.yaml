@@ -158,6 +158,8 @@ spec:
           volumeMounts:
             - name: grafana-alloy-config
               mountPath: /etc/alloy
+            - name: root
+              mountPath: /host/rootfs
           readinessProbe:
             httpGet:
               path: /-/ready
