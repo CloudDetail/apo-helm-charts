@@ -27,7 +27,6 @@ keywords:
 - metrics
 - timeseries
 - rules
-kubeVersion: '>=1.23.0-0'
 name: victoria-metrics-alert
 sources:
 - https://github.com/VictoriaMetrics/helm-charts
