@@ -158,7 +158,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v1.0.0"
+    tag: "v1.0.1"
   resources: 
     limits:
       cpu: 1000m
@@ -249,7 +249,7 @@ apo-otel-collector:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.0.0"
+    tag: "v1.0.1"
   config:
     apoBackendUrl: "{{ .Values.global.apoServerIP }}"
     apoBackendPort: "{{ .Values.global.apoBackendPort }}"
