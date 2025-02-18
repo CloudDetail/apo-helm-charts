@@ -111,6 +111,11 @@ data:
       {{- else }}
       enable: false
       {{- end }}
+    profiler:
+      # 转发profiler探针端口号，设置为0则不通知.
+      port: 19005
+      # 超时时间(秒).
+      timeout: 2
   log4rs.yml: |
     refresh_rate: 30 seconds
     appenders:
