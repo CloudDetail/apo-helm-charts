@@ -40,7 +40,7 @@ data:
           # kube_auth_config, kubeConfig file path, only used when kube_auth_type is kubeConfig
           kube_auth_config: ~/.kube/config
           # cluster_id, setup cluster id in kube metadata
-          cluster_id: "apo-agent"
+          cluster_id: "{{ tpl .Values.config.clusterID . }}"
         exporter:
           # remote_write_addr, push kube metadata to other server, remove if not need
           remote_write_addr: "{{ tpl .Values.config.apoBackendUrl . }}:{{ tpl .Values.config.apoBackendPort . }}/metadata"

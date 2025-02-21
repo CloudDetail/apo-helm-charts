@@ -256,6 +256,7 @@ apo-otel-collector:
     apoOtelCollectorGatewayURL: "{{ .Values.global.apoServerIP }}"
     apoOtelCollectorGatewayGRPCPort: "{{ .Values.global.apoOtelCollectorGatewayGRPCPort }}"
     apoOtelCollectorGatewayK8SPort: "{{ .Values.global.apoOtelCollectorGatewayK8SPort }}"
+    clusterID: "apo-agent"
   service:
     ports:
     - name: query
