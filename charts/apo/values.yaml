@@ -93,7 +93,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.4.0"
+      tag: "v1.4.1"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -236,7 +236,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.4.0"
+    tag: "v1.4.1"
   # resources: 
   #   limits:
   #     cpu: 1000m
