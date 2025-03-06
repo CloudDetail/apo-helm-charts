@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apo-dify-sandbox
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: apo-dify-sandbox
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: apo-dify-sandbox
+  template:
+    metadata:
+      labels:
+        app: apo-dify-sandbox
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: dify-sandbox
+        image: "{{ tpl .Values.sandbox.image.repository . }}:{{ tpl .Values.sandbox.image.tag . }}"
+        env:
+        - name: API_KEY
+          value: "dify-sandbox"
+        - name: GIN_MODE
+          value: "release"
+        - name: WORKER_TIMEOUT
+          value: "15"
+        - name: ENABLE_NETWORK
+          value: "true"
+        - name: SANDBOX_PORT
+          value: "8194"
+          # uncomment if you want to use proxy
+        - name: HTTP_PROXY
+          value: 'http://apo-dify-ssrf-svc:3128'
+        - name: HTTPS_PROXY
+          value: 'http://apo-dify-ssrf-svc:3128'
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        livenessProbe:
+          exec:
+            command:
+            - "curl"
+            - "-f"
+            - "http://localhost:8194/health"
+        ports:
+        - containerPort: 8194
+        imagePullPolicy: IfNotPresent
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

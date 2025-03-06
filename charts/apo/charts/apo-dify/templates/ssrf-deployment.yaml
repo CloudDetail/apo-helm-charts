@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  apo-dify-ssrf
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: apo-dify-ssrf
+spec:
+  selector:
+    matchLabels:
+      app: apo-dify-ssrf
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: apo-dify-ssrf
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: dify-ssrf
+        image: "{{ tpl .Values.ssrf.image.repository . }}:{{ tpl .Values.ssrf.image.tag . }}"
+        env:
+        - name: HTTP_PORT
+          value: "3128"
+        - name: COREDUMP_DIR
+          value: "/var/spool/squid"    
+        - name: REVERSE_PROXY_PORT
+          value: "8194"
+        - name: SANDBOX_HOST
+          value: "apo-dify-sandbox-svc"
+        - name: SANDBOX_PORT
+          value: "8194"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 300m
+            memory: 300Mi
+        ports:
+        - containerPort: 3128
+          name: dify-ssrf
+        volumeMounts:
+        - name: ssrf-proxy-config
+          mountPath: /etc/squid/
+        - name: ssrf-proxy-entrypoint
+          mountPath: /tmp/
+        command: [ "sh", "-c", "cp /tmp/docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
+      volumes:
+        - name: ssrf-proxy-config
+          configMap:
+            name: apo-ssrf-proxy-config
+        - name: ssrf-proxy-entrypoint
+          configMap:
+            name: apo-ssrf-proxy-entrypoint
+      restartPolicy: Always
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: apo-dify-redis
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: apo-dify-redis
+  serviceName: "apo-dify-redis-svc"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: apo-dify-redis
+    spec:
+      terminationGracePeriodSeconds: 10
+      nodeSelector:
+        kubernetes.io/os: linux
+      serviceAccountName: apo-dify-redis
+      containers:
+      - name: dify-redis
+        image: "{{ tpl .Values.redis.image.repository . }}:{{ tpl .Values.redis.image.tag . }}"
+        ports:
+        - containerPort: 6379
+          name: redis-port
+        command: ["redis-server", "--save", "20", "1", "--loglevel", "warning", "--requirepass", "$(REDIS_PASSWORD)"]
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 100m
+            memory: 102Mi
+        env:
+        - name: REDIS_PASSWORD
+          value: difyai123456
+          # valueFrom:
+          #   secretKeyRef:
+          #     name: dify-credentials
+          #     key: redis-password
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        hostPath:
+          path: {{ .Values.hostPath }}/db/redis/data
+          type: DirectoryOrCreate
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

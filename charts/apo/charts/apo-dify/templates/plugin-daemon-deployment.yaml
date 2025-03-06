@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apo-dify-plugin-daemon
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: apo-dify-plugin-daemon
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: apo-dify-plugin-daemon
+  template:
+    metadata:
+      labels:
+        app: apo-dify-plugin-daemon
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      automountServiceAccountToken: false
+      volumes:
+      - name: dify-plugin-daemon-storage
+        hostPath:
+          path: {{ .Values.hostPath }}/app/plugin/storage
+          type: DirectoryOrCreate
+      containers:
+      - name: dify-plugin-daemon
+        image: "{{ tpl .Values.pluginDaemon.image.repository . }}:{{ tpl .Values.pluginDaemon.image.tag . }}"
+        resources:
+          limits:
+            memory: "1024Mi"
+            cpu: "2000m"
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5003
+          protocol: TCP
+          name: debug-port
+          
+        - containerPort: 5002
+          protocol: TCP
+          name: service-port
+        env:
+          - name: DB_USERNAME
+            value: postgres
+
+          - name: DB_PASSWORD
+            value: difyai123456
+
+          - name: DB_HOST
+            value: apo-dify-postgres-svc
+
+          - name: DB_PORT
+            value: '5432'
+
+          - name: REDIS_HOST
+            value: apo-dify-redis-svc
+
+          - name: REDIS_PORT
+            value: '6379'
+
+          - name: REDIS_USERNAME
+            value: ''
+
+          - name: REDIS_PASSWORD
+            value: difyai123456
+          - name: REDIS_USE_SSL
+            value: "false"
+          - name: REDIS_DB
+            value: "0"
+          - name: CELERY_BROKER_URL
+            value: >-
+              redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)/1
+          - name: 'DB_DATABASE'
+            value: 'dify_plugin'
+          - name: 'SERVER_PORT'
+            value: '5002'
+          - name: 'EXPOSE_PLUGIN_DAEMON_PORT'
+            value: '5002'
+          - name: 'SERVER_KEY'
+            value: 'lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi'
+          - name: 'MAX_PLUGIN_PACKAGE_SIZE'
+            value: '52428800'
+          - name: 'PPROF_ENABLED'
+            value: 'false'
+          - name: 'DIFY_INNER_API_URL'
+            value: 'http://apo-dify-api-svc:5001'
+          - name: 'DIFY_INNER_API_KEY'
+            value: 'QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1'
+          - name: 'PLUGIN_REMOTE_INSTALLING_HOST'
+            value: '0.0.0.0'
+          - name: 'PLUGIN_REMOTE_INSTALLING_PORT'
+            value: '5003'
+          - name: 'PLUGIN_WORKING_PATH'
+            value: '/app/storage/cwd'
+          - name: 'FORCE_VERIFYING_SIGNATURE'
+            value: 'true'
+          - name: 'EXPOSE_PLUGIN_DEBUGGING_HOST'
+            value: 'localhost'
+          - name: 'EXPOSE_PLUGIN_DEBUGGING_PORT'
+            value: '5003'
+          # - name: 'ENDPOINT_URL_TEMPLATE'
+          #   value: 'http://localhost/e/{hook_id}'
+        volumeMounts:
+        - name: dify-plugin-daemon-storage
+          mountPath: /app/storage
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

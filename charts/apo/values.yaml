@@ -230,6 +230,74 @@ apo-collector:
   tolerations: []
   affinity: {}
 
+apo-dify:
+  enabled: true
+  api:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-api
+      pullPolicy: IfNotPresent
+      tag: "1.0.0"
+
+  nginx:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/nginx
+      pullPolicy: IfNotPresent
+      tag: "stable-alpine3.20"
+
+  pluginDaemon:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-plugin-daemon
+      pullPolicy: IfNotPresent
+      tag: "0.0.3-local"
+
+  postgres:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/postgres
+      pullPolicy: IfNotPresent
+      tag: "15-alpine"
+
+  redis:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/redis
+      pullPolicy: IfNotPresent
+      tag: "6-alpine"
+
+  sandbox:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-sandbox
+      pullPolicy: IfNotPresent
+      tag: "0.2.10"
+
+  ssrf:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/ubuntu-squid
+      pullPolicy: IfNotPresent
+      tag: "6.6-24.04_edge"
+
+  weaviate:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/weaviate
+      pullPolicy: IfNotPresent
+      tag: "1.19.0"
+
+  web:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-web
+      pullPolicy: IfNotPresent
+      tag: "1.0.0"
+
+  worker:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-api
+      pullPolicy: IfNotPresent
+      tag: "1.0.0"
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+  hostPath: "/data/apo/dify"
+
 apo-front:
   enabled: true
   image:

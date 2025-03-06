@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: apo-dify-postgres
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: apo-dify-postgres 
+  serviceName: "apo-dify-postgres-svc"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: apo-dify-postgres
+    spec:
+      serviceAccountName: apo-dify-postgres
+      terminationGracePeriodSeconds: 10
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: dify-postgres
+        image: "{{ tpl .Values.postgres.image.repository . }}:{{ tpl .Values.postgres.image.tag . }}"
+        env:
+        - name: PGUSER
+          value: postgres
+          # valueFrom:
+          #   secretKeyRef:
+          #     name: dify-credentials
+          #     key: pg-username
+        - name: POSTGRES_PASSWORD
+          value: difyai123456
+          # valueFrom:
+          #   secretKeyRef:
+          #     name: dify-credentials
+          #     key: pg-password
+        - name: POSTGRES_DB
+          value: dify
+        - name: PGDATA
+          value: /var/lib/postgresql/data
+        # command:
+        # - "postgres"
+        # - "-c"
+        # - "max_connections=100"
+        # - "-c"
+        # - "shared_buffers=128MB"
+        # - "-c"
+        # - "work_mem=4MB"
+        # - "-c"
+        # - "maintenance_work_mem=64MB"
+        # - "-c"
+        # - "effective_cache_size=4096MB"
+
+        livenessProbe:
+          exec:
+            command:
+            - "pg_isready"
+            - "-U"
+            - "$(PGUSER)"
+            - "-d"
+            - "$(POSTGRES_DB)"
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        ports:
+        - containerPort: 5432
+          name: postgres-port
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        hostPath:
+          path: {{ .Values.hostPath }}/db/postgres/data
+          type: DirectoryOrCreate
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

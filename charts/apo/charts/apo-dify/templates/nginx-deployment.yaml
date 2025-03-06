@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apo-dify-nginx
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: apo-dify-nginx
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: apo-dify-nginx
+  template:
+    metadata:
+      labels:
+        app: apo-dify-nginx
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      automountServiceAccountToken: false
+      containers:
+      - name: dify-nginx
+        image: "{{ tpl .Values.nginx.image.repository . }}:{{ tpl .Values.nginx.image.tag . }}"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: apo-dify-nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: dify-nginx-config
+          mountPath: /etc/nginx/conf.d
+        imagePullPolicy: IfNotPresent
+      volumes:
+      - name: apo-dify-nginx-config
+        configMap:
+          name: apo-dify-nginx-config
+      # Persistent volume could be better
+      - name: dify-nginx-config
+        emptyDir: {}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apo-dify-web
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: apo-dify-web
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: apo-dify-web
+  template:
+    metadata:
+      labels:
+        app: apo-dify-web
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      automountServiceAccountToken: false
+      containers:
+      - name: dify-web
+        image: "{{ tpl .Values.web.image.repository . }}:{{ tpl .Values.web.image.tag . }}"
+        env:
+        - name: EDITION
+          value: SELF_HOSTED
+        - name: CONSOLE_API_URL
+          value: ""
+        - name: APP_API_URL
+          value: ""
+        - name: SENTRY_DSN
+          value: ""
+        - name: NEXT_TELEMETRY_DISABLED
+          value: "0"
+        - name: TEXT_GENERATION_TIMEOUT_MS
+          value: "60000"
+        - name: CSP_WHITELIST
+          value: ""
+          # dify marketplace
+        - name: 'MARKETPLACE_API_URL'
+          value: 'https://marketplace.dify.ai'
+        - name: 'MARKETPLACE_URL'
+          value: 'https://marketplace.dify.ai'
+        - name: 'TOP_K_MAX_VALUE'
+          value: ''
+        - name: 'INDEXING_MAX_SEGMENTATION_TOKENS_LENGTH'
+          value: ''
+        - name: 'PM2_INSTANCES'
+          value: '2'
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: IfNotPresent
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}

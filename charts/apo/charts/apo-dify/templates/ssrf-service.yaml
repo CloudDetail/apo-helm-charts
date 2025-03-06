@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apo-dify-ssrf-svc
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: apo-dify-ssrf
+  ports:
+  - protocol: TCP
+    port: 3128
+    targetPort: 3128

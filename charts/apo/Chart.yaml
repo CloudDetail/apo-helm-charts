@@ -18,6 +18,10 @@ dependencies:
     condition: apo-collector.enabled
     repository: ""
     version: '*.*.*'
+  - name: apo-dify
+    condition: apo-dify.enabled
+    repository: ""
+    version: '*.*.*'
   - name: apo-front
     condition: apo-front.enabled
     repository: ""

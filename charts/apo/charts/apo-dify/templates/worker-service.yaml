@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apo-dify-worker
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+  - protocol: TCP
+    port: 5001
+    targetPort: 5001
+  selector:
+    app: apo-dify-worker
+  type: ClusterIP

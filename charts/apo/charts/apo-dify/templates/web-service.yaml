@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apo-dify-web-svc
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: dify-web
+  type: ClusterIP
+  selector:
+    app: apo-dify-web
