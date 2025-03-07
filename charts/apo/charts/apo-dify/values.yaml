@@ -3,6 +3,12 @@ global:
   tolerations: []
   affinity: {}
 
+initHostPath:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-init-hostpath
+    pullPolicy: IfNotPresent
+    tag: "v1.0.0"
+
 api:
   image:
     repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-api
