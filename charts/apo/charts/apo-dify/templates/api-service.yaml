@@ -7,8 +7,9 @@ spec:
   ports:
   - port: 5001
     targetPort: 5001
+    nodePort: 30051
     protocol: TCP
     name: apo-dify-api
-  type: ClusterIP
+  type: NodePort
   selector:
     app: apo-dify-api

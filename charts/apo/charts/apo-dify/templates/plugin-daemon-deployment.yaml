@@ -27,6 +27,7 @@ spec:
       containers:
       - name: dify-plugin-daemon
         image: "{{ tpl .Values.pluginDaemon.image.repository . }}:{{ tpl .Values.pluginDaemon.image.tag . }}"
+        imagePullPolicy: {{ tpl .Values.pluginDaemon.image.pullPolicy . }}
         resources:
           limits:
             memory: "1024Mi"

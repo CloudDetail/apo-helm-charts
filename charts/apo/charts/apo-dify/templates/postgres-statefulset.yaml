@@ -21,6 +21,7 @@ spec:
       containers:
       - name: dify-postgres
         image: "{{ tpl .Values.postgres.image.repository . }}:{{ tpl .Values.postgres.image.tag . }}"
+        imagePullPolicy: {{ tpl .Values.postgres.image.pullPolicy . }}
         env:
         - name: PGUSER
           value: postgres

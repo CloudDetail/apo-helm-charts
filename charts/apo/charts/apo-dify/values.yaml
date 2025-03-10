@@ -2,6 +2,7 @@ global:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  baseURL: ""
 
 initHostPath:
   image:
@@ -11,9 +12,9 @@ initHostPath:
 
 api:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-api
+    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-api
     pullPolicy: IfNotPresent
-    tag: "1.0.0"
+    tag: "v1.0.0-1"
 
 nginx:
   image:
@@ -59,15 +60,15 @@ weaviate:
 
 web:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-web
+    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-web
     pullPolicy: IfNotPresent
-    tag: "1.0.0"
+    tag: "v1.0.0-1"
 
 worker:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-api
+    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-api
     pullPolicy: IfNotPresent
-    tag: "1.0.0"
+    tag: "v1.0.0-1"
 
 nodeSelector: {}
 tolerations: []

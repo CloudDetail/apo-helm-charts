@@ -5,6 +5,10 @@ Configure apo-one-agent variables according to different modes
 env:
 - name: enable_uprobe
   value: 'false'
+- name: is_jf_open
+  value: 'true'
+- name: SCAP_HOST_ROOT_ENV_VAR_NAME
+  value: /host
 - name: CACHE_SECOND
   value: '30'
 - name: RUST_BACKTRACE
@@ -13,7 +17,7 @@ env:
   value: /host/proc
 - name: PL_HOST_PATH
   value: /host
-- name: SYSDIG_HOST_ROOT
+- name: SCAP_HOST_ROOT_ENV_VAR_NAME
   value: /host
 - name: SNAPLEN
   value: '1000'
@@ -32,7 +36,7 @@ env:
 {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
 {{- if eq .Values.global.edition "ee" }}
 - name: ASYNC_PROFILER_PARAMS
-  value: '-e traceid -e lock'
+  value: '-e traceid -e lock -l 50'
 {{- else }}
 - name: ASYNC_PROFILER_PARAMS
   value: '-e traceid'
@@ -40,7 +44,7 @@ env:
 {{- else }}
 {{- if eq .Values.global.edition "ee" }}
 - name: ASYNC_PROFILER_PARAMS
-  value: '-e traceid -o sw_otel -e lock'
+  value: '-e traceid -o sw_otel -e lock -l 50'
 {{- else }}
 - name: ASYNC_PROFILER_PARAMS
   value: '-e traceid -o sw_otel'
@@ -50,7 +54,7 @@ volumeMounts:
 - name: apo-one-agent-config
   mountPath: /app/config
 - name: sys-vol
-  mountPath: /sys
+  mountPath: /host/sys
 - name: modprobe-d
   readOnly: true
   mountPath: /etc/modprobe.d

@@ -53,7 +53,7 @@ spec:
             - "http://localhost:8194/health"
         ports:
         - containerPort: 8194
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ tpl .Values.sandbox.image.pullPolicy . }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

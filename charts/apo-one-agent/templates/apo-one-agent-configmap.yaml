@@ -14,6 +14,9 @@ data:
         # edge_events_window_size is the size of the duration window that seats the edge events.
         # The unit is second. The greater it is, the more data will be stored.
         edge_events_window_size: 2
+        # enable_thread_cpu_metrics is the switch for whether to collect thread-level polaris metrics.
+        # It dosn't rely on trigger signals like tracing txin/txout.
+        enable_thread_polaris_metrics: true
       traceidanalyzer:
         # open_java_trace_sampling is the switch for whether to use Java-Trace to trigger sampling.
         open_java_trace_sampling: true

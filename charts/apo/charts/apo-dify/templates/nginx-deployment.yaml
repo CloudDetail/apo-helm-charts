@@ -37,7 +37,7 @@ spec:
           subPath: nginx.conf
         - name: dify-nginx-config
           mountPath: /etc/nginx/conf.d
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ tpl .Values.nginx.image.pullPolicy . }}
       volumes:
       - name: apo-dify-nginx-config
         configMap:

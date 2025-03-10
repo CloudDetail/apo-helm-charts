@@ -26,6 +26,7 @@ spec:
       containers:
       - name: dify-weaviate
         image: "{{ tpl .Values.weaviate.image.repository . }}:{{ tpl .Values.weaviate.image.tag . }}"
+        imagePullPolicy: {{ tpl .Values.weaviate.image.pullPolicy . }}
         ports:
         - containerPort: 8080
           name: weaviate-port

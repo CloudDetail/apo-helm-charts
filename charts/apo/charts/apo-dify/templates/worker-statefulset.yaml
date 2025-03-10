@@ -7,7 +7,7 @@ metadata:
     app: apo-dify-worker
     app.kubernetes.io/instance: apo-dify-worker
 spec:
-  serviceName: "apo-dify-worker"
+  serviceName: "apo-dify-worker-svc"
   replicas: 1
   selector:
     matchLabels:
@@ -39,6 +39,8 @@ spec:
           value: INFO
         - name: SECRET_KEY
           value: "sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U"
+        - name: APO_BACKEND_URL
+          value: "{{ tpl .Values.global.baseURL . }}:31364"
         - name: DB_USERNAME
           value: postgres
           # valueFrom:
@@ -160,7 +162,7 @@ spec:
         volumeMounts:
         - name: dify-api-storage
           mountPath: /app/api/storage
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ tpl .Values.worker.image.pullPolicy . }}
       restartPolicy: Always
       {{- if .Values.nodeSelector }}
       nodeSelector:

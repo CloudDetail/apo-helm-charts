@@ -40,6 +40,8 @@ spec:
                 fieldPath: metadata.namespace
           - name: ENABLE_CUSTOM_COLLECTOR
             value: 'true'
+          - name: ENABLE_OVERWRITE_USER_DEFINED_ENVS
+            value: {{ .Values.instrumentor.enableOverwriteUserDefinedEnvs | quote }}
         envFrom:
           - configMapRef:
               name: apo-odigos-own-telemetry-otel-config

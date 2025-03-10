@@ -41,13 +41,15 @@ spec:
         - name: INIT_PASSWORD
           value: password
         - name: CONSOLE_API_URL
-          value: ""
+          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
         - name: SERVICE_API_URL
-          value: ""
+          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
         - name: APP_WEB_URL
-          value: ""
+          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
         - name: FILES_URL
-          value: ""
+          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
+        - name: APO_BACKEND_URL
+          value: "{{ tpl .Values.global.baseURL . }}:31364"
         - name: MIGRATION_ENABLED
           value: "true"
         - name: DB_USERNAME
@@ -201,7 +203,7 @@ spec:
             memory: 2Gi
         ports:
         - containerPort: 5001
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ tpl .Values.api.image.pullPolicy . }}
         volumeMounts:
         - name: dify-api-storage
           mountPath: /app/api/storage

@@ -39,8 +39,8 @@ data:
         listen 80;
         server_name _;
 
-        location /console/api {
-          proxy_pass http://apo-dify-api-svc:5001;
+        location /dify/console/api/ {
+          proxy_pass http://apo-dify-api-svc:5001/console/api/;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $scheme;
           proxy_set_header X-Forwarded-Port $server_port;
@@ -51,8 +51,8 @@ data:
           proxy_send_timeout 3600s;
         }
 
-        location /api {
-          proxy_pass http://apo-dify-api-svc:5001;
+        location /dify/api {
+          proxy_pass http://apo-dify-api-svc:5001/api/;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $scheme;
           proxy_set_header X-Forwarded-Port $server_port;
@@ -63,8 +63,8 @@ data:
           proxy_send_timeout 3600s;
         }
 
-        location /v1 {
-          proxy_pass http://apo-dify-api-svc:5001;
+        location /dify/v1 {
+          proxy_pass http://apo-dify-api-svc:5001/v1/;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $scheme;
           proxy_set_header X-Forwarded-Port $server_port;
@@ -75,8 +75,8 @@ data:
           proxy_send_timeout 3600s;
         }
 
-        location /files {
-          proxy_pass http://apo-dify-api-svc:5001;
+        location /dify/files {
+          proxy_pass http://apo-dify-api-svc:5001/files/;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $scheme;
           proxy_set_header X-Forwarded-Port $server_port;
@@ -87,8 +87,8 @@ data:
           proxy_send_timeout 3600s;
         }
 
-        location /explore {
-          proxy_pass http://apo-dify-web-svc:3000;
+        location /dify/explore {
+          proxy_pass http://apo-dify-web-svc:3000/explore/;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $scheme;
           proxy_set_header X-Forwarded-Port $server_port;
@@ -99,8 +99,8 @@ data:
           proxy_send_timeout 3600s;
         }
         
-        location /e/ {
-          proxy_pass http://apo-dify-plugin-daemon-svc:5002;
+        location /dify/e/ {
+          proxy_pass http://apo-dify-plugin-daemon-svc:5002/e/;
           proxy_set_header Dify-Hook-Url ://;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $scheme;
@@ -112,7 +112,7 @@ data:
           proxy_send_timeout 3600s;
       }
 
-        location / {
+        location /dify/ {
           proxy_pass http://apo-dify-web-svc:3000;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $scheme;

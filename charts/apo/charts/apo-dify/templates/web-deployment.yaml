@@ -26,9 +26,11 @@ spec:
         - name: EDITION
           value: SELF_HOSTED
         - name: CONSOLE_API_URL
-          value: ""
+          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
         - name: APP_API_URL
-          value: ""
+          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
+        - name: NEXT_PUBLIC_V1_API_PREFIX
+          value: "{{ tpl .Values.global.baseURL . }}:30051/v1"
         - name: SENTRY_DSN
           value: ""
         - name: NEXT_TELEMETRY_DISABLED
@@ -57,7 +59,7 @@ spec:
             memory: 1Gi
         ports:
         - containerPort: 3000
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ tpl .Values.web.image.pullPolicy . }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

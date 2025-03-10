@@ -25,6 +25,7 @@ spec:
       containers:
       - name: dify-ssrf
         image: "{{ tpl .Values.ssrf.image.repository . }}:{{ tpl .Values.ssrf.image.tag . }}"
+        imagePullPolicy: {{ tpl .Values.ssrf.image.pullPolicy . }}
         env:
         - name: HTTP_PORT
           value: "3128"

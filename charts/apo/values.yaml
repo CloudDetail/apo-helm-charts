@@ -1,5 +1,6 @@
 global:
   edition: ee
+  baseURL: ""
 
   image:
     # kindlingx official mirror repository: registry.cn-hangzhou.aliyuncs.com/kindlingx
@@ -93,7 +94,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.4.1"
+      tag: "v1.5.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -106,11 +107,11 @@ apo-backend:
       repository: "{{ .Values.global.image.repository }}/polaris-analyzer"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.1.0"
-    # resources:
-    #   limits:
-    #     cpu: 1000m
-    #     memory: 1024Mi
+      tag: "v1.1.1"
+    resources:
+      limits:
+        # cpu: 1000m
+        memory: 1024Mi
     #   requests:
     #     cpu: 100m
     #     memory: 128Mi
@@ -150,7 +151,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.7.3"
+      tag: "v1.7.4"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -236,68 +237,70 @@ apo-dify:
   initHostPath:
     image:
       repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-init-hostpath
-      pullPolicy: IfNotPresent
-      tag: "v1.0.0"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.0.1"
 
   api:
     image:
-      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-api
-      pullPolicy: IfNotPresent
-      tag: "1.0.0"
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-api
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.0.0-1"
 
   nginx:
     image:
       repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/nginx
-      pullPolicy: IfNotPresent
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "stable-alpine3.20"
 
   pluginDaemon:
     image:
       repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-plugin-daemon
-      pullPolicy: IfNotPresent
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "0.0.3-local"
 
   postgres:
     image:
       repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/postgres
-      pullPolicy: IfNotPresent
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "15-alpine"
 
   redis:
     image:
       repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/redis
-      pullPolicy: IfNotPresent
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "6-alpine"
 
   sandbox:
     image:
       repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-sandbox
-      pullPolicy: IfNotPresent
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "0.2.10"
 
   ssrf:
     image:
       repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/ubuntu-squid
-      pullPolicy: IfNotPresent
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "6.6-24.04_edge"
 
   weaviate:
     image:
       repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/weaviate
-      pullPolicy: IfNotPresent
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "1.19.0"
 
   web:
     image:
-      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-web
-      pullPolicy: IfNotPresent
-      tag: "1.0.0"
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-web
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.0.0-1"
 
   worker:
     image:
-      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-api
-      pullPolicy: IfNotPresent
-      tag: "1.0.0"
+      repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-api
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.0.0-1"
+
+  hostPath: "/data/apo/dify"
 
   nodeSelector: {}
   tolerations: []
@@ -311,7 +314,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.4.1"
+    tag: "v1.5.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -389,7 +392,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.7.3"
+      tag: "v1.8.0"
     resources: 
       limits:
         cpu: 1000m
@@ -470,7 +473,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odiglet"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.2"
+      tag: "v1.0.3"
       resources: 
         limits:
           cpu: 200m
@@ -486,7 +489,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.1"
+      tag: "v1.1.0"
       resources: 
         limits:
           cpu: 2000m
@@ -547,6 +550,8 @@ apo-one-agent:
       # Similar to instrument-all-namespace, sets enabledFuture for all namespaces  
       # Ignores all disabled settings  
       forceInstrumentAllNamespace: false
+      # enableOverwriteUserDefinedEnvs: Whether to overwrite user-defined environment variables
+      enableOverwriteUserDefinedEnvs: false
     config:
       apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc.{{ .Release.Namespace }}:4315"
       apoOtelCollectorHttpUrl: "apo-otel-collector-gateway-svc.{{ .Release.Namespace }}:4316"
@@ -579,7 +584,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.0.1"
+    tag: "v1.1.0"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -681,7 +686,7 @@ grafana:
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   extraInitContainers: 
   - name: apo-grafana-init-dashboard
-    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.1.1"
+    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.2.0"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
     volumeMounts:
     - name: apo-dashboards

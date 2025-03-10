@@ -21,6 +21,7 @@ spec:
       containers:
       - name: dify-redis
         image: "{{ tpl .Values.redis.image.repository . }}:{{ tpl .Values.redis.image.tag . }}"
+        imagePullPolicy: {{ tpl .Values.redis.image.pullPolicy . }}
         ports:
         - containerPort: 6379
           name: redis-port

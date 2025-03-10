@@ -75,23 +75,25 @@ instrumentor:
   nodeSelector: {}
   affinity: {}
   tolerations: []
-  # targetNamespace 
-  # name：目标命名空间
-  # value：
-  #   enabled: 注入现有的所有服务,但不注入后续新增应用
-  #   enabledFuture: 注入现在以及后续的所有服务
-  #   disabled: 不注入指定namespace下的服务,用于在instrument-all-namespace时忽略特定的Namespace
-  # targetNamespace:
-  # - name: default
-  #   value: disabled
-  # instrument-all-namespace 是否注入所有namespace
-  # 等价于设置所有namespace的enabledFuture
-  # 但如果已经设置了ns或者workload的disabled将不会注入
-  instrumentAllNamespace: false
-  # force-instrument-all-namespace 是否强制注入所有namespace
-  # 和instrument-all-namespace类似,所有ns设置enabledFuture
-  # 并忽略所有disabled设置
+  # targetNamespace  
+  # name: Target namespace  
+  # value:  
+  #   enabled: Inject all existing services but do not inject newly added applications  
+  #   enabledFuture: Inject both current and future services  
+  #   disabled: Do not inject services in the specified namespace; used to exclude specific namespaces when instrument-all-namespace is enabled  
+  # targetNamespace:  
+  # - name: default  
+  #   value: disabled  
+  # instrument-all-namespace Whether to inject all namespaces  
+  # Equivalent to setting enabledFuture for all namespaces  
+  # However, if disabled is already set for a namespace or workload, it will not be injected  
+  instrumentAllNamespace: true
+  # force-instrument-all-namespace Whether to force inject all namespaces  
+  # Similar to instrument-all-namespace, sets enabledFuture for all namespaces  
+  # Ignores all disabled settings  
   forceInstrumentAllNamespace: false
+  # enableOverwriteUserDefinedEnvs: Whether to overwrite user-defined environment variables
+  enableOverwriteUserDefinedEnvs: false
 
 odiglet:
   image:

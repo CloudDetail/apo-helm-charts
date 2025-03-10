@@ -43,11 +43,6 @@ spec:
           resources:
             {{- toYaml .Values.apoOneAgent.resources | nindent 12 }}
           {{- include "apo-one-agent.envAndVolume" . | nindent 10 }}
-          readinessProbe:
-            exec:
-              command:
-                - cat
-                - /app/kernel-support
           securityContext:
             privileged: true
         {{- end }}
