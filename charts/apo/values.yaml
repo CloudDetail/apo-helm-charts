@@ -1,9 +1,9 @@
 global:
   edition: ee
+  language: en
   baseURL: ""
 
   image:
-    # kindlingx official mirror repository: registry.cn-hangzhou.aliyuncs.com/kindlingx
     repository: "registry.cn-hangzhou.aliyuncs.com/kindlingx"
     eeRepository: "registry.cn-hangzhou.aliyuncs.com/kindlingx"
     pullPolicy: "Always"
