@@ -27,12 +27,6 @@ jobs:
         with:
           version: v3.14.2
 
-      - name: Install skopeo
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install skopeo
-          skopeo --version
-
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
@@ -43,6 +37,18 @@ jobs:
         with:
           username: "${{ secrets.DOCKERHUB_REGISTRY_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}"
+
+      - name: Sync image
+        run: |
+          IMAGES=$(helm template apo charts/apo -n apo --set global.image.repository="registry.cn-hangzhou.aliyuncs.com/kindlingx" --set global.image.eeRepository="registry.cn-hangzhou.aliyuncs.com/kindlingx" | grep "image:" | awk -F': ' '{print $2}' | sed "s/'//g" | sed 's/"//g' | sort | uniq)
+          for IMAGE in $IMAGES
+            do 
+              SORTIMAGE=$(echo $IMAGE|awk -F/ '{print $NF}')
+              echo $SORTIMAGE
+              echo "docker pull --platform linux/amd64 $IMAGE"
+              echo "docker tag $IMAGE docker.io/clouddetail/$SORTIMAGE"
+              echo "docker push docker.io/clouddetail/$SORTIMAGE"
+            done
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
@@ -58,18 +64,6 @@ jobs:
             echo "No chart changes, exiting successfully."
             echo "chartChangeFlag=1" >> $GITHUB_ENV
           fi
-      
-      - name: Sync image
-        run: |
-          IMAGES=$(helm template apo charts/apo -n apo --set global.image.repository="registry.cn-hangzhou.aliyuncs.com/kindlingx" --set global.image.eeRepository="registry.cn-hangzhou.aliyuncs.com/kindlingx" | grep "image:" | awk -F': ' '{print $2}' | sed "s/'//g" | sed 's/"//g' | sort | uniq)
-          for IMAGE in $IMAGES
-            do 
-              SORTIMAGE=$(echo $IMAGE|awk -F/ '{print $NF}')
-              echo $SORTIMAGE
-              echo "docker pull --platform linux/amd64 $IMAGE"
-              echo "docker tag $IMAGE docker.io/clouddetail/$SORTIMAGE"
-              echo "docker push docker.io/clouddetail/$SORTIMAGE"
-            done
 
       - name: Install aliyun ossutil
         if: ${{ env.chartChangeFlag == '0' }}
