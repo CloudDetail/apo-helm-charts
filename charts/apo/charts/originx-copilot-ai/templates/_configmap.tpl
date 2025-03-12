@@ -6,7 +6,11 @@ apo_backend: {{ tpl .Values.config.apoBackendUrl . }}
 polaris_backend: {{ tpl .Values.config.apoPolarisBackendUrl . }}
 originx_backend: {{ tpl .Values.config.originxRootCauseInferUrl . }}
 
-language: zh-cn # zh-cn en
+{{- if eq .Values.global.language "en" }}
+language: en
+{{- else if eq .Values.global.language "zh" }}
+language: zh-cn
+{{- end }}
 {{- end }}
 
 {{- define "originx-copilot-ai.prompt" -}}
@@ -109,4 +113,108 @@ zh-cn:
     输出为JSON格式,仅有包含字段nodeName和otherNodeName,josn内的节点名必须完整,保留原有的任何符号，不可省略
     nodeName给出造成根因的节点。(不要给出无,必须有一个节点如造成根因的是A节点)
     otherNodeName给出疑似根因节点的列表。(列表内可以有多个节点,但是不能和造成根因节点相同)
+
+en:
+  system: |
+    You are an intelligent reasoning assistant. Your task is to analyze the root cause nodes based on the data and rules provided by the user, and deliver the results as requested.
+  
+  topology: |
+    #background#
+    Here is a microservice topology diagram with node names at each layer. Upper-layer nodes and lower-layer nodes form upstream and downstream relationships, where the upstream calls the downstream. Please remember the topology structure based on the provided data.
+    #attention#
+    topology data information:
+    1.The number at the beginning of each node name indicates its layer. For example, a node with the number "0" is the entry service node. The larger the number, the deeper the layer. For non-entry nodes, the first node with a smaller number upwards is considered its upstream node.
+    2.A node may have multiple downstream nodes and may also be called by multiple upstream nodes. Please do not overlook any nodes.
+    3.Do not create non-existent upstream-downstream relationships, do not reverse the relationships, and do not miss any upstream-downstream calls. There should be no loops in the topology structure, and do not introduce any unrelated concepts.
+    4.Node names are relatively long, so do not abbreviate them (do not include layer information such as "1--" at the beginning of the node name).
+    The topology data will be provided later.
+    #output#
+    The topology data information has been memorized. Please respond concisely.
+
+  alert: |
+    #background#
+    For each node in the topology data, if there is an alarm event, the alarm event will be appended to the node's name. Nodes without any alarm events will have no additional information after their name.
+    #attention#
+    The alarm event data is in JSON format, and its meaning is as follows:
+    The first level's key represents the type of alarm event, represented by a number:
+    1: Interface-level alarm
+    2: Container anomaly
+    3: Infrastructure anomaly
+    4: Network program anomaly
+    5: Error anomaly
+    The second level's key contains information specific to that alarm type, with the following fields:
+    - add: Number of newly added alarm events
+    - duplicate: Number of duplicate alarm events
+    - resolve: Number of resolved alarm events
+    - keep: Number of unresolved alarm events
+    - firstTime: The first occurrence time of this type of alarm event
+    - lastTime: The last occurrence time of this type of alarm event
+    - resolveTime: The time when the alarm event was resolved (only present if the alarm has been resolved)
+    #processing#
+    Please process the data carefully. For each node (with the node name starting after the number-- symbol), ensure that the node name is recorded fully and correctly. Do not include other content in the response, only the necessary data.
+    Nodes with alarm events are defined as those that appear in the JSON data.
+    Nodes without alarm events are defined as those that do not appear in the JSON data.
+    #output#
+    I have remembered the alarm events. Please respond concisely and briefly.
+    #Topology and Alarm Event Data#
+    The topology and alarm event data are as follows:
+
+  rule: |
+    #objective#
+    Based on the provided microservice topology diagram and the alarm events for each node, you will be given a set of rules to identify the root cause nodes that match each rule.
+    #rootcause node process#
+    - Record the sequence in which abnormal events propagate from downstream to upstream, based on the type of abnormality and its occurrence frequency in the alarm events.
+    - For each rule provided, continue filtering out the nodes that meet the rule from the suspected root cause nodes identified in the previous rule. Do not restart the entire derivation process from scratch. Only summarize the relevant data.
+    #attention#
+    In the topology, an upstream node may have multiple downstream nodes. These downstream nodes are considered at the same level. If all services of these same-level nodes satisfy the criteria for abnormality propagation upstream, all these downstream nodes can be considered as potential root causes. Exclude the upstream node and ensure that no node is missed.
+    Always exclude entry nodes from the analysis.
+    Use the full names of the nodes throughout the process,do not abbreviate.
+    #output#
+    Follow the derivation process carefully and provide concise and brief answers.
+
+  rules:
+    - rule1
+      Please identify and list the node names from the topology data and alarm event data that do not have any associated alarm events. Exclude these nodes from the list. Then, list the node names that have alarm events and label them as suspicious nodes.
+      'output'
+      The output should be a concise and clear list of nodes that meet the criteria, with full node names included (do not abbreviate or omit any details).
+    - rule2
+      Starting from the application interface layer alerts, trace downstream from each node along the business entry topology, following the direction from upstream to downstream (use the topology data and do not confuse upstream and downstream). Please provide the inference process.
+      During the tracing process, analyze each node as follows
+        If there is an interface layer alert, continue tracing downstream to the dependent nodes. This node is considered a potential root cause in two cases
+        1.The node has other types of alerts.
+        2.All downstream nodes of this node do not have type 1 interface alerts.
+          In other cases, the node is not considered a potential root cause.
+        If no interface layer alert is found, stop the trace and return to the previous level node. The current node is excluded from further analysis.
+      During the tracing process, for each node with a type 1 interface alert
+        Check if there are other types of alerts (e.g., application layer, container layer, infrastructure layer alerts). If such alerts exist, the node is considered a potential root cause. Record it and continue analyzing downstream nodes.
+        If no other alerts are present, and all downstream nodes do not have type 1 interface alerts, then this node is considered a potential root cause.
+        If the node is a leaf node (i.e., there are no further downstream dependencies), and it has a type 1 interface alert, the node is also considered a potential root cause.
+      Definition of Leaf Node:A node that has no further downstream dependencies in the dependency chain. If a leaf node has an alert, it is a priority candidate for being the root cause.
+      'output'
+      The output should be a concise and clear list of nodes that meet the criteria, with full node names included (do not abbreviate or omit any details).
+    - rule3
+      The root cause node must meet the condition that the anomaly starts from this node and propagates upstream. Additionally, the associated anomaly alert event must be continuous, rather than sporadic.
+      'attention'
+      If an interface layer alert has both new and resolved events, and the resolution time is close to the initial occurrence time of the alert, the node can be considered as an occasional anomaly.
+      However, if there are lingering alerts in the interface layer, the node should be considered a potential root cause node.
+      If the anomaly alerts at the node are sporadic, the node should not be identified as the root cause.
+      'output'
+      The output should be a concise and clear list of nodes that meet the criteria, with full node names included (do not abbreviate or omit any details).
+    - rule4
+      If a node experiences an anomaly, but no interface alarm is triggered for its upstream nodes, the affected node and its entire branch can be excluded.
+      'output'
+      The output should be a concise and clear list of nodes that meet the criteria, with full node names included (do not abbreviate or omit any details).
+
+  summary_node: |
+    #Purpose#
+    Summarize the previous node information, return a root cause node that meets the most rules and up to three suspected root cause nodes.
+    #Note#
+    No other additional information is required, and the node name must be complete and consistent with the source data.
+    The final root cause node must not be the entry node (the top node in the topology graph).
+    The node name must be complete and consistent with the topology data, and no special symbols such as spaces, *, `, etc. should be used before and after the node name.
+    xxx must be followed by the word node, do not give xxx directly.
+    #Output#
+    The output is in JSON format, only containing the fields nodeName and otherNodeName. The node name in josn must be complete, retaining any original symbols, and cannot be omitted.
+    nodeName gives the node that causes the root cause. (Do not give None, there must be a node such as the root cause is node A)
+    otherNodeName gives a list of suspected root cause nodes. (There can be multiple nodes in the list, but they cannot be the same as the root cause node)
 {{- end }}

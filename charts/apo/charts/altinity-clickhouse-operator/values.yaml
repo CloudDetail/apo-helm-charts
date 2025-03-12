@@ -1,7 +1,7 @@
 operator:
   image:
     # operator.image.repository -- image repository
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/clickhouse-operator
+    repository: docker.io/clouddetail/clickhouse-operator
     # operator.image.tag -- image tag (chart's appVersion value will be used if not set)
     tag: ""
     # operator.image.pullPolicy -- image pull policy
@@ -23,7 +23,7 @@ metrics:
   enabled: true
   image:
     # metrics.image.repository -- image repository
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/metrics-exporter
+    repository: docker.io/clouddetail/metrics-exporter
     # metrics.image.tag -- image tag (chart's appVersion value will be used if not set)
     tag: ""
     # metrics.image.pullPolicy -- image pull policy
@@ -44,7 +44,7 @@ metrics:
 
 clickhouse:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/clickhouse-server
+    repository: docker.io/clouddetail/clickhouse-server
     pullPolicy: IfNotPresent
   username: admin
   password: "Apo@123456"

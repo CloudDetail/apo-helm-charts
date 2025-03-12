@@ -101,7 +101,7 @@ livenessProbe:
 
 image:
   # -- The Docker registry
-  registry: registry.cn-hangzhou.aliyuncs.com/kindlingx
+  registry: docker.io/clouddetail
   # -- Docker image repository
   repository: grafana
   # Overrides the Grafana image tag whose default is the chart appVersion
@@ -173,9 +173,11 @@ extraConfigmapMounts: []
 
 extraEmptyDirMounts: 
   - name: apo-dashboards
-    mountPath: /tmp/dashboards
+    mountPath: /var/lib/grafana/dashboards
   - name: apo-plugins
     mountPath: /var/lib/grafana/plugins
+  - name: apo-dashboardproviders
+    mountPath: /etc/grafana/provisioning/dashboards
   # - name: provisioning-notifiers
   #   mountPath: /etc/grafana/provisioning/notifiers
 
@@ -188,7 +190,7 @@ extraLabels: {}
 
 downloadDashboardsImage:
   # -- The Docker registry
-  registry: registry.cn-hangzhou.aliyuncs.com/kindlingx
+  registry: docker.io/clouddetail
   repository: curlimagescurl
   tag: 7.85.0
   sha: ""
@@ -340,7 +342,7 @@ topologySpreadConstraints: []
 ##
 extraInitContainers: 
   - name: apo-grafana-init-dashboard
-    image: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-grafana-init-dashboards:v0.4.0
+    image: docker.io/clouddetail/apo-grafana-init-dashboards:v0.4.0
     imagePullPolicy: Always
     volumeMounts:
     - name: apo-dashboards
@@ -721,27 +723,7 @@ notifiers: {}
 ##
 ## `path` must be /var/lib/grafana/dashboards/<provider_name>
 ##
-dashboardProviders: 
- dashboardproviders.yaml:
-   apiVersion: 1
-   providers:
-   - name: 'default'
-     orgId: 1
-     folder: ''
-     type: file
-     disableDeletion: false
-     editable: true
-     options:
-       path: /tmp/dashboards/default
-   - name: 'middleware-dashboard'
-     orgId: 1
-     folderUid: edwu5b9rkv94wb
-     folder: '中间件'
-     type: file
-     disableDeletion: false
-     editable: true
-     options:
-       path: /tmp/dashboards/middleware-dashboard
+dashboardProviders: []
 
 ## Configure grafana dashboard to import
 ## NOTE: To use dashboards you must also enable/configure dashboardProviders
@@ -836,7 +818,7 @@ grafana.ini:
     allow_sign_up: true
     allow_org_create: true
     auto_assign_org_role: Admin
-    default_language: zh-Hans
+    default_language: en
     home_page: /grafana/
   quota:
     enabled: false

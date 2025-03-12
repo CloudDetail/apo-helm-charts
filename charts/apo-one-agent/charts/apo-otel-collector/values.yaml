@@ -32,7 +32,7 @@ hostNetwork: "false"
 dnsPolicy: "ClusterFirst"
 podSecurityContext: {}
 image:
-  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/custom-otlp-collector
+  repository: docker.io/clouddetail/custom-otlp-collector
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""

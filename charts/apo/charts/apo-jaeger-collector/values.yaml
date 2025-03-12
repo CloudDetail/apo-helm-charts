@@ -5,14 +5,14 @@ hostNetwork: "false"
 dnsPolicy: "ClusterFirst"
 
 initImage:
-  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/busybox
+  repository: docker.io/clouddetail/busybox
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "1.36.1"
 
 remoteStorage:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/jaeger-remote-storage
+    repository: docker.io/clouddetail/jaeger-remote-storage
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
@@ -30,7 +30,7 @@ remoteStorage:
 
 jaegerQuery:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/jaeger-query
+    repository: docker.io/clouddetail/jaeger-query
     pullPolicy: IfNotPresent
     tag: 1.58
   resources: {}
@@ -47,7 +47,7 @@ jaegerQuery:
 
 jaegerCollector:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/jaeger-collector
+    repository: docker.io/clouddetail/jaeger-collector
     pullPolicy: IfNotPresent
     tag: 1.59-latest
   resources: {}

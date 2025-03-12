@@ -58,12 +58,12 @@ hostNetwork: "false"
 dnsPolicy: "ClusterFirst"
 podSecurityContext: {}
 image:
-  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-otel-collector
+  repository: docker.io/clouddetail/apo-otel-collector
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 initImage:
-  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/busybox
+  repository: docker.io/clouddetail/busybox
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "1.36.1"

@@ -5,14 +5,14 @@
 replicaCount: 1
 
 initImage:
-  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/busybox
+  repository: docker.io/clouddetail/busybox
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "1.36.1"
 
 apoCollector:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/apo-collector
+    repository: docker.io/clouddetail/apo-collector
     pullPolicy: IfNotPresent
     tag: ""
   resources: {}
@@ -41,7 +41,7 @@ apoCollector:
 
 apoApmAdapter:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/originx/apm-adapter
+    repository: docker.io/clouddetail/apm-adapter
     pullPolicy: IfNotPresent
     tag: ""
   resources: {}

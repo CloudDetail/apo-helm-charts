@@ -2,71 +2,72 @@ global:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  language: en
   baseURL: ""
 
 initHostPath:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-init-hostpath
+    repository: docker.io/clouddetail/apo-dify-init-hostpath
     pullPolicy: IfNotPresent
-    tag: "v1.0.0"
+    tag: "v1.0.3"
 
 api:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-api
+    repository: docker.io/clouddetail/apo-dify-api
     pullPolicy: IfNotPresent
     tag: "v1.0.0-1"
 
 nginx:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/nginx
+    repository: docker.io/clouddetail/nginx
     pullPolicy: IfNotPresent
     tag: "stable-alpine3.20"
 
 pluginDaemon:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-plugin-daemon
+    repository: docker.io/clouddetail/dify-plugin-daemon
     pullPolicy: IfNotPresent
     tag: "0.0.3-local"
 
 postgres:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/postgres
+    repository: docker.io/clouddetail/postgres
     pullPolicy: IfNotPresent
     tag: "15-alpine"
 
 redis:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/redis
+    repository: docker.io/clouddetail/redis
     pullPolicy: IfNotPresent
     tag: "6-alpine"
 
 sandbox:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/dify-sandbox
+    repository: docker.io/clouddetail/dify-sandbox
     pullPolicy: IfNotPresent
     tag: "0.2.10"
 
 ssrf:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/ubuntu-squid
+    repository: docker.io/clouddetail/ubuntu-squid
     pullPolicy: IfNotPresent
     tag: "6.6-24.04_edge"
 
 weaviate:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/weaviate
+    repository: docker.io/clouddetail/weaviate
     pullPolicy: IfNotPresent
     tag: "1.19.0"
 
 web:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-web
+    repository: docker.io/clouddetail/apo-dify-web
     pullPolicy: IfNotPresent
     tag: "v1.0.0-1"
 
 worker:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dify-api
+    repository: docker.io/clouddetail/apo-dify-api
     pullPolicy: IfNotPresent
     tag: "v1.0.0-1"
 

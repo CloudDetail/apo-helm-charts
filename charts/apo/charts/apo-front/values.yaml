@@ -4,7 +4,7 @@ podAnnotations: {}
 hostNetwork: "false"
 dnsPolicy: "ClusterFirst"
 image:
-  repository: registry.cn-hangzhou.aliyuncs.com/originx/apo-front
+  repository: docker.io/clouddetail/apo-front
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""

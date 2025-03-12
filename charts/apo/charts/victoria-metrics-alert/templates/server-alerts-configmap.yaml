@@ -7,5 +7,9 @@ metadata:
   labels: {{- include "vmalert.server.labels" . | nindent 4 }}
 data:
   alert-rules.yaml: |
-    {{ toYaml .Values.server.config.alerts | nindent 4 }}
+    {{- if eq .Values.global.language "en" }}
+    {{ toYaml .Values.server.config.alertsEn | nindent 4 }}
+    {{- else if eq .Values.global.language "zh" }}
+    {{ toYaml .Values.server.config.alertsZh | nindent 4 }}
+    {{- end }}
 {{- end }}

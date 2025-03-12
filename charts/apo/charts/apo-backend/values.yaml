@@ -4,14 +4,14 @@ hostNetwork: "false"
 dnsPolicy: "ClusterFirst"
 
 initImage:
-  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/busybox
+  repository: docker.io/clouddetail/busybox
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "1.36.1"
 
 apoBackend:
   image:
-    registry: registry.cn-hangzhou.aliyuncs.com/kindlingx
+    registry: docker.io/clouddetail
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
@@ -28,7 +28,7 @@ apoBackend:
   #   memory: 128Mi
 apoPolarisAnalyzer:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/polaris-analyzer
+    repository: docker.io/clouddetail/polaris-analyzer
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""

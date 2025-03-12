@@ -4,7 +4,7 @@ hostNetwork: "false"
 dnsPolicy: "ClusterFirst"
 
 image:
-  registry: registry.cn-hangzhou.aliyuncs.com/originx
+  registry: docker.io/clouddetail
   repository: originx-copilot
   tag: "v0.1.0"
   pullPolicy: IfNotPresent

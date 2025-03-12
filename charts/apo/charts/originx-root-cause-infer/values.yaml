@@ -5,13 +5,13 @@
 replicaCount: 1
 
 initImage:
-  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/busybox
+  repository: docker.io/clouddetail/busybox
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "1.36.1"
 
 image:
-  repository: registry.cn-hangzhou.aliyuncs.com/originx/root-cause-infer
+  repository: docker.io/clouddetail/root-cause-infer
   tag: "v0.1.0"
   pullPolicy: Always
 
