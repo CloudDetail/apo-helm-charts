@@ -61,7 +61,6 @@ jobs:
       
       - name: Sync image
         run: |
-          sleep 300
           IMAGES=$(helm template apo charts/apo -n apo --set global.image.repository="registry.cn-hangzhou.aliyuncs.com/kindlingx" --set global.image.eeRepository="registry.cn-hangzhou.aliyuncs.com/kindlingx" | grep "image:" | awk -F': ' '{print $2}' | sed "s/'//g" | sed 's/"//g' | sort | uniq)
           for IMAGE in $IMAGES
             do 
