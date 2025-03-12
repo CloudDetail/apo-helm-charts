@@ -66,7 +66,9 @@ jobs:
             do 
               SORTIMAGE=$(echo $IMAGE|awk -F/ '{print $NF}')
               echo $SORTIMAGE
-              echo "skopeo copy -a  docker://$SYNCIMAGE docker://docker.io/clouddetail/$SORTIMAGE"
+              echo "docker pull --platform linux/amd64 $IMAGE"
+              echo "docker tag $IMAGE docker.io/clouddetail/$SORTIMAGE"
+              echo "docker push docker.io/clouddetail/$SORTIMAGE"
             done
 
       - name: Install aliyun ossutil
