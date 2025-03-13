@@ -133,3 +133,13 @@ data:
         querier:
           query_server_port: 8082
           is_single_cluster: true
+
+    sample:
+      enable: false
+      # Set Min SampleRate - 1 / (2^N)
+      min_sample: 4
+      # Set Init SampleRate - 1 / (2^N)
+      init_sample: 4
+      # Set Max SampleRate - 1 / (2^N)
+      max_sample: 4
+      reset_sample_period: 30m
