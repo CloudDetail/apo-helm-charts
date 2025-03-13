@@ -55,7 +55,7 @@ jobs:
                 docker pull --platform linux/amd64 $IMAGE-CE
                 docker tag $IMAGE-CE docker.io/clouddetail/$SORTIMAGE
                 docker push docker.io/clouddetail/$SORTIMAGE
-              else if [ $SORTIMAGE == "apo-front-ee" ]; then
+              elif [ $SORTIMAGE == "apo-front-ee" ]; then
                 IMAGE-CE=$(echo $IMAGE|sed 's/apo-front-ee/apo-front/g')
                 SORTIMAGE=$(echo $IMAGE-CE|awk -F/ '{print $NF}')
                 echo $SORTIMAGE
