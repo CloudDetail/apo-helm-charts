@@ -49,14 +49,14 @@ jobs:
               docker tag $IMAGE docker.io/clouddetail/$SORTIMAGE
               docker push docker.io/clouddetail/$SORTIMAGE
               if [ $SORTIMAGE == "apo-backend-ee" ]; then
-                IMAGE-CE=$(echo $IMAGE|sed 's/apo-backend-ee/apo-backend/g')
+                IMAGE_CE=$(echo $IMAGE|sed 's/apo-backend-ee/apo-backend/g')
                 SORTIMAGE=$(echo $IMAGE-CE|awk -F/ '{print $NF}')
                 echo $SORTIMAGE
                 docker pull --platform linux/amd64 $IMAGE-CE
                 docker tag $IMAGE-CE docker.io/clouddetail/$SORTIMAGE
                 docker push docker.io/clouddetail/$SORTIMAGE
               elif [ $SORTIMAGE == "apo-front-ee" ]; then
-                IMAGE-CE=$(echo $IMAGE|sed 's/apo-front-ee/apo-front/g')
+                IMAGE_CE=$(echo $IMAGE|sed 's/apo-front-ee/apo-front/g')
                 SORTIMAGE=$(echo $IMAGE-CE|awk -F/ '{print $NF}')
                 echo $SORTIMAGE
                 docker pull --platform linux/amd64 $IMAGE-CE
