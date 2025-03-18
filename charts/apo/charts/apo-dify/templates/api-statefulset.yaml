@@ -30,6 +30,10 @@ spec:
       - name: dify-api
         image: "{{ tpl .Values.api.image.repository . }}:{{ tpl .Values.api.image.tag . }}"
         env:
+        - name: ACCESS_TOKEN_EXPIRE_MINUTES
+          value: '15'
+        - name: REFRESH_TOKEN_EXPIRE_DAYS
+          value: '2'
         - name: MODE
           value: api
         - name: LOG_LEVEL

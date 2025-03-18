@@ -97,7 +97,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.5.1"
+      tag: "v1.5.2"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -241,19 +241,13 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-init-hostpath"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.3"
+      tag: "v1.0.4"
 
   api:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-2"
-
-  nginx:
-    image:
-      repository: "{{ .Values.global.image.repository }}/nginx"
-      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "stable-alpine3.20"
+      tag: "v1.0.0-3"
 
   pluginDaemon:
     image:
@@ -295,13 +289,13 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-web"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-2"
+      tag: "v1.0.0-3"
 
   worker:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-2"
+      tag: "v1.0.0-3"
 
   hostPath: "/data/apo/dify"
 
@@ -317,7 +311,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.5.1"
+    tag: "v1.5.2"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -719,7 +713,7 @@ originx-copilot-ai:
   image:
     registry: "{{ .Values.global.image.eeRepository }}"
     repository: originx-copilot
-    tag: "v1.1.2"
+    tag: "v1.1.3"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   resources:
     limits:

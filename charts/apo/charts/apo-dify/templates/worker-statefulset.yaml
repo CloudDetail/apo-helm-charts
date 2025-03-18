@@ -31,6 +31,10 @@ spec:
         - containerPort: 5001
           protocol: TCP
         env:
+        - name: ACCESS_TOKEN_EXPIRE_MINUTES
+          value: '15'
+        - name: REFRESH_TOKEN_EXPIRE_DAYS
+          value: '2'
         - name: CONSOLE_WEB_URL
           value: ""
         - name: MODE

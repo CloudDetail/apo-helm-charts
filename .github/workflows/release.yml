@@ -40,30 +40,33 @@ jobs:
 
       - name: Sync image
         run: |
-          IMAGES=$(helm template apo charts/apo -n apo --set apo-one-agent.enabled=true --set global.image.repository="registry.cn-hangzhou.aliyuncs.com/kindlingx" --set global.image.eeRepository="registry.cn-hangzhou.aliyuncs.com/kindlingx" | grep "image:" | awk -F': ' '{print $2}' | sed "s/'//g" | sed 's/"//g' | sort | uniq)
-          for IMAGE in $IMAGES
-            do 
+          IMAGES=$(helm template apo charts/apo -n apo --set apo-one-agent.enabled=true --set apo-one-agent.grafanaBeyla.enabled=true --set global.image.repository="registry.cn-hangzhou.aliyuncs.com/kindlingx" --set global.image.eeRepository="registry.cn-hangzhou.aliyuncs.com/kindlingx" | grep "image:" | awk -F': ' '{print $2}' | sed "s/'//g" | sed 's/"//g' | sort | uniq)
+          IMAGE_COUNT=0
+          IMAGE_PLATFORM="linux/amd64"
+          IMAGE_NEW_REPO="docker.io/clouddetail"
+          for IMAGE in $IMAGES; do
               SORTIMAGE=$(echo $IMAGE|awk -F/ '{print $NF}')
-              echo $SORTIMAGE
-              docker pull --platform linux/amd64 $IMAGE
-              docker tag $IMAGE docker.io/clouddetail/$SORTIMAGE
-              docker push docker.io/clouddetail/$SORTIMAGE
-              if [ $SORTIMAGE == "apo-backend-ee" ]; then
-                IMAGE_CE=$(echo $IMAGE|sed 's/apo-backend-ee/apo-backend/g')
-                SORTIMAGE=$(echo $IMAGE_CE|awk -F/ '{print $NF}')
-                echo $SORTIMAGE
-                docker pull --platform linux/amd64 $IMAGE_CE
-                docker tag $IMAGE_CE docker.io/clouddetail/$SORTIMAGE
-                docker push docker.io/clouddetail/$SORTIMAGE
-              elif [ $SORTIMAGE == "apo-front-ee" ]; then
-                IMAGE_CE=$(echo $IMAGE|sed 's/apo-front-ee/apo-front/g')
-                SORTIMAGE=$(echo $IMAGE_CE|awk -F/ '{print $NF}')
-                echo $SORTIMAGE
-                docker pull --platform linux/amd64 $IMAGE_CE
-                docker tag $IMAGE_CE docker.io/clouddetail/$SORTIMAGE
-                docker push docker.io/clouddetail/$SORTIMAGE
+              IMAGE_COUNT=$((IMAGE_COUNT+1))
+              echo "The No.$IMAGE_COUNT image: $SORTIMAGE"
+              docker pull --platform $IMAGE_PLATFORM $IMAGE
+              docker tag $IMAGE $IMAGE_NEW_REPO/$SORTIMAGE
+              docker push $IMAGE_NEW_REPO/$SORTIMAGE
+              if [[ $SORTIMAGE == apo-backend-ee:* ]]; then
+                  IMAGE_CE=$(echo $IMAGE|sed 's/apo-backend-ee/apo-backend/g')
+                  SORTIMAGE=$(echo $IMAGE_CE|awk -F/ '{print $NF}')
+                  echo $SORTIMAGE
+                  docker pull --platform $IMAGE_PLATFORM $IMAGE_CE
+                  docker tag $IMAGE_CE $IMAGE_NEW_REPO/$SORTIMAGE
+                  docker push $IMAGE_NEW_REPO/$SORTIMAGE
+              elif [[ $SORTIMAGE == apo-front-ee:* ]]; then
+                  IMAGE_CE=$(echo $IMAGE|sed 's/apo-front-ee/apo-front/g')
+                  SORTIMAGE=$(echo $IMAGE_CE|awk -F/ '{print $NF}')
+                  echo $SORTIMAGE
+                  docker pull --platform $IMAGE_PLATFORM $IMAGE_CE
+                  docker tag $IMAGE_CE $IMAGE_NEW_REPO/$SORTIMAGE
+                  docker push $IMAGE_NEW_REPO/$SORTIMAGE
               fi
-            done
+          done
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0

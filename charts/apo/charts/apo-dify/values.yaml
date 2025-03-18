@@ -17,12 +17,6 @@ api:
     pullPolicy: IfNotPresent
     tag: "v1.0.0-1"
 
-nginx:
-  image:
-    repository: docker.io/clouddetail/nginx
-    pullPolicy: IfNotPresent
-    tag: "stable-alpine3.20"
-
 pluginDaemon:
   image:
     repository: docker.io/clouddetail/dify-plugin-daemon
