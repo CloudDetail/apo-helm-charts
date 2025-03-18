@@ -2,6 +2,73 @@ apiVersion: v1
 entries:
   apo:
   - apiVersion: v2
+    appVersion: 1.5.1
+    created: "2025-03-18T12:49:42.222994995Z"
+    dependencies:
+    - condition: altinity-clickhouse-operator.enabled
+      name: altinity-clickhouse-operator
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-backend.enabled
+      name: apo-backend
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-collector.enabled
+      name: apo-collector
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-dify.enabled
+      name: apo-dify
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-front.enabled
+      name: apo-front
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-jaeger-collector.enabled
+      name: apo-jaeger-collector
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-one-agent.enabled
+      name: apo-one-agent
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-otel-collector-gateway.enabled
+      name: apo-otel-collector-gateway
+      repository: ""
+      version: '*.*.*'
+    - condition: grafana.enabled
+      name: grafana
+      repository: ""
+      version: '*.*.*'
+    - condition: originx-copilot-ai.enabled
+      name: originx-copilot-ai
+      repository: ""
+      version: '*.*.*'
+    - condition: originx-root-cause-infer.enabled
+      name: originx-root-cause-infer
+      repository: ""
+      version: '*.*.*'
+    - condition: vectors.enabled
+      name: vector
+      repository: ""
+      version: '*.*.*'
+    - condition: victoria-metrics-alert.enabled
+      name: victoria-metrics-alert
+      repository: ""
+      version: '*.*.*'
+    - condition: victoria-metrics-single.enabled
+      name: victoria-metrics-single
+      repository: ""
+      version: '*.*.*'
+    description: apo deployment charts
+    digest: 3cd3a020ef5e416f1f4186ae04f8ae88ccfc0f42514c91ac5e2dcbf58b7d6a54
+    name: apo
+    type: application
+    urls:
+    - https://github.com/CloudDetail/apo-helm-charts/releases/download/apo-1.5.003/apo-1.5.003.tgz
+    version: 1.5.003
+  - apiVersion: v2
     appVersion: 1.5.0-rc2
     created: "2025-03-13T12:45:04.952542737Z"
     dependencies:
@@ -578,6 +645,29 @@ entries:
     version: 1.3.000
   apo-one-agent:
   - apiVersion: v2
+    appVersion: 1.5.1
+    created: "2025-03-18T12:49:42.44836198Z"
+    dependencies:
+    - condition: apo-nginx-proxy.enabled
+      name: apo-nginx-proxy
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-otel-collector.enabled
+      name: apo-otel-collector
+      repository: ""
+      version: '*.*.*'
+    - condition: odigos.enabled
+      name: odigos
+      repository: ""
+      version: '*.*.*'
+    description: apo-one-agent deployment charts
+    digest: 77962cc8a0a0ba4783e204b037bac3f8d823878ce9ec25ada1903db751c8c6cf
+    name: apo-one-agent
+    type: application
+    urls:
+    - https://github.com/CloudDetail/apo-helm-charts/releases/download/apo-one-agent-1.5.003/apo-one-agent-1.5.003.tgz
+    version: 1.5.003
+  - apiVersion: v2
     appVersion: 1.5.0-rc2
     created: "2025-03-13T12:45:05.098958355Z"
     dependencies:
@@ -807,4 +897,4 @@ entries:
     urls:
     - https://github.com/CloudDetail/apo-helm-charts/releases/download/apo-one-agent-1.3.000/apo-one-agent-1.3.000.tgz
     version: 1.3.000
-generated: "2025-03-13T12:45:05.099050659Z"
+generated: "2025-03-18T12:49:42.448471775Z"
