@@ -17,8 +17,6 @@ env:
   value: /host/proc
 - name: PL_HOST_PATH
   value: /host
-- name: SCAP_HOST_ROOT_ENV_VAR_NAME
-  value: /host
 - name: SNAPLEN
   value: '1000'
 - name: switch_agg_num

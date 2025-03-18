@@ -19,6 +19,7 @@ spec:
         checksum/apo-odigos-own-telemetry-otel-config: {{ include (print $.Template.BasePath "/apo-odigos-own-telemetry-otel-config.yaml") . | sha256sum }}
         checksum/apo-one-agent-config: {{ include (print $.Template.BasePath "/apo-one-agent-configmap.yaml") . | sha256sum }}
         checksum/apo-otel-collector-agent-config: {{ include (print $.Template.BasePath "/apo-otel-collector-agent-configmap.yaml") . | sha256sum }}
+        checksum/apo-vmagent-config: {{ include (print $.Template.BasePath "/apo-vmagent-configmap.yaml") . | sha256sum }}
       labels:
         {{- include "apo-one-agent.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
@@ -323,6 +324,42 @@ spec:
             privileged: true
         {{- end }}
         {{- end }}
+        - name: vmagent
+          image: "{{ tpl .Values.vmagent.image.repository . }}:{{ .Values.vmagent.image.tag }}"
+          imagePullPolicy: "{{ tpl .Values.vmagent.image.pullPolicy . }}"
+          resources:
+            {{- toYaml .Values.vmagent.resources | nindent 12 }}
+          args:
+            - '-promscrape.config=/config/scrape.yml'
+            - '-remoteWrite.tmpDataPath=/tmpData'
+            - '-remoteWrite.maxDiskUsagePerURL=167772160'
+            - '-remoteWrite.url={{ tpl .Values.vmagent.remoteWriteUrls . }}/metrics'
+            - '-envflag.enable=true'
+            - '-envflag.prefix=VM_'
+            - '-envflag.enable=true'
+            - '-loggerFormat=json'
+            - '-enableTCP6=true'
+            - '-promscrape.maxScrapeSize=33554432'
+            - '-promscrape.suppressScrapeErrorsDelay=5m'
+          env:
+            - name: VM_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: VM_MY_NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+          workingDir: /
+          volumeMounts:
+            - name: vmagent-tmpdata
+              mountPath: /tmpData
+            - name: vmagent-config
+              mountPath: /config
+          securityContext:
+            privileged: true
       volumes:
         - name: apo-one-agent-config
           configMap:
@@ -352,6 +389,12 @@ spec:
           configMap:
             name: apo-otel-collector-agent-config
             defaultMode: 420
+        - name: vmagent-config
+          configMap:
+            name: apo-vmagent-config
+            defaultMode: 420
+        - name: vmagent-tmpdata
+          emptyDir: {}
         - name: modprobe-d
           hostPath:
             path: /etc/modprobe.d

@@ -21,6 +21,8 @@ data:
             max_recv_msg_size_mib: 999999999
           http:
             endpoint: 0.0.0.0:4318
+      signalfxgatewayprometheusremotewrite: 
+        endpoint: 0.0.0.0:4321
       skywalking:
         fillproc_extension: fill_proc
         protocols:
@@ -139,11 +141,11 @@ data:
           processors: [backsampling, batch]
           exporters: [otlp]
         metrics:
-          receivers: [otlp, redmetrics]
+          receivers: [signalfxgatewayprometheusremotewrite, otlp, redmetrics]
           processors: [batch]
           exporters: [otlp]
         metrics/sw:
-          receivers: [skywalking]
+          receivers: [signalfxgatewayprometheusremotewrite, skywalking]
           processors: []
           exporters: [nop]
         metrics/own_metrics:

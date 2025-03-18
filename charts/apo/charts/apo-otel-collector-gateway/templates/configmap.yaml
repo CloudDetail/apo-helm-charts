@@ -31,6 +31,8 @@ data:
             max_recv_msg_size_mib: 999999999
           http:
             endpoint: 0.0.0.0:4320
+      signalfxgatewayprometheusremotewrite: 
+        endpoint: 0.0.0.0:4321
       k8s_events:
         auth_type: serviceAccount
         namespaces: []
@@ -135,7 +137,7 @@ data:
           processors: [batch]
           exporters: [otlp]
         metrics:
-          receivers: [otlp]
+          receivers: [signalfxgatewayprometheusremotewrite, otlp]
           processors: [batch,metadata]
           exporters: [prometheusremotewrite]
         metrics/gateway:

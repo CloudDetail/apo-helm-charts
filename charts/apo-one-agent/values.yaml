@@ -18,6 +18,17 @@ global:
     - trace
     - metrics
     - log
+  victoriaMetrics:
+    # victoriaMetrics-single(single) or victoriaMetrics-cluster(cluster)
+    # After switching modes, the corresponding URL for the mode needs to be provided.
+    mode: single 
+    single:
+      url: "http://apo-victoria-metrics-single-server-svc:8428"
+    cluster:
+      # selectUrl: "http://<vmselect>:8481/select/<accountID>/prometheus"
+      selectUrl: http://read-service-url:8080/select/0/prometheus/
+      # insertUrl: "http://<vmselect>:8481/select/<accountID>/prometheus"
+      insertUrl: http://write-service-url:8080/insert/0/prometheus/
   apoServerIP: ""
   apoProxyUrl: apo-nginx-proxy-svc
   apoBackendPort: 31363
@@ -189,6 +200,20 @@ originxGcAgent:
   config:
     apoCollectorUrl: "{{ .Values.global.apoProxyUrl }}"
     apoCollectorPort: "{{ .Values.global.apoProxyPort }}"
+
+vmagent:
+  image:
+    repository: "{{ .Values.global.image.repository }}/vmagent"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    tag: "v1.102.1"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+  remoteWriteUrls: "http://apo-otel-collector-svc:4321"
 
 odigos:
   enabled: true

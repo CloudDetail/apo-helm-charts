@@ -249,12 +249,6 @@ apo-dify:
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.0.0-2"
 
-  nginx:
-    image:
-      repository: "{{ .Values.global.image.repository }}/nginx"
-      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "stable-alpine3.20"
-
   pluginDaemon:
     image:
       repository: "{{ .Values.global.image.repository }}/dify-plugin-daemon"
@@ -521,6 +515,20 @@ apo-one-agent:
     config:
       apoCollectorUrl: "apo-collector-svc"
       apoCollectorPort: "29090"
+
+  vmagent:
+    image:
+      repository: "{{ .Values.global.image.repository }}/vmagent"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.102.1"
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+    remoteWriteUrls: "http://apo-otel-collector-gateway-svc:4321"
 
   odigos:
     enabled: true
