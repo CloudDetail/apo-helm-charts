@@ -8,6 +8,8 @@ data:
   apo.yml: |
     server:
       port: 8080
+      access_token_expire_minutes: 15
+      refresh_token_expire_hours: 48
 
     logger:
       level: DEBUG
@@ -92,7 +94,7 @@ data:
         role: admin
 
     dify:
-      url: http://apo-dify-api-svc:5001/v1/workflows/run
+      url: http://apo-dify-api-svc:5001
       user: apo-backend-test
       api_keys:
         alert_check: app-x0mOJKUvhr35BOISSeNmsfXj

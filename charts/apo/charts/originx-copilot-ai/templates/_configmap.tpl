@@ -9,12 +9,12 @@ originx_backend: {{ tpl .Values.config.originxRootCauseInferUrl . }}
 {{- if eq .Values.global.language "en" }}
 language: en
 {{- else if eq .Values.global.language "zh" }}
-language: zh-cn
+language: zh
 {{- end }}
 {{- end }}
 
 {{- define "originx-copilot-ai.prompt" -}}
-zh-cn:
+zh:
   system: |
     你是一个智能推理助手,你的任务是根据用户提供的数据和用户提供的规则，按照要求分析出根因节点。
 

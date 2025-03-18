@@ -47,7 +47,7 @@ spec:
       containers:
       - name: init-hostpath
         image: "{{ tpl .Values.initHostPath.image.repository . }}:{{ tpl .Values.initHostPath.image.tag . }}"
-        command: ['sh', '-c', 'tar -zxvf /data/${LANGUAGE}/apo.tgz && cp -r /data/apo/dify/* /mnt/hostpath/']
+        command: ['sh', '-c', 'tar -zxvf /data/apo-${LANGUAGE}.tgz && cp -r /data/apo/dify/* /mnt/hostpath/']
         env:
         - name: LANGUAGE
           value: "{{ .Values.global.language }}"
