@@ -615,6 +615,11 @@ apo-otel-collector-gateway:
       port: 4319
       targetPort: 4319
       nodePort: 30319
+    - name: vmremotewrite
+      protocol: TCP
+      port: 4321
+      targetPort: 4321
+      nodePort: 30321
     type: NodePort
   resources: 
     limits:
