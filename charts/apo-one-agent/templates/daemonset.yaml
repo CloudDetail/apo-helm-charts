@@ -332,7 +332,7 @@ spec:
           args:
             - '-promscrape.config=/config/scrape.yml'
             - '-remoteWrite.tmpDataPath=/tmpData'
-            - '-remoteWrite.maxDiskUsagePerURL=167772160'
+            - '-remoteWrite.maxDiskUsagePerURL=536871040'
             - '-remoteWrite.url={{ tpl .Values.vmagent.remoteWriteUrls . }}/metrics'
             - '-envflag.enable=true'
             - '-envflag.prefix=VM_'

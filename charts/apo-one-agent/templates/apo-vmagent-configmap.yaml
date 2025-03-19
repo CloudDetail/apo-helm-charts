@@ -24,10 +24,9 @@ data:
     - job_name: integrations/unix
       static_configs:
         - targets: ["%{VM_MY_NODE_IP}:12345/api/v0/component/prometheus.exporter.unix.local_system/metrics"]
+          labels:
+              instance_name: "%{VM_HOSTNAME}"
       metric_relabel_configs:
-        - action: replace
-          source_labels: ["instance"]
-          target_label: "instance_name"
         - action: replace
           source_labels: ["job"]
           target_label: "job_name"
