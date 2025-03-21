@@ -50,6 +50,10 @@ dependencies:
     condition: originx-root-cause-infer.enabled
     repository: ""
     version: '*.*.*'
+  - name: postgres
+    condition: postgres.enabled
+    repository: ""
+    version: '*.*.*'
   - name: vector
     condition: vectors.enabled
     repository: ""

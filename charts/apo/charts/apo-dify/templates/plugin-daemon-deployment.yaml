@@ -45,16 +45,16 @@ spec:
           name: service-port
         env:
           - name: DB_USERNAME
-            value: postgres
+            value: {{ .Values.global.postgres.username }}
 
           - name: DB_PASSWORD
-            value: difyai123456
+            value: {{ .Values.global.postgres.password }}
 
           - name: DB_HOST
-            value: apo-dify-postgres-svc
+            value: {{ .Values.global.postgres.host }}
 
           - name: DB_PORT
-            value: '5432'
+            value: '{{ .Values.global.postgres.port }}'
 
           - name: REDIS_HOST
             value: apo-dify-redis-svc
@@ -74,7 +74,7 @@ spec:
           - name: CELERY_BROKER_URL
             value: >-
               redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)/1
-          - name: 'DB_DATABASE'
+          - name: {{ .Values.global.postgres.apoDifyPluginDatabase }}
             value: 'dify_plugin'
           - name: 'SERVER_PORT'
             value: '5002'

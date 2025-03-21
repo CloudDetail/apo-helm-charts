@@ -1,0 +1,8 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: apo-dify-backend
+  labels:
+    app.kubernetes.io/instance: apo-dify-backend
+    app: apo-dify-backend
+  namespace: {{ .Release.Namespace }}

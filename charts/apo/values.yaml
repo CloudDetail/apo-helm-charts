@@ -47,6 +47,21 @@ global:
     clusterName: ""
     replication: "false"
 
+  postgres:
+    host: "apo-postgres-svc"
+    port: 5432
+    username: postgres
+    password: Postgres@123456
+    apoDifyDatabase: apo-dify
+    apoDifPluginDatabase: apo-dify-plugin
+    apoGrafanaDatabase: apo-grafana
+    apoBackendDatabase: apo-backend
+  
+  redis:
+    host: "apo-redis-svc"
+    port: 6379
+    password: Redis@123456
+
   # deepflow integration configuration, requires a separate installation of the deepflow v6.4 TLS version  
   deepflow:
     enabled: false
@@ -772,6 +787,31 @@ originx-root-cause-infer:
     requests:
       cpu: 100m
       memory: 128Mi
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+postgres:
+  enabled: true
+  image:
+    repository: "{{ .Values.global.image.repository }}/postgres"
+    # This sets the pull policy for images.
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "15-alpine"
+  server:
+    username: "{{ .Values.global.postgres.username }}"
+    password: "{{ .Values.global.postgres.password }}"
+    database: "{{ .Values.global.postgres.apoGrafanaDatabase }}"
+  service:
+    type: ClusterIP
+    port: "{{ .Values.global.postgres.port }}"
+  persistent:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    storageClass: ""
+    size: 10Gi
   nodeSelector: {}
   affinity: {}
   tolerations: []

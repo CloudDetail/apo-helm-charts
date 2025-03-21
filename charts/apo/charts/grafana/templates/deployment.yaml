@@ -11,6 +11,7 @@ metadata:
     {{- end }}
   {{- with .Values.annotations }}
   annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:

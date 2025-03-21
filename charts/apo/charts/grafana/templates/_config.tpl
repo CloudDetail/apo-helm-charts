@@ -8,6 +8,7 @@
 {{- with .Values.plugins }}
 plugins: {{ join "," . }}
 {{- end }}
+{{/*
 grafana.ini: |
 {{- range $elem, $elemVal := index .Values "grafana.ini" }}
   {{- if not (kindIs "map" $elemVal) }}
@@ -34,6 +35,7 @@ grafana.ini: |
   {{- end }}
   {{- end }}
 {{- end }}
+ */}}
 
 {{/*
 {{- range $key, $value := .Values.datasources }}

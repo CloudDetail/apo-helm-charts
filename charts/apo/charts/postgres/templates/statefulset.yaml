@@ -1,42 +1,50 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: apo-dify-postgres
-  namespace: {{ .Release.Namespace }}
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: apo-dify-postgres 
-  serviceName: "apo-dify-postgres-svc"
-  replicas: 1
+      {{- include "postgres.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "postgres.fullname" . }}-svc
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app: apo-dify-postgres
+        {{- include "postgres.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-      serviceAccountName: apo-dify-postgres
-      terminationGracePeriodSeconds: 10
-      nodeSelector:
-        kubernetes.io/os: linux
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
-      - name: dify-postgres
-        image: "{{ tpl .Values.postgres.image.repository . }}:{{ tpl .Values.postgres.image.tag . }}"
-        imagePullPolicy: {{ tpl .Values.postgres.image.pullPolicy . }}
+      - name: postgres
+        image: "{{ tpl .Values.image.repository . }}:{{ tpl .Values.image.tag . }}"
+        imagePullPolicy: {{ tpl .Values.image.pullPolicy . }}
         env:
         - name: PGUSER
-          value: postgres
+          value: {{ tpl .Values.server.username . }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-username
         - name: POSTGRES_PASSWORD
-          value: difyai123456
+          value: {{ tpl .Values.server.password . }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-password
         - name: POSTGRES_DB
-          value: dify
+          value: {{ tpl .Values.server.database . }}
         - name: PGDATA
           value: /var/lib/postgresql/data
         # command:
@@ -58,31 +66,24 @@ spec:
             - "pg_isready"
             - "-U"
             - "$(PGUSER)"
-            - "-d"
-            - "$(POSTGRES_DB)"
           initialDelaySeconds: 5
           periodSeconds: 5
           timeoutSeconds: 2
           successThreshold: 1
           failureThreshold: 10
         resources:
-          limits:
-            cpu: 500m
-            memory: 1Gi
-          requests:
-            cpu: 100m
-            memory: 128Mi
+            {{- toYaml .Values.resources | nindent 12 }}
         ports:
         - containerPort: 5432
           name: postgres-port
         volumeMounts:
         - name: postgres-data
           mountPath: /var/lib/postgresql/data
+      {{- if not .Values.persistent.enabled }}
       volumes:
       - name: postgres-data
-        hostPath:
-          path: {{ .Values.hostPath }}/db/postgres/data
-          type: DirectoryOrCreate
+        emptyDir: {}
+      {{- end}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -106,3 +107,22 @@ spec:
       tolerations:
 {{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}
+  {{- if .Values.persistent.enabled }}
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: postgres-data
+    spec:
+      accessModes:
+{{ toYaml .Values.persistent.accessModes | indent 8 }}
+      resources:
+        requests:
+          storage: "{{ .Values.persistent.size }}"
+      {{- if .Values.persistent.storageClass }}
+      {{- if (eq "" (tpl .Values.persistent.storageClass .)) }}
+      {{- else }}
+      storageClassName: "{{ tpl .Values.persistent.storageClass . }}"
+      {{- end }}
+      {{- end }}
+  {{- end }}

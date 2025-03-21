@@ -26,11 +26,11 @@ spec:
         - name: EDITION
           value: SELF_HOSTED
         - name: CONSOLE_API_URL
-          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
+          value: "{{ tpl .Values.global.baseURL . }}/dify"
         - name: APP_API_URL
-          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
+          value: "{{ tpl .Values.global.baseURL . }}/dify"
         - name: NEXT_PUBLIC_V1_API_PREFIX
-          value: "{{ tpl .Values.global.baseURL . }}:31364/v1"
+          value: "{{ tpl .Values.global.baseURL . }}/v1"
         - name: SENTRY_DSN
           value: ""
         - name: NEXT_TELEMETRY_DISABLED

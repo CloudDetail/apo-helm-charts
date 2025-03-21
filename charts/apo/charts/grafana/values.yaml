@@ -776,56 +776,56 @@ dashboardsConfigMaps: {}
 ## ref: http://docs.grafana.org/installation/configuration/
 ##
 # domain: {{ tpl .Values.config.server.domain . }}
-grafana.ini:
-  app_mode: production
-  auth:
-    disable_login_form: false
-    disable_signout_menu: false
-  auth.anonymous:
-    enabled: true
-    org_name: Main Org.
-    org_role: Admin
-    hide_version: true
-  paths:
-    data: /var/lib/grafana/
-    logs: /var/log/grafana
-    plugins: /var/lib/grafana/plugins
-    provisioning: /etc/grafana/provisioning
-  analytics:
-    check_for_updates: false
-    reporting_enabled: false
-  log:
-    mode: console
-  grafana_net:
-    url: https://grafana.net
-  server:
-    protocol: http
-    ;http_port: 3000
-    domain: ""
-    enforce_domain: false
-    root_url: "%(protocol)s://%(domain)s/grafana/"
-    serve_from_sub_path: true
-    enable_gzip: true
-  security:
-    disable_initial_admin_creation: false
-    disable_gravatar: true
-    allow_embedding: true
-  database:
-    type: sqlite3
-  snapshots:
-    external_enabled: false
-  users:
-    allow_sign_up: true
-    allow_org_create: true
-    auto_assign_org_role: Admin
-    default_language: en
-    home_page: /grafana/
-  quota:
-    enabled: false
-  profile:
-    enabled: false
-  news:
-    news_feed_enabled: false
+# grafana.ini:
+#   app_mode: production
+#   auth:
+#     disable_login_form: false
+#     disable_signout_menu: false
+#   auth.anonymous:
+#     enabled: true
+#     org_name: Main Org.
+#     org_role: Admin
+#     hide_version: true
+#   paths:
+#     data: /var/lib/grafana/
+#     logs: /var/log/grafana
+#     plugins: /var/lib/grafana/plugins
+#     provisioning: /etc/grafana/provisioning
+#   analytics:
+#     check_for_updates: false
+#     reporting_enabled: false
+#   log:
+#     mode: console
+#   grafana_net:
+#     url: https://grafana.net
+#   server:
+#     protocol: http
+#     ;http_port: 3000
+#     domain: ""
+#     enforce_domain: false
+#     root_url: "%(protocol)s://%(domain)s/grafana/"
+#     serve_from_sub_path: true
+#     enable_gzip: true
+#   security:
+#     disable_initial_admin_creation: false
+#     disable_gravatar: true
+#     allow_embedding: true
+#   database:
+#     type: sqlite3
+#   snapshots:
+#     external_enabled: false
+#   users:
+#     allow_sign_up: true
+#     allow_org_create: true
+#     auto_assign_org_role: Admin
+#     default_language: en
+#     home_page: /grafana/
+#   quota:
+#     enabled: false
+#   profile:
+#     enabled: false
+#   news:
+#     news_feed_enabled: false
 
 ## grafana Authentication can be enabled with the following values on grafana.ini
  # server:

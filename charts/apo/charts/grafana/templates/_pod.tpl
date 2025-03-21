@@ -1033,13 +1033,13 @@ containers:
         value: {{ .Values.imageRenderer.grafanaProtocol }}://{{ include "grafana.fullname" . }}.{{ include "grafana.namespace" . }}:{{ .Values.service.port }}/{{ .Values.imageRenderer.grafanaSubPath }}
       {{- end }}
       - name: GF_PATHS_DATA
-        value: {{ (get .Values "grafana.ini").paths.data }}
+        value: "/var/lib/grafana/"
       - name: GF_PATHS_LOGS
-        value: {{ (get .Values "grafana.ini").paths.logs }}
+        value: "/var/log/grafana"
       - name: GF_PATHS_PLUGINS
-        value: {{ (get .Values "grafana.ini").paths.plugins }}
+        value: "/var/lib/grafana/plugins"
       - name: GF_PATHS_PROVISIONING
-        value: {{ (get .Values "grafana.ini").paths.provisioning }}
+        value: "/etc/grafana/provisioning"
       {{- range $key, $value := .Values.envValueFrom }}
       - name: {{ $key | quote }}
         valueFrom:

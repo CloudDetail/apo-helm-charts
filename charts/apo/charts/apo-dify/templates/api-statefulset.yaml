@@ -45,43 +45,43 @@ spec:
         - name: INIT_PASSWORD
           value: password
         - name: CONSOLE_API_URL
-          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
+          value: "{{ tpl .Values.global.baseURL . }}/dify"
         - name: SERVICE_API_URL
-          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
+          value: "{{ tpl .Values.global.baseURL . }}/dify"
         - name: APP_WEB_URL
-          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
+          value: "{{ tpl .Values.global.baseURL . }}/dify"
         - name: FILES_URL
-          value: "{{ tpl .Values.global.baseURL . }}:31364/dify"
+          value: "{{ tpl .Values.global.baseURL . }}/dify"
         - name: APO_BACKEND_URL
-          value: "{{ tpl .Values.global.baseURL . }}:31364"
+          value: "{{ tpl .Values.global.baseURL . }}"
         - name: MIGRATION_ENABLED
           value: "true"
         - name: DB_USERNAME
-          value: postgres
+          value: {{ .Values.global.postgres.username }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-username
         - name: DB_PASSWORD
-          value: difyai123456
+          value: {{ .Values.global.postgres.password }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-password
         - name: DB_HOST
-          value: apo-dify-postgres-svc
+          value: {{ .Values.global.postgres.host }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-host
         - name: DB_PORT
-          value: '5432'
+          value: '{{ .Values.global.postgres.port }}'
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-port
         - name: DB_DATABASE
-          value: dify
+          value: {{ .Values.global.postgres.apoDifyDatabase }}
         - name: REDIS_HOST
           value: apo-dify-redis-svc
           # valueFrom:
@@ -203,7 +203,7 @@ spec:
             cpu: 200m
             memory: 256Mi
           limits:
-            cpu: 1000m
+            cpu: 3000m
             memory: 2Gi
         ports:
         - containerPort: 5001

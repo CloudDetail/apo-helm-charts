@@ -44,33 +44,33 @@ spec:
         - name: SECRET_KEY
           value: "sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U"
         - name: APO_BACKEND_URL
-          value: "{{ tpl .Values.global.baseURL . }}:31364"
+          value: "{{ tpl .Values.global.baseURL . }}"
         - name: DB_USERNAME
-          value: postgres
+          value: {{ .Values.global.postgres.username }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-username
         - name: DB_PASSWORD
-          value: difyai123456
+          value: {{ .Values.global.postgres.password }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-password
         - name: DB_HOST
-          value: apo-dify-postgres-svc
+          value: {{ .Values.global.postgres.host }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-host
         - name: DB_PORT
-          value: '5432'
+          value: '{{ .Values.global.postgres.port }}'
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-port
         - name: DB_DATABASE
-          value: dify
+          value: {{ .Values.global.postgres.apoDifyDatabase }}
         - name: REDIS_HOST
           value: apo-dify-redis-svc
           # valueFrom:

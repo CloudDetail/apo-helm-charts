@@ -12,6 +12,62 @@ metadata:
   {{- end }}
 data:
   {{- include "grafana.configData" . | nindent 2 }}
+  grafana.ini: |
+    app_mode = production
+    [analytics]
+    check_for_updates = false
+    reporting_enabled = false
+    [auth]
+    disable_login_form = false
+    disable_signout_menu = false
+    [auth.anonymous]
+    enabled = true
+    hide_version = true
+    org_name = Main Org.
+    org_role = Admin
+    [database]
+    type = postgres
+    host = {{ tpl .Values.global.postgres.host . }}:{{ printf "%d" (.Values.global.postgres.port | int) }}
+    name = {{ tpl .Values.global.postgres.apoGrafanaDatabase . }}
+    user = {{ tpl .Values.global.postgres.username . }}
+    password = {{ tpl .Values.global.postgres.password . }}
+    database = {{ tpl .Values.global.postgres.apoGrafanaDatabase . }}
+    ssl_mode = disable
+    [grafana_net]
+    url = https://grafana.net
+    [log]
+    mode = console
+    [news]
+    news_feed_enabled = false
+    [paths]
+    data = /var/lib/grafana/
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+    provisioning = /etc/grafana/provisioning
+    [profile]
+    enabled = false
+    [quota]
+    enabled = false
+    [security]
+    allow_embedding = true
+    disable_gravatar = true
+    disable_initial_admin_creation = false
+    [server]
+    ;http_port = 3000
+    domain = localhost
+    enable_gzip = true
+    enforce_domain = false
+    protocol = http
+    root_url = %(protocol)s://%(domain)s/grafana/
+    serve_from_sub_path = true
+    [snapshots]
+    external_enabled = false
+    [users]
+    allow_org_create = true
+    allow_sign_up = true
+    auto_assign_org_role = Admin
+    default_language = en
+    home_page = /grafana/
   datasources.yaml: |-
     apiVersion: 1
     datasources: 
