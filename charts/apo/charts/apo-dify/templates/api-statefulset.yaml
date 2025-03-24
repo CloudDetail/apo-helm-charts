@@ -83,26 +83,26 @@ spec:
         - name: DB_DATABASE
           value: {{ .Values.global.postgres.apoDifyDatabase }}
         - name: REDIS_HOST
-          value: apo-dify-redis-svc
+          value: {{ .Values.global.redis.host }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: redis-host
         - name: REDIS_PORT
-          value: '6379'
+          value: '{{ .Values.global.redis.port }}'
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: redis-port
           # default redis username is empty
         - name: REDIS_USERNAME
-          value: ''
+          value: "{{ .Values.global.redis.username }}"
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: redis-username
         - name: REDIS_PASSWORD
-          value: difyai123456
+          value: {{ .Values.global.redis.password }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials

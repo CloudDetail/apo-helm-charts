@@ -95,7 +95,7 @@ data:
 
     dify:
       url: http://apo-dify-api-svc:5001
-      user: apo-backend-test
+      user: apo-backend
       api_keys:
         alert_check: app-x0mOJKUvhr35BOISSeNmsfXj
       flow_ids: 

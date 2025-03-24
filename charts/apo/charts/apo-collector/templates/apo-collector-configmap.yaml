@@ -119,8 +119,8 @@ data:
     redis:
       # 单实例可考虑不引入Redis, 多实例则需要引入中间件Redis.
       enable: false
-      address: ""
-      password: ""
+      address: "apo-redis-svc:6379"
+      password: "Redis@123456"
       # 设置缓存时间(秒)
       expire_time: 300
 

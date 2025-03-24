@@ -1,41 +1,45 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: apo-dify-redis
-  namespace: {{ .Release.Namespace }}
+  name: {{ include "redis.fullname" . }}
+  labels:
+    {{- include "redis.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: apo-dify-redis
-  serviceName: "apo-dify-redis-svc"
-  replicas: 1
+      {{- include "redis.selectorLabels" . | nindent 6 }}
+  serviceName: "{{ include "redis.fullname" . }}-svc"
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app: apo-dify-redis
+        {{- include "redis.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-      terminationGracePeriodSeconds: 10
-      nodeSelector:
-        kubernetes.io/os: linux
-      serviceAccountName: apo-dify-redis
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-      - name: dify-redis
-        image: "{{ tpl .Values.redis.image.repository . }}:{{ tpl .Values.redis.image.tag . }}"
-        imagePullPolicy: {{ tpl .Values.redis.image.pullPolicy . }}
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ tpl .Values.image.repository . }}:{{ tpl .Values.image.tag . }}"
+        imagePullPolicy: {{ tpl .Values.image.pullPolicy . }}
         ports:
         - containerPort: 6379
           name: redis-port
         command: ["redis-server", "--save", "20", "1", "--loglevel", "warning", "--requirepass", "$(REDIS_PASSWORD)"]
-        resources:
-          limits:
-            cpu: 500m
-            memory: 1024Mi
-          requests:
-            cpu: 100m
-            memory: 102Mi
         env:
         - name: REDIS_PASSWORD
-          value: difyai123456
+          value: {{ .Values.global.redis.password }}
           # valueFrom:
           #   secretKeyRef:
           #     name: dify-credentials
@@ -45,14 +49,18 @@ spec:
             command:
             - redis-cli
             - ping
+        livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 12 }}
+        readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 12 }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: redis-data
           mountPath: /data
       volumes:
       - name: redis-data
-        hostPath:
-          path: {{ .Values.hostPath }}/db/redis/data
-          type: DirectoryOrCreate
+        emptyDir: {}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

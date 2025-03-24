@@ -60,6 +60,7 @@ global:
   redis:
     host: "apo-redis-svc"
     port: 6379
+    username: ""
     password: Redis@123456
 
   # deepflow integration configuration, requires a separate installation of the deepflow v6.4 TLS version  

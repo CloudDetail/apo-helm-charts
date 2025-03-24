@@ -60,8 +60,6 @@ spec:
         - name: apo-backend-config
           mountPath: /app/config/apo.yml
           subPath: apo.yml
-        - name: sqlite-storage
-          mountPath: /app/database
         readinessProbe:
           httpGet:
             path: /api/health
@@ -98,14 +96,6 @@ spec:
         configMap:
           name: {{ include "apo-backend.fullname" . }}-config
           defaultMode: 420
-      {{- if .Values.persistence.enabled }}
-      - name: sqlite-storage
-        persistentVolumeClaim:
-          claimName: {{ include "apo-backend.fullname" . }}-pvc
-      {{- else }}
-      - name: sqlite-storage
-        emptyDir: {}
-      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
