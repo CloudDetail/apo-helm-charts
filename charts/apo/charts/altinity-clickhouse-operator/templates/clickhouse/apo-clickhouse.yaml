@@ -29,24 +29,27 @@ spec:
                 - name: log-storage-vc-template
                   mountPath: /var/log/clickhouse-server
 
-    volumeClaimTemplates:
-      - name: data-storage-vc-template
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 16Gi
-      - name: log-storage-vc-template
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 1Gi
+    # volumeClaimTemplates:
+    #   - name: data-storage-vc-template
+    #     reclaimPolicy: Retain
+    #     spec:
+    #       accessModes:
+    #         - ReadWriteOnce
+    #       resources:
+    #         requests:
+    #           storage: 16Gi
+    #   - name: log-storage-vc-template
+    #     reclaimPolicy: Retain
+    #     spec:
+    #       accessModes:
+    #         - ReadWriteOnce
+    #       resources:
+    #         requests:
+    #           storage: 1Gi
     
     volumeClaimTemplates:
       - name: data-storage-vc-template
+        reclaimPolicy: Retain
         spec:
           accessModes:
 {{ toYaml .Values.clickhouse.persistence.data.accessModes | indent 12 }}
@@ -65,6 +68,7 @@ spec:
               {{- toYaml . | nindent 12 }}
         {{- end }}
       - name: log-storage-vc-template
+        reclaimPolicy: Retain
         spec:
           accessModes:
 {{ toYaml .Values.clickhouse.persistence.log.accessModes | indent 12 }}

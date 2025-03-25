@@ -10,10 +10,27 @@ data:
 
     http {
         server {
-            listen 29090 http2;
+            listen {{ .Values.global.apoCollectorProxyPort }} http2;
 
             location / {
                 grpc_pass grpc://{{ tpl .Values.config.apoCollectorUrl . }}:{{ tpl .Values.config.apoCollectorPort . }};
+                error_page 502 = /error502grpc;
+            }
+
+            location = /error502grpc {
+                internal;
+                default_type application/grpc;
+                add_header grpc-status 14;
+                add_header content-length 0;
+                return 204;
+            }
+        }
+
+        server {
+            listen {{ .Values.global.apoVectorLogProxyPort }} http2;
+
+            location / {
+                grpc_pass grpc://{{ tpl .Values.config.apoCollectorUrl . }}:{{ .Values.global.apoVectorLogPort }};
                 error_page 502 = /error502grpc;
             }
 

@@ -54,6 +54,10 @@ dependencies:
     condition: postgres.enabled
     repository: ""
     version: '*.*.*'
+  - name: redis
+    condition: redis.enabled
+    repository: ""
+    version: '*.*.*'
   - name: vector
     condition: vectors.enabled
     repository: ""
@@ -64,5 +68,9 @@ dependencies:
     version: '*.*.*'
   - name: victoria-metrics-single
     condition: victoria-metrics-single.enabled
+    repository: ""
+    version: '*.*.*'
+  - name: weaviate
+    condition: weaviate.enabled
     repository: ""
     version: '*.*.*'

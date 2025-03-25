@@ -23,8 +23,8 @@ data:
       file_size_mb: 100
 
     database:
-      # 数据库类型 sqllite / mysql
-      connection: sqllite
+      # 数据库类型 sqllite / mysql / postgres
+      connection: postgres
       max_open: 10
       max_idle: 60
       max_life_second: 60
@@ -37,6 +37,12 @@ data:
         username: ""
         password: ""
         charset: "utf8mb4"
+      postgres:
+        host: "{{ .Values.global.postgres.host }}"
+        port: {{ .Values.global.postgres.port }}
+        database: "{{ .Values.global.postgres.apoBackendDatabase }}"
+        username: "{{ .Values.global.postgres.username }}"
+        password: "{{ .Values.global.postgres.password }}"
 
     clickhouse:
       address: "{{ tpl .Values.config.clickhouseUrl . }}"

@@ -74,8 +74,8 @@ spec:
           - name: CELERY_BROKER_URL
             value: >-
               redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)/1
-          - name: {{ .Values.global.postgres.apoDifyPluginDatabase }}
-            value: 'dify_plugin'
+          - name: DB_DATABASE
+            value: '{{ .Values.global.postgres.apoDifyPluginDatabase }}'
           - name: 'SERVER_PORT'
             value: '5002'
           - name: 'EXPOSE_PLUGIN_DAEMON_PORT'

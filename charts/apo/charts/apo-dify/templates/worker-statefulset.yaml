@@ -19,11 +19,11 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/os: linux
-      volumes:
-      - name: dify-api-storage
-        hostPath:
-          path: {{ .Values.hostPath }}/app/api/storage
-          type: DirectoryOrCreate
+      # volumes:
+      # - name: dify-api-storage
+      #   hostPath:
+      #     path: {{ .Values.hostPath }}/app/api/storage
+      #     type: DirectoryOrCreate
       containers:
       - name: dify-worker
         image: "{{ tpl .Values.worker.image.repository . }}:{{ tpl .Values.worker.image.tag . }}"
@@ -163,9 +163,9 @@ spec:
           limits:
             cpu: 1000m
             memory: 2Gi
-        volumeMounts:
-        - name: dify-api-storage
-          mountPath: /app/api/storage
+        # volumeMounts:
+        # - name: dify-api-storage
+        #   mountPath: /app/api/storage
         imagePullPolicy: {{ tpl .Values.worker.image.pullPolicy . }}
       restartPolicy: Always
       {{- if .Values.nodeSelector }}

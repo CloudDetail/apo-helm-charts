@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "weaviate.fullname" . }}
+  labels:
+    {{- include "weaviate.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "weaviate.selectorLabels" . | nindent 6 }}
+  serviceName: "{{ include "weaviate.fullname" . }}-svc"
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "weaviate.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ tpl .Values.image.repository . }}:{{ tpl .Values.image.tag . }}"
+          imagePullPolicy: {{ tpl .Values.weaviate.image.pullPolicy . }}
+          ports:
+            - name: weaviate-port
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+          - name: QUERY_DEFAULTS_LIMIT
+            value: "25"
+          - name: AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED
+            value: "false"
+          - name: PERSISTENCE_DATA_PATH
+            value: "/var/lib/weaviate"
+          - name: "DEFAULT_VECTORIZER_MODULE"
+            value: "none"
+          - name: "AUTHENTICATION_APIKEY_ENABLED"
+            value: "true"
+          - name: "AUTHENTICATION_APIKEY_ALLOWED_KEYS"
+            value: "WVF5YThaHlkYwhGUSmCRgsX3tD5ngdN8pkih"
+          - name: "AUTHENTICATION_APIKEY_USERS"
+            value: "hello@dify.ai"
+          - name: "AUTHORIZATION_ADMINLIST_ENABLED"
+            value: "true"
+          - name: "AUTHORIZATION_ADMINLIST_USERS"
+            value: "hello@dify.ai"
+          volumeMounts:
+          - name: weaviate-data
+            mountPath: /var/lib/weaviate
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: postgres-data
+    spec:
+      accessModes:
+{{ toYaml .Values.persistent.accessModes | indent 8 }}
+      resources:
+        requests:
+          storage: "{{ .Values.persistent.size }}"
+      {{- if .Values.persistent.storageClass }}
+      {{- if (eq "" (tpl .Values.persistent.storageClass .)) }}
+      {{- else }}
+      storageClassName: "{{ tpl .Values.persistent.storageClass . }}"
+      {{- end }}
+      {{- end }}
+  {{- end }}

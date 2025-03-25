@@ -23,6 +23,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: apo-backend
+      serviceAccount: apo-backend
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:

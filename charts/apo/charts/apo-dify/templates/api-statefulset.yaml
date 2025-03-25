@@ -21,11 +21,11 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/os: linux
-      volumes:
-      - name: dify-api-storage
-        hostPath:
-          path: {{ .Values.hostPath }}/app/api/storage
-          type: DirectoryOrCreate
+      # volumes:
+      # - name: dify-api-storage
+      #   hostPath:
+      #     path: {{ .Values.hostPath }}/app/api/storage
+      #     type: DirectoryOrCreate
       containers:
       - name: dify-api
         image: "{{ tpl .Values.api.image.repository . }}:{{ tpl .Values.api.image.tag . }}"
@@ -208,9 +208,9 @@ spec:
         ports:
         - containerPort: 5001
         imagePullPolicy: {{ tpl .Values.api.image.pullPolicy . }}
-        volumeMounts:
-        - name: dify-api-storage
-          mountPath: /app/api/storage
+        # volumeMounts:
+        # - name: dify-api-storage
+        #   mountPath: /app/api/storage
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

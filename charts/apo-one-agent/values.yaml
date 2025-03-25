@@ -32,7 +32,8 @@ global:
   apoServerIP: ""
   apoProxyUrl: apo-nginx-proxy-svc
   apoBackendPort: 31363
-  apoProxyPort: 29090
+  apoCollectorProxyPort: 30044
+  apoVectorLogProxyPort: 30310
   apoCollectorPort: 30044
   apoOtelCollectorGatewayGRPCPort: 30317
   apoOtelCollectorGatewayK8SPort: 30319
@@ -84,7 +85,7 @@ apoOneAgent:
       memory: 128Mi
   config:
     apoCollectorUrl: "{{ .Values.global.apoProxyUrl }}"
-    apoCollectorPort: "{{ .Values.global.apoProxyPort }}"
+    apoCollectorPort: "{{ .Values.global.apoCollectorProxyPort }}"
     javaAgentType: "opentelemetry"
 
 apoNodeAgent:
@@ -116,7 +117,7 @@ apoIlogtail:
       cpu: 100m
       memory: 128Mi
   apoOtelCollectorGrpcUrl: "apo-otel-collector-svc:4317"
-  apoVectorLogUrl: "{{ .Values.global.apoServerIP }}:{{ .Values.global.apoVectorLogPort }}"
+  apoVectorLogUrl: "{{ .Values.global.apoProxyUrl }}:{{ .Values.global.apoVectorLogProxyPort }}"
 
 grafanaAlloy:
   image:
@@ -181,7 +182,7 @@ apoOtelCollectorAgent:
       memory: 128Mi
   config:
     apoCollectorUrl: "{{ .Values.global.apoProxyUrl }}"
-    apoCollectorPort: "{{ .Values.global.apoProxyPort }}"
+    apoCollectorPort: "{{ .Values.global.apoCollectorProxyPort }}"
     apoOtelCollectorUrl: "apo-otel-collector-svc"
     apoOtelCollectorGRPCPort: "4317"
 
@@ -199,7 +200,7 @@ originxGcAgent:
       memory: 64Mi
   config:
     apoCollectorUrl: "{{ .Values.global.apoProxyUrl }}"
-    apoCollectorPort: "{{ .Values.global.apoProxyPort }}"
+    apoCollectorPort: "{{ .Values.global.apoCollectorProxyPort }}"
 
 vmagent:
   image:

@@ -52,10 +52,10 @@ global:
     port: 5432
     username: postgres
     password: Postgres@123456
-    apoDifyDatabase: apo-dify
-    apoDifPluginDatabase: apo-dify-plugin
-    apoGrafanaDatabase: apo-grafana
-    apoBackendDatabase: apo-backend
+    apoDifyDatabase: apo_dify
+    apoDifyPluginDatabase: apo_dify_plugin
+    apoGrafanaDatabase: apo_grafana
+    apoBackendDatabase: apo_backend
   
   redis:
     host: "apo-redis-svc"
@@ -253,12 +253,6 @@ apo-collector:
 apo-dify:
   enabled: true
 
-  initHostPath:
-    image:
-      repository: "{{ .Values.global.image.repository }}/apo-dify-init-hostpath"
-      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.4"
-
   api:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
@@ -270,18 +264,6 @@ apo-dify:
       repository: "{{ .Values.global.image.repository }}/dify-plugin-daemon"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "0.0.3-local"
-
-  postgres:
-    image:
-      repository: "{{ .Values.global.image.repository }}/postgres"
-      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "15-alpine"
-
-  redis:
-    image:
-      repository: "{{ .Values.global.image.repository }}/redis"
-      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "6-alpine"
 
   sandbox:
     image:
@@ -817,6 +799,18 @@ postgres:
   affinity: {}
   tolerations: []
 
+redis:
+  enabled: true
+  image:
+    repository: "{{ .Values.global.image.repository }}/redis"
+    # This sets the pull policy for images.
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "6-alpine"
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
 vector:
   enabled: true
   image:
@@ -1001,3 +995,20 @@ victoria-metrics-single:
   affinity: {}
   tolerations: []
   
+weaviate:
+  enabled: true
+  image:
+    repository: docker.io/clouddetail/weaviate
+    # This sets the pull policy for images.
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.19.0"
+  persistent:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    storageClass: ""
+    size: 10Gi
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
