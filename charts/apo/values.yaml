@@ -242,9 +242,9 @@ apo-dify:
 
   api:
     initImage:
-      repository: "{{ .Values.global.image.repository }}/init-postgres"
+      repository: "{{ .Values.global.image.repository }}/apo-init-postgres"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.5.6"
+      tag: "v1.0.0"
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
@@ -252,9 +252,9 @@ apo-dify:
 
   pluginDaemon:
     initImage:
-      repository: "{{ .Values.global.image.repository }}/init-postgres"
+      repository: "{{ .Values.global.image.repository }}/apo-init-postgres"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v0.5.6"
+      tag: "v1.0.0"
     image:
       repository: "{{ .Values.global.image.repository }}/dify-plugin-daemon"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
@@ -290,13 +290,9 @@ apo-dify:
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.0.0-3"
 
-  hostPath: "/data/apo/dify"
-
   nodeSelector: {}
   tolerations: []
   affinity: {}
-
-  hostPath: "/data/apo/dify"
 
 apo-front:
   enabled: true
@@ -695,7 +691,7 @@ grafana:
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   extraInitContainers: 
   - name: init-postgres
-    image: "{{ .Values.global.image.repository }}/init-postgres:v0.5.6"
+    image: "{{ .Values.global.image.repository }}/apo-init-postgres:v1.0.0"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
     env:
       - name: POSTGRES_HOST

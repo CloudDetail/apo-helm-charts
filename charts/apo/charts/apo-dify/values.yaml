@@ -7,9 +7,9 @@ global:
 
 api:
   initImage:
-    repository: docker.io/clouddetail/init-postgras
+    repository: docker.io/clouddetail/apo-init-postgres
     pullPolicy: IfNotPresent
-    tag: "v0.5.6"
+    tag: "v1.0.0"
   image:
     repository: docker.io/clouddetail/apo-dify-api
     pullPolicy: IfNotPresent
@@ -23,9 +23,9 @@ api:
 
 pluginDaemon:
   initImage:
-    repository: docker.io/clouddetail/init-postgras
+    repository: docker.io/clouddetail/apo-init-postgres
     pullPolicy: IfNotPresent
-    tag: "v0.5.6"
+    tag: "v1.0.0"
   image:
     repository: docker.io/clouddetail/dify-plugin-daemon
     pullPolicy: IfNotPresent
@@ -64,5 +64,3 @@ worker:
 nodeSelector: {}
 tolerations: []
 affinity: {}
-
-hostPath: "/data/apo/dify"
