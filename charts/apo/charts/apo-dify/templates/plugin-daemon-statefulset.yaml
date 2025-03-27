@@ -18,6 +18,28 @@ spec:
       labels:
         app: apo-dify-plugin-daemon
     spec:
+      initContainers:
+      - name: init-postgres
+        image: "{{ tpl .Values.pluginDaemon.initImage.repository . }}:{{ tpl .Values.pluginDaemon.initImage.tag . }}"
+        imagePullPolicy: {{ tpl .Values.pluginDaemon.initImage.pullPolicy . }}
+        env:
+          - name: POSTGRES_HOST
+            value: {{ .Values.global.postgres.host }}
+          - name: POSTGRES_PORT
+            value: "{{ .Values.global.postgres.port }}"
+          - name: POSTGRES_USER
+            value: {{ .Values.global.postgres.username }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.global.postgres.password }}
+      - name: init-plugin-files
+        image: "{{ tpl .Values.api.image.repository . }}:{{ tpl .Values.api.image.tag . }}"
+        imagePullPolicy: {{ tpl .Values.api.image.pullPolicy . }}
+        env:
+          - name: MODE
+            value: "copy"
+        volumeMounts:
+        - name: dify-plugin-daemon-storage
+          mountPath: /app/storage
       containers:
       - name: dify-plugin-daemon
         image: "{{ tpl .Values.pluginDaemon.image.repository . }}:{{ tpl .Values.pluginDaemon.image.tag . }}"

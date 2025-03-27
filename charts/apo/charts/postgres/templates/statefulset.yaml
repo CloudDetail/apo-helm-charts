@@ -43,8 +43,8 @@ spec:
           #   secretKeyRef:
           #     name: dify-credentials
           #     key: pg-password
-        - name: POSTGRES_DB
-          value: {{ tpl .Values.server.database . }}
+        # - name: POSTGRES_DB
+        #   value: {{ tpl .Values.server.database . }}
         - name: PGDATA
           value: /var/lib/postgresql/data
         # command:

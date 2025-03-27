@@ -19,6 +19,21 @@ spec:
       labels:
         app: apo-dify-backend
     spec:
+      initContainers:
+      - name: init-postgres
+        image: "{{ tpl .Values.api.initImage.repository . }}:{{ tpl .Values.api.initImage.tag . }}"
+        imagePullPolicy: {{ tpl .Values.api.initImage.pullPolicy . }}
+        env:
+          - name: POSTGRES_HOST
+            value: {{ .Values.global.postgres.host }}
+          - name: POSTGRES_PORT
+            value: "{{ .Values.global.postgres.port }}"
+          - name: POSTGRES_USER
+            value: {{ .Values.global.postgres.username }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.global.postgres.password }}
+          - name: INIT_DB_NAME
+            value: {{ .Values.global.postgres.apoDifyDatabase }}
       containers:
       - name: dify-api
         image: "{{ tpl .Values.api.image.repository . }}:{{ tpl .Values.api.image.tag . }}"

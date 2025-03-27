@@ -241,12 +241,20 @@ apo-dify:
   enabled: true
 
   api:
+    initImage:
+      repository: "{{ .Values.global.image.repository }}/init-postgres"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v0.5.6"
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.0.0-3"
 
   pluginDaemon:
+    initImage:
+      repository: "{{ .Values.global.image.repository }}/init-postgres"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v0.5.6"
     image:
       repository: "{{ .Values.global.image.repository }}/dify-plugin-daemon"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
@@ -686,6 +694,20 @@ grafana:
     tag: "10.4.1"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   extraInitContainers: 
+  - name: init-postgres
+    image: "{{ .Values.global.image.repository }}/init-postgres:v0.5.6"
+    imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    env:
+      - name: POSTGRES_HOST
+        value: "{{ .Values.global.postgres.host }}"
+      - name: POSTGRES_PORT
+        value: "{{ .Values.global.postgres.port }}"
+      - name: POSTGRES_USER
+        value: "{{ .Values.global.postgres.username }}"
+      - name: POSTGRES_PASSWORD
+        value: "{{ .Values.global.postgres.password }}"
+      - name: INIT_DB_NAME
+        value: "{{ .Values.global.postgres.apoGrafanaDatabase }}"
   - name: apo-grafana-init-dashboard
     image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.2.1"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
@@ -772,7 +794,6 @@ postgres:
   server:
     username: "{{ .Values.global.postgres.username }}"
     password: "{{ .Values.global.postgres.password }}"
-    database: "{{ .Values.global.postgres.apoDifyDatabase }}"
   service:
     type: ClusterIP
     port: "{{ .Values.global.postgres.port }}"
