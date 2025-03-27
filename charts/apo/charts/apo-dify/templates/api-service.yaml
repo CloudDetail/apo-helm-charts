@@ -6,9 +6,9 @@ metadata:
 spec:
   ports:
   - port: 5001
-    targetPort: 5001
+    targetPort: 5000
     protocol: TCP
     name: apo-dify-api
   type: ClusterIP
   selector:
-    app: apo-dify-api
+    app: apo-dify-backend

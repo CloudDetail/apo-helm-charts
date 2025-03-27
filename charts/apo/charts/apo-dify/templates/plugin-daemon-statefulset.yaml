@@ -1,13 +1,15 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: apo-dify-plugin-daemon
   namespace: {{ .Release.Namespace }}
   labels:
+    app.kubernetes.io/instance: apo-dify-plugin-daemon
     app: apo-dify-plugin-daemon
 spec:
   replicas: 1
   revisionHistoryLimit: 1
+  serviceName: apo-dify-plugin-daemon-svc
   selector:
     matchLabels:
       app: apo-dify-plugin-daemon
@@ -16,14 +18,6 @@ spec:
       labels:
         app: apo-dify-plugin-daemon
     spec:
-      nodeSelector:
-        kubernetes.io/os: linux
-      automountServiceAccountToken: false
-      volumes:
-      - name: dify-plugin-daemon-storage
-        hostPath:
-          path: {{ .Values.hostPath }}/app/plugin/storage
-          type: DirectoryOrCreate
       containers:
       - name: dify-plugin-daemon
         image: "{{ tpl .Values.pluginDaemon.image.repository . }}:{{ tpl .Values.pluginDaemon.image.tag . }}"
@@ -107,6 +101,16 @@ spec:
         volumeMounts:
         - name: dify-plugin-daemon-storage
           mountPath: /app/storage
+      {{- if .Values.pluginDaemon.persistent.enabled }}
+      volumes:
+        - name: dify-plugin-daemon-storage
+          persistentVolumeClaim:
+            claimName: dify-plugin-daemon-storage
+      {{- else }}
+      volumes:
+      - name: dify-plugin-daemon-storage
+        emptyDir: {}
+      {{- end}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -130,3 +134,22 @@ spec:
       tolerations:
 {{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}
+  {{- if .Values.pluginDaemon.persistent.enabled }}
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: dify-plugin-daemon-storage
+    spec:
+      accessModes:
+{{ toYaml .Values.pluginDaemon.persistent.accessModes | indent 8 }}
+      resources:
+        requests:
+          storage: "{{ .Values.pluginDaemon.persistent.size }}"
+      {{- if .Values.pluginDaemon.persistent.storageClass }}
+      {{- if (eq "" (tpl .Values.pluginDaemon.persistent.storageClass .)) }}
+      {{- else }}
+      storageClassName: "{{ tpl .Values.pluginDaemon.persistent.storageClass . }}"
+      {{- end }}
+      {{- end }}
+  {{- end }}

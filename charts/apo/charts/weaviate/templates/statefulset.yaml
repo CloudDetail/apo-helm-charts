@@ -32,7 +32,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ tpl .Values.image.repository . }}:{{ tpl .Values.image.tag . }}"
-          imagePullPolicy: {{ tpl .Values.weaviate.image.pullPolicy . }}
+          imagePullPolicy: {{ tpl .Values.image.pullPolicy . }}
           ports:
             - name: weaviate-port
               containerPort: {{ .Values.service.port }}
@@ -61,11 +61,16 @@ spec:
           volumeMounts:
           - name: weaviate-data
             mountPath: /var/lib/weaviate
-      {{- with .Values.volumes }}
+      {{- if .Values.persistent.enabled }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-
+        - name: weaviate-data
+          persistentVolumeClaim:
+            claimName: weaviate-data
+      {{- else }}
+      volumes:
+      - name: weaviate-data
+        emptyDir: {}
+      {{- end}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -89,11 +94,12 @@ spec:
       tolerations:
 {{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}
+  {{- if .Values.persistent.enabled }}
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
-      name: postgres-data
+      name: weaviate-data
     spec:
       accessModes:
 {{ toYaml .Values.persistent.accessModes | indent 8 }}

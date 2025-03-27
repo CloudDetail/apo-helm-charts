@@ -53,13 +53,6 @@ config:
   clickhouseUsername: "admin"
   clickhousePassword: "WPKf-e9U.X)K)ezTDo9#"
 
-persistence:
-  enabled: false
-  storageClass: ""
-  accessModes:
-    - ReadWriteOnce
-  size: 1Gi
-
 nodeSelector: {}
 affinity: {}
 tolerations: []

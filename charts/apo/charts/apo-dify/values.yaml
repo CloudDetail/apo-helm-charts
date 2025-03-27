@@ -10,18 +10,24 @@ api:
     repository: docker.io/clouddetail/apo-dify-api
     pullPolicy: IfNotPresent
     tag: "v1.0.0-1"
+  persistent:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    storageClass: ""
+    size: 10Gi
 
 pluginDaemon:
   image:
     repository: docker.io/clouddetail/dify-plugin-daemon
     pullPolicy: IfNotPresent
     tag: "0.0.3-local"
-
-postgres:
-  image:
-    repository: docker.io/clouddetail/postgres
-    pullPolicy: IfNotPresent
-    tag: "15-alpine"
+  persistent:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    storageClass: ""
+    size: 10Gi
 
 sandbox:
   image:

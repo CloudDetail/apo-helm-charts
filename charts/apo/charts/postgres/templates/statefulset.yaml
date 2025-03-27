@@ -79,7 +79,12 @@ spec:
         volumeMounts:
         - name: postgres-data
           mountPath: /var/lib/postgresql/data
-      {{- if not .Values.persistent.enabled }}
+      {{- if .Values.persistent.enabled }}
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-data
+      {{- else }}
       volumes:
       - name: postgres-data
         emptyDir: {}

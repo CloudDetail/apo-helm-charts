@@ -142,19 +142,6 @@ apo-backend:
     clickhouseUsername: "{{ .Values.global.clickhouse.username }}"
     clickhousePassword: "{{ .Values.global.clickhouse.password }}"
     anonymousUserEnabled: "false"
-  persistence:
-    # -- Create/use Persistent Volume Claim for server component. Empty dir if false
-    enabled: false
-
-    # -- StorageClass to use for persistent volume. Requires clickhouse.persistence.enabled: true. If defined, PVC created automatically
-    storageClass: "{{ .Values.global.persistence.storageClass }}"
-
-    # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
-    accessModes:
-      - ReadWriteOnce
-
-    # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
-    size: 1Gi
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -785,7 +772,7 @@ postgres:
   server:
     username: "{{ .Values.global.postgres.username }}"
     password: "{{ .Values.global.postgres.password }}"
-    database: "{{ .Values.global.postgres.apoGrafanaDatabase }}"
+    database: "{{ .Values.global.postgres.apoDifyDatabase }}"
   service:
     type: ClusterIP
     port: "{{ .Values.global.postgres.port }}"
