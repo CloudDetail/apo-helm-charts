@@ -123,7 +123,7 @@ spec:
         volumeMounts:
         - name: dify-plugin-daemon-storage
           mountPath: /app/storage
-      {{- if (tpl .Values.pluginDaemon.persistent.enabled .) }}
+      {{- if eq "true" (tpl .Values.pluginDaemon.persistent.enabled .) }}
       volumes:
         - name: dify-plugin-daemon-storage
           persistentVolumeClaim:
@@ -156,7 +156,7 @@ spec:
       tolerations:
 {{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}
-  {{- if (tpl .Values.pluginDaemon.persistent.enabled .) }}
+  {{- if eq "true" (tpl .Values.pluginDaemon.persistent.enabled .) }}
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim

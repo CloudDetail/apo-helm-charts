@@ -269,7 +269,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- include "victoria-metrics.license.volume" . | nindent 8 }}
-  {{- if and (tpl .Values.server.persistentVolume.enabled .) (not .Values.server.persistentVolume.existingClaim) }}
+  {{- if and (eq "true" (tpl .Values.server.persistentVolume.enabled .)) (not .Values.server.persistentVolume.existingClaim) }}
   volumeClaimTemplates:
     - apiVersion: v1
       kind: PersistentVolumeClaim

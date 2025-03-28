@@ -79,7 +79,7 @@ spec:
         volumeMounts:
         - name: postgres-data
           mountPath: /var/lib/postgresql/data
-      {{- if (tpl .Values.persistent.enabled .) }}
+      {{- if eq "true" (tpl .Values.persistent.enabled .) }}
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
@@ -112,7 +112,7 @@ spec:
       tolerations:
 {{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}
-  {{- if (tpl .Values.persistent.enabled .) }}
+  {{- if eq "true" (tpl .Values.persistent.enabled .) }}
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim

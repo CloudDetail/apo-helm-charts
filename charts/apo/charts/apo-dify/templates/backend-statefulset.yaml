@@ -370,7 +370,7 @@ spec:
         - name: dify-backend-storage
           mountPath: /app/api/storage
         imagePullPolicy: {{ tpl .Values.worker.image.pullPolicy . }}
-      {{- if (tpl .Values.api.persistent.enabled .) }}
+      {{- if eq "true" (tpl .Values.api.persistent.enabled .) }}
       volumes:
         - name: dify-backend-storage
           persistentVolumeClaim:
@@ -403,7 +403,7 @@ spec:
       tolerations:
 {{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}
-  {{- if (tpl .Values.api.persistent.enabled .) }}
+  {{- if eq "true" (tpl .Values.api.persistent.enabled .) }}
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim

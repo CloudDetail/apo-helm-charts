@@ -15,7 +15,7 @@ spec:
         layout:
           shardsCount: 1
           replicasCount: 1
-{{- if (tpl .Values.clickhouse.persistence.enabled .)  }}
+{{- if eq "true" (tpl .Values.clickhouse.persistence.enabled .)  }}
   templates:
     podTemplates:
       - name: apo-clickhouse
