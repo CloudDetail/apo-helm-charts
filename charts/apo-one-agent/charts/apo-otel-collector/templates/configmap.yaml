@@ -20,6 +20,8 @@ data:
       k8s_events:
         auth_type: serviceAccount
         namespaces: []
+      signalfxgatewayprometheusremotewrite: 
+        endpoint: 0.0.0.0:4321
       skywalking:
         protocols:
           grpc:
@@ -32,7 +34,7 @@ data:
         timeout: 2s
       metadata:
         # The indicator prefix that needs to be filled with K8s information
-        metric_prefix: "kindling_"
+        metric_prefix: ["kindling_", "originx_"]
         # k8s data source
         kube_source:
           # kube_auth_type, support serviceAccount and kubeConfig, default is serviceAccount
@@ -75,9 +77,9 @@ data:
           processors: [batch]
           exporters: [otlp]
         metrics:
-          receivers: [otlp]
+          receivers: [signalfxgatewayprometheusremotewrite, otlp]
           processors: [batch, metadata]
-          exporters: [otlp]
+          exporters: [prometheusremotewrite]
         logs:
           receivers: [otlp]
           processors: [batch]

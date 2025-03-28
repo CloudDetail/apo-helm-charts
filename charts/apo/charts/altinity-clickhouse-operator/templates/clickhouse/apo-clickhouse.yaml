@@ -15,7 +15,7 @@ spec:
         layout:
           shardsCount: 1
           replicasCount: 1
-{{- if .Values.clickhouse.persistence.enabled  }}
+{{- if (tpl .Values.clickhouse.persistence.enabled .)  }}
   templates:
     podTemplates:
       - name: apo-clickhouse
@@ -56,7 +56,7 @@ spec:
           resources:
             requests:
               storage: "{{ .Values.clickhouse.persistence.data.size }}"
-        {{- if .Values.clickhouse.persistence.data.storageClass }}
+        {{- if (tpl .Values.clickhouse.persistence.data.storageClass .) }}
         {{- if (eq "" (tpl .Values.clickhouse.persistence.data.storageClass .)) }}
         {{- else }}
           storageClassName: "{{ tpl .Values.clickhouse.persistence.data.storageClass . }}"
@@ -75,7 +75,7 @@ spec:
           resources:
             requests:
               storage: "{{ .Values.clickhouse.persistence.log.size }}"
-        {{- if .Values.clickhouse.persistence.log.storageClass }}
+        {{- if (tpl .Values.clickhouse.persistence.data.storageClass .) }}
         {{- if (eq "" (tpl .Values.clickhouse.persistence.log.storageClass .)) }}
         {{- else }}
           storageClassName: "{{ tpl .Values.clickhouse.persistence.log.storageClass . }}"

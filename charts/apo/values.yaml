@@ -12,12 +12,14 @@ global:
     pullPolicy: "Always"
   
   persistence:
+    enabled: false
     storageClass: ""
 
   # APO Collection Modes  
   # - trace              Full data collection, automatically injects trace collection probes  
   # - trace-collector    Use collector to receive trace data from external probes  
-  # - trace-sidecar      Do not accept external trace data, directly retrieve data from external APIs, this mode requires configuring external API data sources  
+  # - trace-sidecar      Do not accept external trace data, directly retrieve data from external APIs, this mode requires configuring external API data sources
+  # - no-trace           Do not collect trace data
   # - metrics            Full metrics data collection  
   # - log                Full log collection, including fault scenario logs  
   # - log-sample         Fault scenario log collection, without collecting full logs  
@@ -249,6 +251,12 @@ apo-dify:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.0.0-3"
+    persistent:
+      enabled: "{{ .Values.global.persistence.enabled }}"
+      accessModes:
+        - ReadWriteOnce
+      storageClass: "{{ .Values.global.persistence.storageClass }}"
+      size: 10Gi
 
   pluginDaemon:
     initImage:
@@ -259,6 +267,12 @@ apo-dify:
       repository: "{{ .Values.global.image.repository }}/dify-plugin-daemon"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "0.0.3-local"
+    persistent:
+      enabled: "{{ .Values.global.persistence.enabled }}"
+      accessModes:
+        - ReadWriteOnce
+      storageClass: "{{ .Values.global.persistence.storageClass }}"
+      size: 10Gi
 
   sandbox:
     image:
@@ -647,7 +661,7 @@ altinity-clickhouse-operator:
     password: "{{ .Values.global.clickhouse.password }}"
     persistence:
       # -- Create/use Persistent Volume Claim for server component. Empty dir if false
-      enabled: false
+      enabled: "{{ .Values.global.persistence.enabled }}"
       
       data:
         # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
@@ -794,10 +808,10 @@ postgres:
     type: ClusterIP
     port: "{{ .Values.global.postgres.port }}"
   persistent:
-    enabled: true
+    enabled: "{{ .Values.global.persistence.enabled }}"
     accessModes:
       - ReadWriteOnce
-    storageClass: ""
+    storageClass: "{{ .Values.global.persistence.storageClass }}"
     size: 10Gi
   nodeSelector: {}
   affinity: {}
@@ -963,7 +977,7 @@ victoria-metrics-single:
       # nodePort: 30428
     persistentVolume:
       # -- Create/use Persistent Volume Claim for server component. Empty dir if false
-      enabled: false
+      enabled: "{{ .Values.global.persistence.enabled }}"
 
       # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
       accessModes:
@@ -1008,10 +1022,10 @@ weaviate:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "1.19.0"
   persistent:
-    enabled: true
+    enabled: "{{ .Values.global.persistence.enabled }}"
     accessModes:
       - ReadWriteOnce
-    storageClass: ""
+    storageClass: "{{ .Values.global.persistence.storageClass }}"
     size: 10Gi
   nodeSelector: {}
   affinity: {}

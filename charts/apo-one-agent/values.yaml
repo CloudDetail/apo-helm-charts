@@ -11,6 +11,7 @@ global:
   # - trace              Full data collection, automatically injects trace collection probes  
   # - trace-collector    Use collector to receive trace data from external probes  
   # - trace-sidecar      Do not accept external trace data, directly retrieve data from external APIs, this mode requires configuring external API data sources  
+  # - no-trace           Do not collect trace data
   # - metrics            Full metrics data collection  
   # - log                Full log collection, including fault scenario logs  
   # - log-sample         Fault scenario log collection, without collecting full logs  

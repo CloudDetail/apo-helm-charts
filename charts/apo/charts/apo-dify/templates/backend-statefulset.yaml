@@ -38,6 +38,13 @@ spec:
       - name: dify-api
         image: "{{ tpl .Values.api.image.repository . }}:{{ tpl .Values.api.image.tag . }}"
         env:
+        {{- if eq "en" .Values.global.language }}
+        - name: INITIAL_LANGUAGE
+          value: en-US
+        {{- else if eq "zh" .Values.global.language }}
+        - name: INITIAL_LANGUAGE
+          value: zh-Hans
+        {{- end }}
         - name: DIFY_PORT
           value: '5000'
         - name: ACCESS_TOKEN_EXPIRE_MINUTES
@@ -363,7 +370,7 @@ spec:
         - name: dify-backend-storage
           mountPath: /app/api/storage
         imagePullPolicy: {{ tpl .Values.worker.image.pullPolicy . }}
-      {{- if .Values.api.persistent.enabled }}
+      {{- if (tpl .Values.api.persistent.enabled .) }}
       volumes:
         - name: dify-backend-storage
           persistentVolumeClaim:
@@ -396,7 +403,7 @@ spec:
       tolerations:
 {{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}
-  {{- if .Values.api.persistent.enabled }}
+  {{- if (tpl .Values.api.persistent.enabled .) }}
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim

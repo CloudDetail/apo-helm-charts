@@ -61,7 +61,7 @@ spec:
           volumeMounts:
           - name: weaviate-data
             mountPath: /var/lib/weaviate
-      {{- if .Values.persistent.enabled }}
+      {{- if (tpl .Values.persistent.enabled .) }}
       volumes:
         - name: weaviate-data
           persistentVolumeClaim:
@@ -94,7 +94,7 @@ spec:
       tolerations:
 {{ toYaml .Values.global.tolerations | indent 8 }}
       {{- end }}
-  {{- if .Values.persistent.enabled }}
+  {{- if (tpl .Values.persistent.enabled .) }}
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim
@@ -106,7 +106,7 @@ spec:
       resources:
         requests:
           storage: "{{ .Values.persistent.size }}"
-      {{- if .Values.persistent.storageClass }}
+      {{- if (tpl .Values.persistent.storageClass .) }}
       {{- if (eq "" (tpl .Values.persistent.storageClass .)) }}
       {{- else }}
       storageClassName: "{{ tpl .Values.persistent.storageClass . }}"

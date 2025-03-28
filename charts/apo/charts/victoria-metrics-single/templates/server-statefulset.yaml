@@ -255,7 +255,7 @@ spec:
           configMap:
             name: {{ include "victoria-metrics.server.scrape.configname" . }}
         {{- end }}
-        {{- if not .Values.server.persistentVolume.enabled }}
+        {{- if not (tpl .Values.server.persistentVolume.enabled .) }}
         - name: server-volume
           emptyDir: {}
         {{- else }}
@@ -269,7 +269,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- include "victoria-metrics.license.volume" . | nindent 8 }}
-  {{- if and .Values.server.persistentVolume.enabled (not .Values.server.persistentVolume.existingClaim) }}
+  {{- if and (tpl .Values.server.persistentVolume.enabled .) (not .Values.server.persistentVolume.existingClaim) }}
   volumeClaimTemplates:
     - apiVersion: v1
       kind: PersistentVolumeClaim
@@ -285,7 +285,7 @@ spec:
         resources:
           requests:
             storage: "{{ .Values.server.persistentVolume.size }}"
-      {{- if .Values.server.persistentVolume.storageClass }}
+      {{- if (tpl .Values.server.persistentVolume.storageClass .) }}
       {{- if (eq "" (tpl .Values.server.persistentVolume.storageClass .)) }}
       {{- else }}
         storageClassName: "{{ tpl .Values.server.persistentVolume.storageClass . }}"

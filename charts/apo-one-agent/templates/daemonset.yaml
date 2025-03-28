@@ -33,7 +33,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "apo-one-agent.serviceAccountName" . }}
       containers:
-        {{- if and .Values.apoOneAgent.enabled (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode)) }}
+        {{- if and .Values.apoOneAgent.enabled (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode) (has "no-trace" .Values.global.agentCollectorMode)) }}
         - name: ebpf-agent
           image: "{{ tpl .Values.apoOneAgent.image.repository . }}:{{ tpl (toString (default .Chart.AppVersion .Values.apoOneAgent.image.tag)) . }}"
           imagePullPolicy: "{{ tpl .Values.apoOneAgent.image.pullPolicy . }}"
@@ -47,7 +47,7 @@ spec:
           securityContext:
             privileged: true
         {{- end }}
-        {{- if and .Values.apoOneAgent.enabled (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode)) }}
+        {{- if and .Values.apoOneAgent.enabled (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode) (has "no-trace" .Values.global.agentCollectorMode)) }}
         - name: node-agent
           image: "{{ tpl .Values.apoNodeAgent.image.repository . }}:{{ tpl (toString .Values.apoNodeAgent.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.apoNodeAgent.image.pullPolicy . }}"
@@ -118,7 +118,7 @@ spec:
               mountPath: /usr/local/ilogtail/plugin_logger.xml
               subPath: plugin_logger.xml
         {{- end }}
-        {{- if or (has "metrics" .Values.global.agentCollectorMode) (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode) (has "trace-sidecar" .Values.global.agentCollectorMode)) }}
+        {{- if has "metrics" .Values.global.agentCollectorMode }}
         - name: grafana-alloy
           image: "{{ tpl .Values.grafanaAlloy.image.repository . }}:{{ tpl (toString .Values.grafanaAlloy.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.grafanaAlloy.image.pullPolicy . }}"
@@ -260,7 +260,7 @@ spec:
             - name: kernel-debug
               mountPath: /sys/kernel/debug
         {{- end }}
-        {{- if or (has "trace" .Values.global.agentCollectorMode) (has "metrics" .Values.global.agentCollectorMode) }}
+        {{- if and has "no-trace" .Values.global.agentCollectorMode (or (has "trace" .Values.global.agentCollectorMode) (has "metrics" .Values.global.agentCollectorMode)) }}
         - name: apo-otel-collector-agent
           image: "{{ tpl .Values.apoOtelCollectorAgent.image.repository . }}:{{ .Values.apoOtelCollectorAgent.image.tag }}"
           imagePullPolicy: "{{ tpl .Values.apoOtelCollectorAgent.image.pullPolicy . }}"

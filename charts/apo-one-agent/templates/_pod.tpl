@@ -7,6 +7,13 @@ env:
   value: 'false'
 - name: is_jf_open
   value: 'true'
+{{- if (has "no-trace" .Values.global.agentCollectorMode) }}
+- name: all_north_star
+  value: 'true'
+{{- else }}
+- name: all_north_star
+  value: 'false'
+{{- end }}
 - name: SCAP_HOST_ROOT_ENV_VAR_NAME
   value: /host
 - name: CACHE_SECOND
