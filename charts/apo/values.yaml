@@ -115,7 +115,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.5.2"
+      tag: "v1.6.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -128,7 +128,7 @@ apo-backend:
       repository: "{{ .Values.global.image.repository }}/polaris-analyzer"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.1.1"
+      tag: "v1.1.2"
     resources:
       limits:
         # cpu: 1000m
@@ -159,7 +159,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.7.5"
+      tag: "v1.7.6"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -184,7 +184,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apm-adapter"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.7.1"
+      tag: "v1.7.2"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -250,7 +250,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-3"
+      tag: "v1.0.0-4"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -263,6 +263,10 @@ apo-dify:
       repository: "{{ .Values.global.image.repository }}/apo-init-postgres"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.0.0"
+    InitPluginImage:
+      repository: "{{ .Values.global.image.repository }}/apo-dify-plugin-init"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.0.1"
     image:
       repository: "{{ .Values.global.image.repository }}/dify-plugin-daemon"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
@@ -286,23 +290,17 @@ apo-dify:
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "6.6-24.04_edge"
 
-  weaviate:
-    image:
-      repository: "{{ .Values.global.image.repository }}/weaviate"
-      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "1.19.0"
-
   web:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-web"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-3"
+      tag: "v1.0.0-4"
 
   worker:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-3"
+      tag: "v1.0.0-4"
 
   nodeSelector: {}
   tolerations: []
@@ -314,7 +312,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.5.2"
+    tag: "v1.6.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -392,7 +390,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.8.0"
+      tag: "v1.8.1"
     resources: 
       limits:
         cpu: 1000m
@@ -489,7 +487,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.1.0"
+      tag: "v1.3.0"
       resources: 
         limits:
           cpu: 2000m
@@ -539,7 +537,7 @@ apo-one-agent:
       image:
         repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
         imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-        tag: "v1.0.0"
+        tag: "v1.0.1"
       resources:
         limits:
           cpu: 1000m
@@ -598,7 +596,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.1.0"
+    tag: "v1.3.0"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"

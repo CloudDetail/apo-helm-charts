@@ -34,11 +34,11 @@ global:
   apoProxyUrl: apo-nginx-proxy-svc
   apoBackendPort: 31363
   apoCollectorProxyPort: 30044
-  apoVectorLogProxyPort: 30310
+  apoVectorLogProxyPort: 30010
   apoCollectorPort: 30044
   apoOtelCollectorGatewayGRPCPort: 30317
   apoOtelCollectorGatewayK8SPort: 30319
-  apoVectorLogPort: 30310
+  apoVectorLogPort: 30010
   
   # -- Pod's node selector. Ref: [https://kubernetes.io/docs/user-guide/node-selection/](https://kubernetes.io/docs/user-guide/node-selection/)
   nodeSelector: {}
@@ -76,7 +76,7 @@ apoOneAgent:
     repository: "{{ .Values.global.image.repository }}/ebpf-agent"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.8.0"
+    tag: "v1.8.1"
   resources: 
     limits:
       cpu: 1000m
@@ -173,7 +173,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v1.1.0"
+    tag: "v1.3.0"
   resources: 
     limits:
       cpu: 1000m
@@ -223,7 +223,7 @@ odigos:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
       imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0"
+      tag: "v1.0.1"
     resources:
       limits:
         cpu: 1000m
@@ -280,7 +280,7 @@ apo-otel-collector:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.1.0"
+    tag: "v1.3.0"
   config:
     apoBackendUrl: "{{ .Values.global.apoServerIP }}"
     apoBackendPort: "{{ .Values.global.apoBackendPort }}"

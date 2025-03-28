@@ -260,7 +260,7 @@ spec:
             - name: kernel-debug
               mountPath: /sys/kernel/debug
         {{- end }}
-        {{- if and has "no-trace" .Values.global.agentCollectorMode (or (has "trace" .Values.global.agentCollectorMode) (has "metrics" .Values.global.agentCollectorMode)) }}
+        {{- if and (not (has "no-trace" .Values.global.agentCollectorMode)) (or (has "trace" .Values.global.agentCollectorMode) (has "metrics" .Values.global.agentCollectorMode)) }}
         - name: apo-otel-collector-agent
           image: "{{ tpl .Values.apoOtelCollectorAgent.image.repository . }}:{{ .Values.apoOtelCollectorAgent.image.tag }}"
           imagePullPolicy: "{{ tpl .Values.apoOtelCollectorAgent.image.pullPolicy . }}"

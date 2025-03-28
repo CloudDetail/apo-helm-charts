@@ -30,7 +30,7 @@ data:
             listen {{ .Values.global.apoVectorLogProxyPort }} http2;
 
             location / {
-                grpc_pass grpc://{{ tpl .Values.config.apoCollectorUrl . }}:{{ .Values.global.apoVectorLogPort }};
+                proxy_pass http://{{ tpl .Values.config.apoCollectorUrl . }}:{{ .Values.global.apoVectorLogPort }};
                 error_page 502 = /error502grpc;
             }
 

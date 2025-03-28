@@ -32,11 +32,8 @@ spec:
           - name: POSTGRES_PASSWORD
             value: {{ .Values.global.postgres.password }}
       - name: init-plugin-files
-        image: "{{ tpl .Values.api.image.repository . }}:{{ tpl .Values.api.image.tag . }}"
-        imagePullPolicy: {{ tpl .Values.api.image.pullPolicy . }}
-        env:
-          - name: MODE
-            value: "copy"
+        image: "{{ tpl .Values.pluginDaemon.InitPluginImage.repository . }}:{{ tpl .Values.pluginDaemon.InitPluginImage.tag . }}"
+        imagePullPolicy: {{ tpl .Values.pluginDaemon.InitPluginImage.pullPolicy . }}
         volumeMounts:
         - name: dify-plugin-daemon-storage
           mountPath: /app/storage

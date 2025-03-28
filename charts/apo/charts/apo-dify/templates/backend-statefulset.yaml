@@ -45,6 +45,13 @@ spec:
         - name: INITIAL_LANGUAGE
           value: zh-Hans
         {{- end }}
+        {{- if eq .Values.global.victoriaMetrics.mode "single" }}
+        - name: APO_VM_URL
+          value: {{ .Values.global.victoriaMetrics.single.url }}
+        {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
+        - name: APO_VM_URL
+          value: {{ .Values.global.victoriaMetrics.cluster.selectUrl }}
+        {{- end }}
         - name: DIFY_PORT
           value: '5000'
         - name: ACCESS_TOKEN_EXPIRE_MINUTES

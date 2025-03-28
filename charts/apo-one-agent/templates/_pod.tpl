@@ -10,7 +10,7 @@ env:
 {{- if (has "no-trace" .Values.global.agentCollectorMode) }}
 - name: all_north_star
   value: 'true'
-{{- else }}
+{{- else if (not (has "no-trace" .Values.global.agentCollectorMode))}}
 - name: all_north_star
   value: 'false'
 {{- end }}

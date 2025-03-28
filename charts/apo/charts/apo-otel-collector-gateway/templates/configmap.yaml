@@ -33,6 +33,13 @@ data:
             endpoint: 0.0.0.0:4320
       signalfxgatewayprometheusremotewrite: 
         endpoint: 0.0.0.0:4321
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: apo-otel-collector-gateway
+            scrape_interval: 15s
+            static_configs:
+            - targets: ['localhost:1778']
       k8s_events:
         auth_type: serviceAccount
         namespaces: []
@@ -125,7 +132,10 @@ data:
         logs:
           level: info
         metrics:
-          level: none
+          address: 0.0.0.0:1778
+          level: detailed
+        resource:
+          node_name: "${MY_NODE_NAME}"
       extensions: [pprof]
       pipelines:
         traces:
@@ -138,10 +148,10 @@ data:
           exporters: [otlp]
         metrics:
           receivers: [signalfxgatewayprometheusremotewrite, otlp]
-          processors: [batch,metadata]
+          processors: [batch, metadata]
           exporters: [prometheusremotewrite]
         metrics/gateway:
-          receivers: [otlp/gateway]
+          receivers: [otlp/gateway, prometheus]
           processors: [batch]
           exporters: [prometheusremotewrite]
         logs:

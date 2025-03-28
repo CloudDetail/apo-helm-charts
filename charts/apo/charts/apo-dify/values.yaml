@@ -26,6 +26,10 @@ pluginDaemon:
     repository: docker.io/clouddetail/apo-init-postgres
     pullPolicy: IfNotPresent
     tag: "v1.0.0"
+  InitPluginImage:
+    repository: docker.io/clouddetail/apo-dify-plugin-init
+    pullPolicy: IfNotPresent
+    tag: "v1.0.1"
   image:
     repository: docker.io/clouddetail/dify-plugin-daemon
     pullPolicy: IfNotPresent

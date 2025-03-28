@@ -22,6 +22,13 @@ data:
         namespaces: []
       signalfxgatewayprometheusremotewrite: 
         endpoint: 0.0.0.0:4321
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: apo-otel-collector
+            scrape_interval: 15s
+            static_configs:
+            - targets: ['localhost:1778']
       skywalking:
         protocols:
           grpc:
@@ -34,7 +41,7 @@ data:
         timeout: 2s
       metadata:
         # The indicator prefix that needs to be filled with K8s information
-        metric_prefix: ["kindling_", "originx_"]
+        metric_prefixs: ["kindling_", "originx_"]
         # k8s data source
         kube_source:
           # kube_auth_type, support serviceAccount and kubeConfig, default is serviceAccount
@@ -69,7 +76,10 @@ data:
         logs:
           level: info
         metrics:
-          level: none
+          address: 0.0.0.0:1778
+          level: detailed
+        resource:
+          node_name: "${MY_NODE_NAME}"
       extensions: [pprof]
       pipelines:
         traces:
@@ -79,7 +89,11 @@ data:
         metrics:
           receivers: [signalfxgatewayprometheusremotewrite, otlp]
           processors: [batch, metadata]
-          exporters: [prometheusremotewrite]
+          exporters: [otlp]
+        metrics/telemetry:
+          receivers: [prometheus]
+          processors: []
+          exporters: [otlp]
         logs:
           receivers: [otlp]
           processors: [batch]

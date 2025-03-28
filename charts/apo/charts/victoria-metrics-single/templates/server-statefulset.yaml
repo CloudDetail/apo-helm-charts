@@ -255,15 +255,13 @@ spec:
           configMap:
             name: {{ include "victoria-metrics.server.scrape.configname" . }}
         {{- end }}
-        {{- if not (tpl .Values.server.persistentVolume.enabled .) }}
+        {{- if ne "true" (tpl .Values.server.persistentVolume.enabled .) }}
         - name: server-volume
           emptyDir: {}
         {{- else }}
-        {{- if .Values.server.persistentVolume.existingClaim }}
         - name: server-volume
           persistentVolumeClaim:
-            claimName: {{ .Values.server.persistentVolume.existingClaim }}
-        {{- end }}
+            claimName: server-volume
         {{- end }}
         {{- with .Values.server.extraVolumes }}
         {{- toYaml . | nindent 8 }}

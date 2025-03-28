@@ -28,8 +28,12 @@ service:
   ports:
   - name: apo-collector-grpc
     protocol: TCP
-    port: 29090
-    targetPort: 29090
+    port: 30044
+    targetPort: 30044
+  - name: apo-ilogtail-http
+    protocol: TCP
+    port: 30010
+    targetPort: 30010
   type: ClusterIP
 
 config:
