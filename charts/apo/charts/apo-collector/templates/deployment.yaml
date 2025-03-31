@@ -34,12 +34,12 @@ spec:
         - |
           CLICKHOUSE_HOST=$(echo $CLICKHOUSE_URL | cut -d ':' -f 1)
           CLICKHOUSE_PORT=$(echo $CLICKHOUSE_URL | cut -d ':' -f 2)
-          echo "等待 ${CLICKHOUSE_HOST}:${CLICKHOUSE_PORT} clickhouse启动..."
+          echo "Waiting for ClickHouse at ${CLICKHOUSE_HOST}:${CLICKHOUSE_PORT} to start..."
           while ! nc -z ${CLICKHOUSE_HOST} ${CLICKHOUSE_PORT}; do
-            echo "INFO: ClickHouse 还未启动成功。 将在5s后重新检查"
+            echo "INFO: ClickHouse has not started yet. Will check again in 5 seconds"
             sleep 5
           done
-          echo "INFO: ClickHouse 启动成功"
+          echo "INFO: ClickHouse started successfully"
       containers:
         - name: apo-collector
           securityContext:

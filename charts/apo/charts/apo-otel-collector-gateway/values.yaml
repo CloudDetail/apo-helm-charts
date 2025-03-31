@@ -10,6 +10,11 @@ serviceNodePort:
     port: 4319
     targetPort: 4319
     nodePort: 30319
+  - name: remote-write
+    protocol: TCP
+    port: 4321
+    targetPort: 4321
+    nodePort: 30321
   type: NodePort
 
 service:
@@ -42,6 +47,10 @@ service:
     protocol: TCP
     port: 4319
     targetPort: 4319
+  - name: remote-write
+    protocol: TCP
+    port: 4321
+    targetPort: 4321
   - name: sk-receiver
     protocol: TCP
     port: 11800

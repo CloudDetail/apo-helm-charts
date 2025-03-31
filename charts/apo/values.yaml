@@ -717,7 +717,7 @@ grafana:
       - name: INIT_DB_NAME
         value: "{{ .Values.global.postgres.apoGrafanaDatabase }}"
   - name: apo-grafana-init-dashboard
-    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.2.1"
+    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.3.1"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
     volumeMounts:
     - name: apo-dashboards
