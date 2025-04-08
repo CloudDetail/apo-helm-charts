@@ -40,7 +40,7 @@ global:
       insertUrl: http://write-service-url:8080/insert/0/prometheus/
 
   clickhouse:
-    host: "apo-clickhouse-svc"
+    host: "clickhouse-apo"
     nativePort: 9000
     httpPort: 8123
     username: admin
