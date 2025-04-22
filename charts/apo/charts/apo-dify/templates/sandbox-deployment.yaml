@@ -33,11 +33,6 @@ spec:
           value: "true"
         - name: SANDBOX_PORT
           value: "8194"
-          # uncomment if you want to use proxy
-        - name: HTTP_PROXY
-          value: 'http://apo-dify-ssrf-svc:3128'
-        - name: HTTPS_PROXY
-          value: 'http://apo-dify-ssrf-svc:3128'
         resources:
           requests:
             cpu: 100m

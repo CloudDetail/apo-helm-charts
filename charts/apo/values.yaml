@@ -115,7 +115,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.6.1"
+      tag: "v1.6.2"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -128,7 +128,7 @@ apo-backend:
       repository: "{{ .Values.global.image.repository }}/polaris-analyzer"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.1.2"
+      tag: "v1.1.3"
     resources:
       limits:
         # cpu: 1000m
@@ -250,7 +250,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-5"
+      tag: "v1.0.0-5-fix"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -270,7 +270,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/dify-plugin-daemon"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "0.0.3-local"
+      tag: "0.0.7-local"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -294,13 +294,13 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-web"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-4"
+      tag: "v1.0.0-5"
 
   worker:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-5"
+      tag: "v1.0.0-5-fix"
 
   nodeSelector: {}
   tolerations: []
@@ -747,7 +747,7 @@ originx-copilot-ai:
   image:
     registry: "{{ .Values.global.image.eeRepository }}"
     repository: originx-copilot
-    tag: "v1.1.3"
+    tag: "v1.1.4"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   resources:
     limits:

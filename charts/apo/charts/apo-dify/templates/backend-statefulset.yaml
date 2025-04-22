@@ -9,7 +9,6 @@ metadata:
 spec:
   replicas: 1
   revisionHistoryLimit: 1
-  minReadySeconds: 10
   serviceName: apo-dify-backend-svc
   selector:
     matchLabels:
