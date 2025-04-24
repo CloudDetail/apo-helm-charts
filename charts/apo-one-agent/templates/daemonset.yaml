@@ -19,6 +19,7 @@ spec:
         checksum/apo-odigos-own-telemetry-otel-config: {{ include (print $.Template.BasePath "/apo-odigos-own-telemetry-otel-config.yaml") . | sha256sum }}
         checksum/apo-one-agent-config: {{ include (print $.Template.BasePath "/apo-one-agent-configmap.yaml") . | sha256sum }}
         checksum/apo-otel-collector-agent-config: {{ include (print $.Template.BasePath "/apo-otel-collector-agent-configmap.yaml") . | sha256sum }}
+        checksum/apo-profile-agent-config: {{ include (print $.Template.BasePath "/apo-profile-agent-configmap.yaml") . | sha256sum }}
         checksum/apo-vmagent-config: {{ include (print $.Template.BasePath "/apo-vmagent-configmap.yaml") . | sha256sum }}
       labels:
         {{- include "apo-one-agent.selectorLabels" . | nindent 8 }}
@@ -324,6 +325,34 @@ spec:
             privileged: true
         {{- end }}
         {{- end }}
+        {{- if eq .Values.global.edition "ee" }}
+        {{- if or (or (has "trace" .Values.global.agentCollectorMode) (has "trace-collector" .Values.global.agentCollectorMode)) (has "trace-sidecar" .Values.global.agentCollectorMode) }}
+        - name: profile-agent
+          image: "{{ tpl .Values.profileAgent.image.repository . }}:{{ .Values.profileAgent.image.tag }}"
+          ports:
+            - containerPort: 19005
+              protocol: TCP
+          env:
+            - name: MY_NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          resources:
+            {{- toYaml .Values.profileAgent.resources | nindent 12 }}
+          volumeMounts:
+            - name: apo-profile-agent-config
+              mountPath: /app/profile-agent.yml
+              subPath: profile-agent.yml
+          securityContext:
+            privileged: true
+        {{- end }}
+        {{- end }}
         - name: vmagent
           image: "{{ tpl .Values.vmagent.image.repository . }}:{{ .Values.vmagent.image.tag }}"
           imagePullPolicy: "{{ tpl .Values.vmagent.image.pullPolicy . }}"
@@ -388,6 +417,10 @@ spec:
         - name: apo-otel-collector-agent-config
           configMap:
             name: apo-otel-collector-agent-config
+            defaultMode: 420
+        - name: apo-profile-agent-config
+          configMap:
+            name: apo-profile-agent-config
             defaultMode: 420
         - name: vmagent-config
           configMap:

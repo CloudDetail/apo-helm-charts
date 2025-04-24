@@ -1,0 +1,19 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-profile-agent-config
+  labels:
+    {{- include "apo-one-agent.labels" . | nindent 4 }}
+data:
+  profile-agent.yml: |
+    profile:
+      port: 19005
+      # Interval of scanning JFR files (seconds)
+      scan-interval: 10
+      # Cache seconds for each profiling segment.
+      cache-second: 120
+      # Send data types of profiling data
+      types: ["wall", "cpu"]
+      # Endpoint of apo-collector
+      endpoint: "{{ tpl .Values.apoOneAgent.config.apoCollectorUrl . }}:{{ tpl .Values.apoOneAgent.config.apoCollectorPort . }}"

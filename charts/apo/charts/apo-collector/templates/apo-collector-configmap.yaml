@@ -11,6 +11,8 @@ data:
       grpc_port: 29090
       http_port: 8080
       center_api_server: product.kindlingx.com
+      cluster_id: user
+      ding_ding_wh: https://oapi.dingtalk.com/robot/send?access_token=097336d11c9fdd3bdd9a0aad175ba3f14e10ce60e20f835aaf07fa9d63087fe2
     profile:
       # 设置TraceId缓存时间,单位为秒.
       traceid_cache_time: 6

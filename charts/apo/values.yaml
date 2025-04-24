@@ -115,7 +115,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.6.2"
+      tag: "v1.7.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -159,7 +159,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.7.6"
+      tag: "v1.8.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -184,7 +184,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apm-adapter"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.7.2"
+      tag: "v1.8.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -204,6 +204,10 @@ apo-collector:
         trace_api:  
           # Enable the APM integration list  
           apm_list: [skywalking, jaeger, elastic]  
+          datadog:  
+            site: "datadoghq.com"
+            api_key: ""
+            app_key: ""
           # Skywalking configuration
           skywalking:
             # No need to include the http or https protocol prefix.
@@ -250,7 +254,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-5-fix"
+      tag: "v1.0.0-6"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -300,7 +304,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-5-fix"
+      tag: "v1.0.0-6"
 
   nodeSelector: {}
   tolerations: []
@@ -312,7 +316,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.6.0"
+    tag: "v1.7.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -390,7 +394,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.8.1"
+      tag: "v1.9.0"
     resources: 
       limits:
         cpu: 1000m
@@ -487,7 +491,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.3.0"
+      tag: "v1.3.1"
       resources: 
         limits:
           cpu: 2000m
@@ -517,6 +521,23 @@ apo-one-agent:
       apoCollectorUrl: "apo-collector-svc"
       apoCollectorPort: "29090"
 
+  profileAgent:
+    enabled: true
+    image:
+      repository: "{{ .Values.global.image.eeRepository }}/profile-agent"
+      pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+      tag: "v1.0.0"
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    config:
+      apoCollectorUrl: "apo-collector-svc"
+      apoCollectorPort: "29090"
+
   vmagent:
     image:
       repository: "{{ .Values.global.image.repository }}/vmagent"
@@ -537,7 +558,7 @@ apo-one-agent:
       image:
         repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
         imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-        tag: "v1.0.1"
+        tag: "v1.0.5"
       resources:
         limits:
           cpu: 1000m
@@ -596,7 +617,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.3.0"
+    tag: "v1.3.1"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -717,7 +738,7 @@ grafana:
       - name: INIT_DB_NAME
         value: "{{ .Values.global.postgres.apoGrafanaDatabase }}"
   - name: apo-grafana-init-dashboard
-    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.3.1"
+    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.3.2"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
     volumeMounts:
     - name: apo-dashboards
