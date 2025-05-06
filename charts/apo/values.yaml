@@ -115,7 +115,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.7.0"
+      tag: "v1.7.1"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -159,7 +159,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.8.0"
+      tag: "v1.8.1"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -394,7 +394,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.9.1"
+      tag: "v1.9.2"
     resources: 
       limits:
         cpu: 1000m
@@ -558,7 +558,7 @@ apo-one-agent:
       image:
         repository: "{{ .Values.global.image.repository }}/apo-odigos-instrumentor"
         imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-        tag: "v1.0.5"
+        tag: "v1.0.6"
       resources:
         limits:
           cpu: 1000m
