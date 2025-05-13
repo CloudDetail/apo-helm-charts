@@ -405,7 +405,6 @@ apo-one-agent:
     config:
       apoCollectorUrl: "apo-collector-svc.{{ .Release.Namespace }}"
       apoCollectorPort: "29090"
-      javaAgentType: "opentelemetry"
 
   apoNodeAgent:
     image:

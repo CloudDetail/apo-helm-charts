@@ -87,7 +87,6 @@ apoOneAgent:
   config:
     apoCollectorUrl: "{{ .Values.global.apoProxyUrl }}"
     apoCollectorPort: "{{ .Values.global.apoCollectorProxyPort }}"
-    javaAgentType: "opentelemetry"
 
 apoNodeAgent:
   image:

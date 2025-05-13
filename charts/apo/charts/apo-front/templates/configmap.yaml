@@ -9,6 +9,7 @@ data:
     server {
       listen       80;
       server_name  localhost;
+      server_tokens off;
 
       access_log  /var/log/nginx/host.access.log  main;
 

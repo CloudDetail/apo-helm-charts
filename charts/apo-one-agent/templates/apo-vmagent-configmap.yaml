@@ -7,7 +7,7 @@ metadata:
 data:
   scrape.yml: |-
     global:
-      scrape_interval: 15s
+      scrape_interval: 60s
 
     scrape_configs:
     - job_name: apo-one-agent
