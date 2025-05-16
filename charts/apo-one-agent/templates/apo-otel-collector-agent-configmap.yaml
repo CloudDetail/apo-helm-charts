@@ -85,6 +85,7 @@ data:
           sample_trace_wait_time: 30
           sample_trace_ignore_threshold: 0
           sample_trace_slow_threshold_ms: 100
+          silent_period: 15
           silent_period: 5
           silent_count: 1
           silent_mode: window
@@ -106,6 +107,10 @@ data:
         endpoint: "http://{{ tpl .Values.apoOtelCollectorAgent.config.apoOtelCollectorUrl . }}:{{ tpl .Values.apoOtelCollectorAgent.config.apoOtelCollectorGRPCPort . }}"
         tls:
           insecure: true
+        sending_queue:
+          enabled: true
+          num_consumers: 5
+          queue_size: 100
     service:
       telemetry:
         logs:

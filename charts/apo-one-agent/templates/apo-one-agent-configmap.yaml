@@ -68,7 +68,7 @@ data:
         sample_trace_ignore_threshold: 2
         # Set period for save trace after hit same url.
         # 同一URL的静默窗口期 (原参数为sample_url_hit_duration).
-        silent_period: 5
+        silent_period: 15
         # Set counts for save trace after hit same url.
         # 设置静默窗口期内最大采样的次数.
         silent_count: 1

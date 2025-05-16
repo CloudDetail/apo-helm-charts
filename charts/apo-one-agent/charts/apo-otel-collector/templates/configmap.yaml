@@ -67,6 +67,10 @@ data:
         endpoint: "{{ tpl .Values.config.apoOtelCollectorGatewayURL . }}:{{ tpl .Values.config.apoOtelCollectorGatewayGRPCPort . }}"
         tls:
           insecure: true
+        sending_queue:
+          enabled: true
+          num_consumers: 5
+          queue_size: 100
       otlp/k8sevent:
         endpoint: "{{ tpl .Values.config.apoOtelCollectorGatewayURL . }}:{{ tpl .Values.config.apoOtelCollectorGatewayK8SPort . }}"
         tls:

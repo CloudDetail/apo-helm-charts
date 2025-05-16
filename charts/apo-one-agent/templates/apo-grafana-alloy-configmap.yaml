@@ -11,38 +11,6 @@ data:
       format = "logfmt"
     }
 
-
-    otelcol.receiver.prometheus "default" {
-      output {
-      metrics = [otelcol.exporter.otlp.default.input]
-      }
-    }
-
-    otelcol.exporter.otlp "default" {
-      client {
-        endpoint = "{{ .Values.grafanaAlloy.config.apoOtelCollectorGrpcUrl }}"
-        tls {
-            insecure = true
-            insecure_skip_verify = true
-        }
-      }
-    }
-
-    prometheus.relabel "example" {
-        forward_to = [otelcol.receiver.prometheus.default.receiver]
-
-        rule {
-            action       = "replace"
-            source_labels = ["instance"]
-            target_label = "instance_name"
-        }
-        rule {
-            action       = "replace"
-            source_labels = ["job"]
-            target_label = "job_name"
-        }
-    }
-
     prometheus.exporter.unix "local_system" {
       rootfs_path = "/host/rootfs"
       filesystem {

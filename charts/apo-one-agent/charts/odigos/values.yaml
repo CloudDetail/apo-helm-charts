@@ -11,7 +11,6 @@ ignoredNamespaces:
   - istio-system
   - linkerd
   - kube-node-lease
-  - apo
 
 ignoredContainers:
   - istio-proxy
