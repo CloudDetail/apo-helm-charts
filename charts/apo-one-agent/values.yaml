@@ -76,7 +76,7 @@ apoOneAgent:
     repository: "{{ .Values.global.image.repository }}/ebpf-agent"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.9.2"
+    tag: "v1.9.3"
   resources: 
     limits:
       cpu: 1000m
@@ -112,7 +112,7 @@ apoIlogtail:
   resources: 
     limits:
       cpu: 1000m
-      memory: 1024Mi
+      memory: 512Mi
     requests:
       cpu: 100m
       memory: 128Mi
@@ -127,8 +127,8 @@ grafanaAlloy:
     tag: "v1.4.2-1"
   resources: 
     limits:
-      cpu: 2000m
-      memory: 2048Mi
+      cpu: 500m
+      memory: 512Mi
     requests:
       cpu: 100m
       memory: 128Mi
@@ -175,7 +175,7 @@ apoOtelCollectorAgent:
     tag: "v1.3.1"
   resources: 
     limits:
-      cpu: 1000m
+      cpu: 2000m
       memory: 1024Mi
     requests:
       cpu: 100m
@@ -193,8 +193,8 @@ originxGcAgent:
     tag: "v1.4.1"
   resources:
     limits:
-      cpu: 1000m
-      memory: 1024Mi
+      cpu: 500m
+      memory: 256Mi
     requests:
       cpu: 10m
       memory: 64Mi

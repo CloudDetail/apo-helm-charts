@@ -115,7 +115,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.7.1"
+      tag: "v1.8.0-beta.1"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -254,7 +254,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-6"
+      tag: "v1.0.0-7"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -316,7 +316,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.7.0"
+    tag: "v1.8.0-beta.1"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -394,7 +394,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.9.2"
+      tag: "v1.9.3"
     resources: 
       limits:
         cpu: 1000m
@@ -430,7 +430,7 @@ apo-one-agent:
     resources: 
       limits:
         cpu: 1000m
-        memory: 1024Mi
+        memory: 512Mi
       requests:
         cpu: 100m
         memory: 128Mi
@@ -445,8 +445,8 @@ apo-one-agent:
       tag: "v1.4.2-1"
     resources: 
       limits:
-        cpu: 2000m
-        memory: 2048Mi
+        cpu: 500m
+        memory: 512Mi
       requests:
         cpu: 100m
         memory: 128Mi
@@ -494,7 +494,7 @@ apo-one-agent:
       resources: 
         limits:
           cpu: 2000m
-          memory: 2048Mi
+          memory: 1024Mi
         requests:
           cpu: 100m
           memory: 128Mi
@@ -511,8 +511,8 @@ apo-one-agent:
       tag: "v1.4.1"
     resources:
       limits:
-        cpu: 1000m
-        memory: 1024Mi
+        cpu: 500m
+        memory: 256Mi
       requests:
         cpu: 10m
         memory: 64Mi

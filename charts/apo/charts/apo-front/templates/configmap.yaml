@@ -5,6 +5,18 @@ metadata:
   labels:
     {{- include "apo-front.labels" . | nindent 4 }}
 data:
+  config.js: |
+    window.__APP_CONFIG__ = {
+      themes: {
+        light: {
+          // colorPrimary: '#349999',
+          colorPrimary: '#1677ff',
+        },
+        dark: {
+          colorPrimary: '#1677ff',
+        },
+      },
+    }
   default.conf: |
     server {
       listen       80;

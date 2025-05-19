@@ -41,6 +41,9 @@ spec:
           - name: apo-front-nginx
             mountPath: /etc/nginx/nginx.conf
             subPath: nginx.conf
+          - name: apo-front-nginx
+            mountPath: /usr/share/nginx/html/config.js
+            subPath: config.js
       volumes:
       - name: apo-front-nginx
         configMap:

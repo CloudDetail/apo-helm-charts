@@ -98,7 +98,7 @@ spec:
             - name: cpu_usage_limit
               value: '1'
             - name: mem_usage_limit
-              value: '1024'
+              value: '512'
           resources:
             {{- toYaml .Values.apoIlogtail.resources | nindent 12 }}
           volumeMounts:
