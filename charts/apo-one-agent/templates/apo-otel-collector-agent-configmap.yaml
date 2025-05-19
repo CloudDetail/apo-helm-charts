@@ -86,7 +86,6 @@ data:
           sample_trace_ignore_threshold: 0
           sample_trace_slow_threshold_ms: 100
           silent_period: 15
-          silent_period: 5
           silent_count: 1
           silent_mode: window
         controller:

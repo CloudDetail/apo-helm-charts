@@ -65,12 +65,12 @@ spec:
     #     sdkType: native
     {{- if eq .Values.config.javaAgentType "skywalking" }}
     java:
-      sdkTier: community
-      sdkType: skywalking
+      - sdkTier: community
+        sdkType: skywalking
     {{- else }}
     java:
-      sdkTier: community
-      sdkType: native
+      - sdkTier: community
+        sdkType: native
     {{- end }}
     javascript:
       - sdkTier: community

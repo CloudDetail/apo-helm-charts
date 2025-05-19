@@ -115,7 +115,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.8.0-beta.1"
+      tag: "v1.8.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -159,7 +159,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.8.1"
+      tag: "v1.8.2"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -316,7 +316,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.8.0-beta.1"
+    tag: "v1.8.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -490,7 +490,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.3.1"
+      tag: "v1.3.2"
       resources: 
         limits:
           cpu: 2000m
@@ -616,7 +616,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.3.1"
+    tag: "v1.3.2"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -737,7 +737,7 @@ grafana:
       - name: INIT_DB_NAME
         value: "{{ .Values.global.postgres.apoGrafanaDatabase }}"
   - name: apo-grafana-init-dashboard
-    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.3.3-beta.4"
+    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.3.3"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
     volumeMounts:
     - name: apo-dashboards
@@ -798,7 +798,7 @@ originx-root-cause-infer:
     tag: "1.36.1"
   image:
     repository: "{{ .Values.global.image.eeRepository }}/root-cause-infer"
-    tag: "v1.6.5"
+    tag: "v1.6.6"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   resources: 
     limits:
