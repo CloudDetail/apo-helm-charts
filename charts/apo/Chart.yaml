@@ -1,6 +1,6 @@
 apiVersion: v2
 name: apo
-version: "1.8.002"
+version: "1.8.003"
 appVersion: "1.8.1"
 type: application
 description: apo deployment charts
