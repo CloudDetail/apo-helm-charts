@@ -3,6 +3,85 @@ entries:
   apo:
   - apiVersion: v2
     appVersion: 1.8.1
+    created: "2025-05-23T06:01:17.109821203Z"
+    dependencies:
+    - condition: altinity-clickhouse-operator.enabled
+      name: altinity-clickhouse-operator
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-backend.enabled
+      name: apo-backend
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-collector.enabled
+      name: apo-collector
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-dify.enabled
+      name: apo-dify
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-front.enabled
+      name: apo-front
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-jaeger-collector.enabled
+      name: apo-jaeger-collector
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-one-agent.enabled
+      name: apo-one-agent
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-otel-collector-gateway.enabled
+      name: apo-otel-collector-gateway
+      repository: ""
+      version: '*.*.*'
+    - condition: grafana.enabled
+      name: grafana
+      repository: ""
+      version: '*.*.*'
+    - condition: originx-copilot-ai.enabled
+      name: originx-copilot-ai
+      repository: ""
+      version: '*.*.*'
+    - condition: originx-root-cause-infer.enabled
+      name: originx-root-cause-infer
+      repository: ""
+      version: '*.*.*'
+    - condition: postgres.enabled
+      name: postgres
+      repository: ""
+      version: '*.*.*'
+    - condition: redis.enabled
+      name: redis
+      repository: ""
+      version: '*.*.*'
+    - condition: vectors.enabled
+      name: vector
+      repository: ""
+      version: '*.*.*'
+    - condition: victoria-metrics-alert.enabled
+      name: victoria-metrics-alert
+      repository: ""
+      version: '*.*.*'
+    - condition: victoria-metrics-single.enabled
+      name: victoria-metrics-single
+      repository: ""
+      version: '*.*.*'
+    - condition: weaviate.enabled
+      name: weaviate
+      repository: ""
+      version: '*.*.*'
+    description: apo deployment charts
+    digest: fa2e7911191a7318c8aa2059603d5852b8bc64b62f9b8e6f9d2c15476ae7d885
+    name: apo
+    type: application
+    urls:
+    - https://github.com/CloudDetail/apo-helm-charts/releases/download/apo-1.8.003/apo-1.8.003.tgz
+    version: 1.8.003
+  - apiVersion: v2
+    appVersion: 1.8.1
     created: "2025-05-23T03:03:07.997586363Z"
     dependencies:
     - condition: altinity-clickhouse-operator.enabled
@@ -1515,6 +1594,29 @@ entries:
   apo-one-agent:
   - apiVersion: v2
     appVersion: 1.8.1
+    created: "2025-05-23T06:01:17.282561951Z"
+    dependencies:
+    - condition: apo-nginx-proxy.enabled
+      name: apo-nginx-proxy
+      repository: ""
+      version: '*.*.*'
+    - condition: apo-otel-collector.enabled
+      name: apo-otel-collector
+      repository: ""
+      version: '*.*.*'
+    - condition: odigos.enabled
+      name: odigos
+      repository: ""
+      version: '*.*.*'
+    description: apo-one-agent deployment charts
+    digest: 03aa21cfa7a0a3d2f29a752c3263ac7acf2809ba5e7375b7d0bfdf6caa52b5f7
+    name: apo-one-agent
+    type: application
+    urls:
+    - https://github.com/CloudDetail/apo-helm-charts/releases/download/apo-one-agent-1.8.003/apo-one-agent-1.8.003.tgz
+    version: 1.8.003
+  - apiVersion: v2
+    appVersion: 1.8.1
     created: "2025-05-23T03:03:08.135805554Z"
     dependencies:
     - condition: apo-nginx-proxy.enabled
@@ -2019,4 +2121,4 @@ entries:
     urls:
     - https://github.com/CloudDetail/apo-helm-charts/releases/download/apo-one-agent-1.3.000/apo-one-agent-1.3.000.tgz
     version: 1.3.000
-generated: "2025-05-23T03:03:08.136079075Z"
+generated: "2025-05-23T06:01:17.282796769Z"
