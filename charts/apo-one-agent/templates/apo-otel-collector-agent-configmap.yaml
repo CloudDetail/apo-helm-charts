@@ -67,7 +67,7 @@ data:
         ebpf_port: 0
         {{- end }}
         adaptive:
-          enable: false
+          enable: true
           span_slow_threshold: 10s
           service_sample_window: 5s
           service_sample_count: 1

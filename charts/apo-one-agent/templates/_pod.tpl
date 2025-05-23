@@ -41,7 +41,7 @@ env:
 {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
 {{- if eq .Values.global.edition "ee" }}
 - name: ASYNC_PROFILER_PARAMS
-  value: '-e traceid -e itimer -e lock -l 50'
+  value: '-e traceid -e itimer'
 {{- else }}
 - name: ASYNC_PROFILER_PARAMS
   value: '-e traceid'
@@ -49,7 +49,7 @@ env:
 {{- else }}
 {{- if eq .Values.global.edition "ee" }}
 - name: ASYNC_PROFILER_PARAMS
-  value: '-e traceid -e itimer -o sw_otel -e lock -l 50'
+  value: '-e traceid -e itimer -o sw_otel'
 {{- else }}
 - name: ASYNC_PROFILER_PARAMS
   value: '-e traceid -o sw_otel'
