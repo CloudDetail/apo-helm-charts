@@ -29,6 +29,8 @@ data:
           del(.contents)
           del(.tags)
           .timestamp, err = to_string(.time)
+          ."host.ip" = ."k8s.node.ip"
+          ."host.name" = ."k8s.node.name"
         type: remap
       parse_default_java:
         inputs:
