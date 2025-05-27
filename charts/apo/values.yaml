@@ -115,7 +115,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.8.1"
+      tag: "v1.8.2"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -184,7 +184,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apm-adapter"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.8.0"
+      tag: "v1.9.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -203,7 +203,7 @@ apo-collector:
         # APM system integration.  
         trace_api:  
           # Enable the APM integration list  
-          apm_list: [skywalking, jaeger, elastic]  
+          apm_list: [jaeger]  
           datadog:  
             site: "datadoghq.com"
             api_key: ""
@@ -227,7 +227,8 @@ apo-collector:
           # Arms-related configuration  
           arms:
             # No need to include the http or https protocol prefix.
-            address: "arms.cn-hangzhou.aliyuncs.com"  
+            address: "arms.cn-hangzhou.aliyuncs.com"
+            regionId: "cn-hangzhou"
             access_key: ""  
             access_secret: ""  
           elastic:  
@@ -254,7 +255,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-9"
+      tag: "v1.0.0-10"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -304,7 +305,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-9"
+      tag: "v1.0.0-10"
 
   nodeSelector: {}
   tolerations: []

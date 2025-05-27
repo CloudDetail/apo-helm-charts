@@ -326,6 +326,16 @@ server:
                   LABELS = {{ $labels }}
       - name: "Host Metrics"
         rules:
+          - alert: Host memory usage over 90% for 10 minutes
+            expr: sum((node_memory_MemTotal_bytes{job="integrations/unix"} - node_memory_MemAvailable_bytes{job="integrations/unix"}) / node_memory_MemTotal_bytes{job="integrations/unix"}) by (instance_name) > 0.9
+            for: 10m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  VALUE = {{ $value }}
+                  LABELS = {{ $labels }}
           - alert: "Disk space less than 20%"
             expr: ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 20 and ON (instance_name, device, mountpoint) node_filesystem_readonly == 0) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
@@ -530,6 +540,16 @@ server:
                   LABELS = {{ $labels }}
       - name: 主机相关
         rules:
+          - alert: 主机内存使用率持续10分钟超过90%
+            expr: sum((node_memory_MemTotal_bytes{job="integrations/unix"} - node_memory_MemAvailable_bytes{job="integrations/unix"}) / node_memory_MemTotal_bytes{job="integrations/unix"}) by (instance_name) > 0.9
+            for: 10m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  VALUE = {{ $value }}
+                  LABELS = {{ $labels }}
           - alert: 磁盘不足20%
             expr: ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 20 and ON (instance_name, device, mountpoint) node_filesystem_readonly == 0) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
