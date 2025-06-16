@@ -32,8 +32,8 @@ service:
     targetPort: 30044
   - name: apo-ilogtail-http
     protocol: TCP
-    port: 30010
-    targetPort: 30010
+    port: 30310
+    targetPort: 30310
   type: ClusterIP
 
 config:

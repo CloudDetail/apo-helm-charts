@@ -115,7 +115,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.8.2"
+      tag: "v1.8.3"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -255,7 +255,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-10"
+      tag: "v1.0.0-11"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -299,13 +299,13 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-web"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-5"
+      tag: "v1.0.0-6"
 
   worker:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-10"
+      tag: "v1.0.0-11"
 
   nodeSelector: {}
   tolerations: []
@@ -317,7 +317,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.8.0"
+    tag: "v1.8.3"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -738,7 +738,7 @@ grafana:
       - name: INIT_DB_NAME
         value: "{{ .Values.global.postgres.apoGrafanaDatabase }}"
   - name: apo-grafana-init-dashboard
-    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.3.3"
+    image: "{{ .Values.global.image.repository }}/apo-grafana-init-dashboards:v1.3.4"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
     volumeMounts:
     - name: apo-dashboards
