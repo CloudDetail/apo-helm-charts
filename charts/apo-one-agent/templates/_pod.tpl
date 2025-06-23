@@ -28,6 +28,8 @@ env:
   value: '1000'
 - name: switch_agg_num
   value: '2'
+- name: AUTO_UPDATE_JAVA_AGENT
+  value: 'false'
 - name: MY_NODE_IP
   valueFrom:
     fieldRef:

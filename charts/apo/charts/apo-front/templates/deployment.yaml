@@ -25,9 +25,7 @@ spec:
       - name: apo-front
         image: "{{- include "apo-front.image" . }}"
         imagePullPolicy: {{ tpl .Values.image.pullPolicy . }}
-        env:
-          - name: VITE_APP_APO_CHART_VERSION
-            value: "1.4"
+        # env:
         ports:
           - name: http
             containerPort: 80

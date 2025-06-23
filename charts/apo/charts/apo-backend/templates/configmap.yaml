@@ -97,7 +97,7 @@ data:
       anonymous_user:
         username: anonymous
         enable: {{ tpl .Values.config.anonymousUserEnabled . }}
-        role: admin
+        role: viewer
 
     dify:
       url: http://apo-dify-api-svc:5001
