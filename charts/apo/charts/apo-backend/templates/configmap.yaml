@@ -105,10 +105,18 @@ data:
       api_keys:
         alert_check: app-x0mOJKUvhr35BOISSeNmsfXj
         alert_classify: app-s8e5CusGAqNcjyTUbPCoJcu4
+        alert_analyze: app-JDtZH1DfQtQb1SjzC3as680C
       flow_ids: 
         alert_check: dcfeddd2-d6e7-4dc4-a284-e48ab56bf6af
         alert_event_analyze: a2d4d3aa-3401-4393-859e-df051bdd5cd1
-      max_concurrency: 1
+      auto_check: true
+      {{- if eq .Values.global.edition "ee" }}
+      auto_analyze: true
+      {{- else }}
+      auto_analyze: false
+      {{- end }}
+      max_concurrency: 4
+      timeout_second: 300
 
     alert_receiver:
       enabled: true
