@@ -108,7 +108,7 @@ data:
           format: vm
           port: 9500
           cache_size: 5000
-          open_profiling_bucket: false
+          open_profiling_bucket: true
     notifier:
       {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
       enable: true
