@@ -50,6 +50,13 @@ data:
           http:
             endpoint: 0.0.0.0:12800 # 接收从前端/ nginx 等 HTTP 协议上报的 Trace 数据
     processors:
+      {{- if and .Values.global.clusterId (ne .Values.global.clusterId "") }}
+      resource:
+        attributes:
+        - key: cluster_id
+          value: {{ .Values.global.clusterId | quote }}
+          action: upsert
+      {{- end }}
       batch:
         send_batch_size: 5000
         timeout: 2s
@@ -63,7 +70,7 @@ data:
           # kube_auth_config, kubeConfig file path, only used when kube_auth_type is kubeConfig
           kube_auth_config: ~/.kube/config
           # cluster_id, setup cluster id in kube metadata
-          cluster_id: "apo-agent"
+          cluster_id: {{ .Values.global.clusterId | default "default" | quote }}
         exporter:
           # remote_write_addr, push kube metadata to other server, remove if not need
           remote_write_addr: "{{ tpl .Values.config.apoBackendUrl . }}:{{ tpl .Values.config.apoBackendPort . }}/metadata"
@@ -146,6 +153,37 @@ data:
         resource:
           node_name: "${MY_NODE_NAME}"
       extensions: [pprof]
+      {{- if and .Values.global.clusterId (ne .Values.global.clusterId "") }}
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [resource,batch]
+          exporters: [otlp]
+        traces/gateway:
+          receivers: [otlp/gateway]
+          processors: [resource,batch]
+          exporters: [otlp]
+        metrics:
+          receivers: [signalfxgatewayprometheusremotewrite, otlp]
+          processors: [resource,batch, metadata]
+          exporters: [prometheusremotewrite]
+        metrics/gateway:
+          receivers: [otlp/gateway, prometheus]
+          processors: [resource,batch]
+          exporters: [prometheusremotewrite]
+        logs:
+          receivers: [otlp]
+          processors: [resource,batch]
+          exporters: [clickhouse/logs]
+        logs/gateway:
+          receivers: [otlp/gateway]
+          processors: [resource,batch]
+          exporters: [clickhouse/logs]
+        logs/k8sevent:
+          receivers: [otlp/k8sevent,k8s_events]
+          processors: [resource,batch]
+          exporters: [clickhouse/k8sevent, debug]
+      {{- else }}
       pipelines:
         traces:
           receivers: [otlp]
@@ -175,3 +213,4 @@ data:
           receivers: [otlp/k8sevent,k8s_events]
           processors: [batch]
           exporters: [clickhouse/k8sevent, debug]
+      {{- end }}

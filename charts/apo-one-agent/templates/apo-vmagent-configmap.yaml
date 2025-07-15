@@ -8,6 +8,8 @@ data:
   scrape.yml: |-
     global:
       scrape_interval: 60s
+      external_labels:
+        cluster_id: {{ .Values.global.clusterId | quote }}
 
     scrape_configs:
     - job_name: apo-one-agent
