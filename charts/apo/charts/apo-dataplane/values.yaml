@@ -1,0 +1,9 @@
+nameOverride: ""
+namespaceOverride: "apo"
+
+image:
+  repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dataplane
+  imagePullPolicy: IfNotPresent
+  tag: "v1.0.0"
+
+

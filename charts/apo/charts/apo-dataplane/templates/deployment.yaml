@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{include "apo-dataplane.name" . }}
+  namespace: {{include "apo-dataplane.namespace" . }}
+spec:
+  selector:
+    matchLabels:
+      app: apo-dataplane
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: apo-dataplane
+    spec:
+      containers:
+        - image: "{{tpl .Values.image.repository . }}:{{tpl .Values.image.tag . }}"
+          imagePullPolicy: {{tpl .Values.image.imagePullPolicy . }}
+          name: {{include "apo-dataplane.name"}}
+          ports:
+            - containerPort: 8089
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/config/dataplane.yml
+              name: apo-dataplane-config
+              subPath: dataplane.yml
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: apo-dataplane-config
+          name: apo-dataplane-config

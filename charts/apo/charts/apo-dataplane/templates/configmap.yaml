@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apo-dataplane-config
+  namespace: apo
+data:
+  dataplane.yml: |-
+    server:
+      http_port: 8089
+    logger:
+      level: DEBUG
+      console_enable: true
+      file_enable: true
+      file_path: "./logs/dataplane.log"
+      file_num: 10
+      file_size_mb: 100
+    dataplane:
+      schedule:
+        query_red_interval: 60s
+        query_topology_interval: 1h
+      datasources:
+        - key: apo
+          value: |-
+            {
+              "promAddress": {{ if eq .Values.global.victoriaMetrics.mode "cluster" -}}
+                "{{ .Values.global.victoriaMetrics.single}}"
+              {{- else -}}
+                "{{ .Values.global.victoriaMetrics.cluster.selectUrl}}"
+              {{- end }},
+              "promStorage": "vm"
+            }
+          cluster: ""
+    database:
+      connection: postgres
+      max_open: 10
+      max_idle: 60
+      max_life_second: 60
+      sqllite:
+        database: database/database-apo.db
+      mysql:
+        host: 127.0.0.1
+        port: 3306
+        database: apo
+        username: ""
+        password: ""
+        charset: "utf8mb4"
+      postgres:
+        host: "{{ .Values.global.postgres.host }}"
+        port: {{ .Values.global.postgres.port }}
+        database: "{{ .Values.global.postgres.apoBackendDatabase }}"
+        username: "{{ .Values.global.postgres.username }}"
+        password: "{{ .Values.global.postgres.password }}"
+    clickhouse:
+      address: "{{ tpl .Values.config.clickhouseUrl . }}"
+      username: {{ tpl .Values.config.clickhouseUsername . }}
+      password: {{ tpl .Values.config.clickhousePassword . }}
+      database: {{ .Values.global.clickhouse.database }}
+      replication: {{ .Values.global.clickhouse.replication }}
+      cluster: "{{ .Values.global.clickhouse.clusterName }}"
