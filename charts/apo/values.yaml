@@ -578,16 +578,16 @@ apo-one-agent:
       # value:  
       #   enabled: Inject all existing services but do not inject newly added applications  
       #   enabledFuture: Inject both current and future services  
-      #   disabled: Do not inject services in the specified namespace; used to exclude specific namespaces when instrument-all-namespace is enabled  
+      #   disabled: Do not inject services in the specified namespace; used to exclude specific namespaces when instrumentAllNamespace is enabled
       # targetNamespace:  
       # - name: default  
       #   value: disabled  
-      # instrument-all-namespace Whether to inject all namespaces  
+      # instrumentAllNamespace Whether to inject all namespaces
       # Equivalent to setting enabledFuture for all namespaces  
       # However, if disabled is already set for a namespace or workload, it will not be injected  
       instrumentAllNamespace: true
-      # force-instrument-all-namespace Whether to force inject all namespaces  
-      # Similar to instrument-all-namespace, sets enabledFuture for all namespaces  
+      # force-instrumentAllNamespace Whether to force inject all namespaces
+      # Similar to instrumentAllNamespace, sets enabledFuture for all namespaces
       # Ignores all disabled settings  
       forceInstrumentAllNamespace: false
       # enableOverwriteUserDefinedEnvs: Whether to overwrite user-defined environment variables
