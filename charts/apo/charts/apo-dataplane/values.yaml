@@ -6,4 +6,10 @@ image:
   imagePullPolicy: IfNotPresent
   tag: "v1.0.0"
 
-
+config:
+  clickhouseUrl: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"
+  clickhouseUsername: "{{ .Values.global.clickhouse.username }}"
+  clickhousePassword: "{{ .Values.global.clickhouse.password }}"
+  clickhouseDatabase: {{ .Values.global.clickhouse.database }}
+  clickhouseReplication: {{ .Values.global.clickhouse.replication }}
+  clickhouseCluster: "{{ .Values.global.clickhouse.clusterName }}"

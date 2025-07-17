@@ -1,8 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{include "apo-dataplane.name" . }}
-  namespace: {{include "apo-dataplane.namespace" . }}
+  name: {{ include "apo-dataplane.name" . }}
+  namespace: {{ include "apo-dataplane.namespace" . }}
+  labels:
+      {{- include "apo-dataplane.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -20,16 +22,16 @@ spec:
       containers:
         - image: "{{tpl .Values.image.repository . }}:{{tpl .Values.image.tag . }}"
           imagePullPolicy: {{tpl .Values.image.imagePullPolicy . }}
-          name: {{include "apo-dataplane.name"}}
+          name: {{ include "apo-dataplane.name" .}}
           ports:
             - containerPort: 8089
               protocol: TCP
           volumeMounts:
             - mountPath: /app/config/dataplane.yml
-              name: apo-dataplane-config
+              name: {{ include "apo-dataplane.name" . }}-config
               subPath: dataplane.yml
       volumes:
         - configMap:
             defaultMode: 420
-            name: apo-dataplane-config
-          name: apo-dataplane-config
+            name: {{ include "apo-dataplane.name" . }}-config
+          name: {{ include "apo-dataplane.name" . }}-config
