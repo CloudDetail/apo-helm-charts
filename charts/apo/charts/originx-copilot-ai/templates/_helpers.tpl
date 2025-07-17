@@ -52,14 +52,6 @@ app.kubernetes.io/name: {{ include "originx-copilot-ai.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{- define "originx-copilot-ai.image" -}}
-{{- if eq .Values.global.edition "ee" }}
-{{- printf "%s/originx-copilot-ai-ee:%s" (tpl .Values.global.image.eeRepository .) (tpl .Values.apoBackend.image.tag .) -}}
-{{- else }}
-{{- printf "%s/originx-copilot-ai:%s" (tpl .Values.apoBackend.image.registry .) (tpl .Values.apoBackend.image.tag .) -}}
-{{- end }}
-{{- end }}
-
 {{- define "originx-copilot-ai.serviceAccountName" -}}
 {{- default (include "originx-copilot-ai.fullname" .) .Values.serviceAccount.name }}
 {{- end }}

@@ -1,3 +1,6 @@
+{{- if or (not .Values.global.clusterId) (eq .Values.global.clusterId "") }}
+  {{- fail "Error .Values.global.clusterId must be defined and non-empty!" }}
+{{- end }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

@@ -2,7 +2,7 @@ global:
   edition: ee
 
   # clusterId: Must be modified to a custom ID. The cluster ID is used to distinguish different clusters in multi-cluster deployments, primarily for APO-OneAgent deployment configuration.
-  clusterId: "default"
+  clusterId: ""
 
   image:
     # -- Docker image repository
