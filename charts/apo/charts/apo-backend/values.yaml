@@ -52,6 +52,10 @@ config:
   clickhouseUrl: "apo-clickhouse-svc:9000"
   clickhouseUsername: "admin"
   clickhousePassword: "WPKf-e9U.X)K)ezTDo9#"
+  max_open_conns: 20
+  max_idle_conns: 10
+  conn_max_lifetime_minutes: 60
+  dial_timeout_seconds: 5
 
 nodeSelector: {}
 affinity: {}

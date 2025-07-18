@@ -32,6 +32,7 @@ data:
         {{- end }}
         enable_sql_red_metrics: false
     processors:
+      app_processor_enable: true
       sampleprocessor:
         {{- if (has "trace-sidecar" .Values.global.agentCollectorMode) }}
         enable: true
