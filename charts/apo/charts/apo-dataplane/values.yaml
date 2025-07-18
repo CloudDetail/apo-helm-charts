@@ -1,6 +1,12 @@
 nameOverride: ""
 namespaceOverride: "apo"
 
+initImage:
+  repository: docker.io/clouddetail/busybox
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "1.36.1"
+
 image:
   repository: registry.cn-hangzhou.aliyuncs.com/kindlingx/apo-dataplane
   imagePullPolicy: IfNotPresent
@@ -10,6 +16,6 @@ config:
   clickhouseUrl: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"
   clickhouseUsername: "{{ .Values.global.clickhouse.username }}"
   clickhousePassword: "{{ .Values.global.clickhouse.password }}"
-  clickhouseDatabase: {{ .Values.global.clickhouse.database }}
-  clickhouseReplication: {{ .Values.global.clickhouse.replication }}
+  clickhouseDatabase: "{{ .Values.global.clickhouse.database }}"
+  clickhouseReplication: "{{ .Values.global.clickhouse.replication }}"
   clickhouseCluster: "{{ .Values.global.clickhouse.clusterName }}"

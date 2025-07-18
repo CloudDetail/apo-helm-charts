@@ -251,6 +251,28 @@ apo-collector:
   tolerations: []
   affinity: {}
 
+apo-dataplane:
+  enabled: true
+
+  initImage:
+    repository: "{{ .Values.global.image.repository }}/busybox"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.36.1"
+
+  image:
+    repository: "{{ .Values.global.image.repository }}/apo-dataplane"
+    imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    tag: "v1.0.0"
+
+  config:
+    clickhouseUrl: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"
+    clickhouseUsername: "{{ .Values.global.clickhouse.username }}"
+    clickhousePassword: "{{ .Values.global.clickhouse.password }}"
+    clickhouseDatabase: "{{ .Values.global.clickhouse.database }}"
+    clickhouseReplication: "{{ .Values.global.clickhouse.replication }}"
+    clickhouseCluster: "{{ .Values.global.clickhouse.clusterName }}"
+
 apo-dify:
   enabled: true
 
@@ -624,7 +646,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.3.2"
+    tag: "main-91c0c96-20250718032246UTC"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"

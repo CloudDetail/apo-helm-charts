@@ -4,7 +4,7 @@ metadata:
   name: {{ include "apo-dataplane.name" . }}-config
   namespace: {{ include "apo-dataplane.namespace" . }}
   labels:
-        {{- include "apo-dataplane.labels" . | nindent 4 }}
+    {{- include "apo-dataplane.labels" . | nindent 4 }}
 data:
   dataplane.yml: |-
     server:
@@ -27,7 +27,7 @@ data:
               "promAddress": {{ if eq .Values.global.victoriaMetrics.mode "cluster" -}}
                 "{{ .Values.global.victoriaMetrics.cluster.selectUrl}}"
               {{- else -}}
-                "{{ .Values.global.victoriaMetrics.single}}"
+                "{{ .Values.global.victoriaMetrics.single.url}}"
               {{- end }},
               "promStorage": "vm"
             }
