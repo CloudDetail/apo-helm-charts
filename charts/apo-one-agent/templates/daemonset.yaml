@@ -89,7 +89,7 @@ spec:
             - name: HOST_DIR
               value: /logtail_host
             - name: ALIYUN_LOG_ENV_TAGS
-              value: _node_name_|_node_ip_
+              value: _node_name_|_node_ip_|cluster_id
             - name: _node_name_
               valueFrom:
                 fieldRef:
