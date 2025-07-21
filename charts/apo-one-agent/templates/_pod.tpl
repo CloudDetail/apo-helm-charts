@@ -3,6 +3,8 @@ Configure apo-one-agent variables according to different modes
 */}}
 {{- define "apo-one-agent.envAndVolume" -}}
 env:
+- name: CLUSTER_ID
+  value: {{ .Values.global.clusterId | quote }}
 - name: enable_uprobe
   value: 'false'
 - name: is_jf_open

@@ -49,7 +49,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "apo-backend.image" -}}
 {{- if eq .Values.global.edition "ee" }}
+{{- if eq (tpl .Values.apoBackend.image.registry .) (tpl .Values.global.image.repository .) }}
 {{- printf "%s/apo-backend-ee:%s" (tpl .Values.global.image.eeRepository .) (tpl .Values.apoBackend.image.tag .) -}}
+{{- else }}
+{{- printf "%s/apo-backend-ee:%s" (tpl .Values.apoBackend.image.registry .) (tpl .Values.apoBackend.image.tag .) -}}
+{{- end }}
 {{- else }}
 {{- printf "%s/apo-backend:%s" (tpl .Values.apoBackend.image.registry .) (tpl .Values.apoBackend.image.tag .) -}}
 {{- end }}

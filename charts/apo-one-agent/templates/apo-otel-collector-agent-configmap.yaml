@@ -59,6 +59,11 @@ data:
       batch:
         send_batch_size: 5000
         timeout: 2s
+      resource:
+        attributes:
+          - key: cluster_id
+            value: {{ .Values.global.clusterId | quote }}
+            action: insert
       backsampling:
         # Notify eBPF to collect OnOffMetric and Profile; set to 0 or leave unset to disable.
         {{- if eq .Values.global.edition "ee" }}
@@ -124,11 +129,11 @@ data:
       pipelines:
         traces:
           receivers: [otlp, skywalking]
-          processors: [batch]
+          processors: [resource,batch]
           exporters: [otlp]
         metrics:
           receivers: [otlp]
-          processors: [batch]
+          processors: [resource,batch]
           exporters: [otlp]
         metrics/sw:
           receivers: [skywalking]
@@ -136,7 +141,7 @@ data:
           exporters: [nop]
         logs:
           receivers: [otlp]
-          processors: [batch]
+          processors: [resource,batch]
           exporters: [otlp]
       {{- else }}
       pipelines:
