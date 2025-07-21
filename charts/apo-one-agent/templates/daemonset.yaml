@@ -1,3 +1,6 @@
+{{- if or (not .Values.global.clusterId) (eq .Values.global.clusterId "") }}
+  {{- fail "Error .Values.global.clusterId must be defined and non-empty!" }}
+{{- end }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -81,10 +84,12 @@ spec:
           image: "{{ tpl .Values.apoIlogtail.image.repository . }}:{{ tpl (toString .Values.apoIlogtail.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.apoIlogtail.image.pullPolicy . }}"
           env:
+            - name: cluster_id
+              value: {{ .Values.global.clusterId | quote }}
             - name: HOST_DIR
               value: /logtail_host
             - name: ALIYUN_LOG_ENV_TAGS
-              value: _node_name_|_node_ip_
+              value: _node_name_|_node_ip_|cluster_id
             - name: _node_name_
               valueFrom:
                 fieldRef:

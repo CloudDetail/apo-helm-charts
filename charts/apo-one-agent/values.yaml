@@ -1,12 +1,17 @@
 global:
   edition: ee
+
+  # clusterId: Must be modified to a custom ID. The cluster ID is used to distinguish different clusters in multi-cluster deployments, primarily for APO-OneAgent deployment configuration.
+  clusterId: ""
+
   image:
     # -- Docker image repository
-    # docker.io/clouddetail (default)
-    # registry.cn-hangzhou.aliyuncs.com/kindlingx
+    # docker.io/clouddetail (default/amd64)
+    # registry.cn-hangzhou.aliyuncs.com/kindlingx (amd64)
     repository: "docker.io/clouddetail"
     eeRepository: "docker.io/clouddetail"
     pullPolicy: "Always"
+  
   # APO Collection Modes  
   # - trace              Full data collection, automatically injects trace collection probes  
   # - trace-collector    Use collector to receive trace data from external probes  
@@ -19,6 +24,7 @@ global:
     - trace
     - metrics
     - log
+  
   victoriaMetrics:
     # victoriaMetrics-single(single) or victoriaMetrics-cluster(cluster)
     # After switching modes, the corresponding URL for the mode needs to be provided.
@@ -76,7 +82,7 @@ apoOneAgent:
     repository: "{{ .Values.global.image.repository }}/ebpf-agent"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.9.7"
+    tag: "v1.9.9"
   resources: 
     limits:
       cpu: 1000m
@@ -108,7 +114,7 @@ apoIlogtail:
     repository: "{{ .Values.global.image.repository }}/ilogtail"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.5.2"
+    tag: "v1.8.4-6"
   resources: 
     limits:
       cpu: 1000m
@@ -172,7 +178,7 @@ apoOtelCollectorAgent:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v1.3.2"
+    tag: "v1.3.3"
   resources: 
     limits:
       cpu: 2000m
@@ -296,14 +302,13 @@ apo-otel-collector:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.3.2"
+    tag: "v1.3.3"
   config:
     apoBackendUrl: "{{ .Values.global.apoServerIP }}"
     apoBackendPort: "{{ .Values.global.apoBackendPort }}"
     apoOtelCollectorGatewayURL: "{{ .Values.global.apoServerIP }}"
     apoOtelCollectorGatewayGRPCPort: "{{ .Values.global.apoOtelCollectorGatewayGRPCPort }}"
     apoOtelCollectorGatewayK8SPort: "{{ .Values.global.apoOtelCollectorGatewayK8SPort }}"
-    clusterID: "apo-agent"
   service:
     ports:
     - name: query

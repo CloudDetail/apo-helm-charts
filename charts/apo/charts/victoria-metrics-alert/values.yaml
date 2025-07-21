@@ -283,7 +283,7 @@ server:
       - name: "Application Metrics"
         rules:
           - alert: "Average request latency increased by more than 20% compared to yesterday"
-            expr: (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m])) / sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))) / (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m] offset 24h))/ sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m] offset 24h))) - 1 > 0.2
+            expr: (sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_sum[1m])) / sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))) / (sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_sum[1m] offset 24h))/ sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count[1m] offset 24h))) - 1 > 0.2
             for: 1m
             labels:
               group: app
@@ -293,7 +293,7 @@ server:
                   VALUE = {{ $value }}
                   LABELS = {{ $labels }}
           - alert: "Request error rate increased by more than 20% compared to yesterday"
-            expr: ((sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m])) / sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m]))) or (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m])) * 0)) / ((sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m] offset 24h)) / sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m] offset 24h))) or (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m] offset 24h)) * 0)) - 1 > 0.2
+            expr: ((sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m])) / sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m]))) or (sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m])) * 0)) / ((sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m] offset 24h)) / sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m] offset 24h))) or (sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m] offset 24h)) * 0)) - 1 > 0.2
             for: 1m
             labels:
               group: app
@@ -303,7 +303,7 @@ server:
                   VALUE = {{ $value }}
                   LABELS = {{ $labels }}
           - alert: "Request error rate exceeds 0%"
-            expr: sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m]))/ sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m])) > 0
+            expr: sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m]))/ sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count[1m])) > 0
             for: 1m
             labels:
               group: app
@@ -315,7 +315,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Request error rate exceeds 0% (Service name {{ $labels.svc_name }}, Service endpoint {{ $labels.content_key }})
           - alert: "Log error count increased by more than 20% compared to yesterday"
-            expr: ((sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name) + sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name)) or sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name) or sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name)) / ((sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name) + sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name)) or sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name) or sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name)) > 1.2
+            expr: ((sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id) + sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id)) or sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id) or sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id)) / ((sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id) + sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id)) or sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id) or sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id)) > 1.2
             for: 1m
             labels:
               group: app
@@ -327,7 +327,7 @@ server:
       - name: "Host Metrics"
         rules:
           - alert: Host memory usage over 90% for 10 minutes
-            expr: sum((node_memory_MemTotal_bytes{job="integrations/unix"} - node_memory_MemAvailable_bytes{job="integrations/unix"}) / node_memory_MemTotal_bytes{job="integrations/unix"}) by (instance_name) > 0.9
+            expr: sum((node_memory_MemTotal_bytes{job="integrations/unix"} - node_memory_MemAvailable_bytes{job="integrations/unix"}) / node_memory_MemTotal_bytes{job="integrations/unix"}) by (instance_name, cluster_id) > 0.9
             for: 10m
             labels:
               group: infra
@@ -349,7 +349,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Host out of disk space (instance_name {{ $labels.instance_name }})
           - alert: "Abnormal network ingress/egress throughput"
-            expr: (sum by (instance_name) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            expr: (sum by (instance_name, cluster_id) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
             labels:
               group: infra
@@ -361,7 +361,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Host unusual network throughput in (instance_name {{ $labels.instance_name }})
           - alert: "Abnormal disk read speed"
-            expr: (sum by (instance_name) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            expr: (sum by (instance_name, cluster_id) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
             labels:
               group: infra
@@ -373,7 +373,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Host unusual disk read rate (instance_name {{ $labels.instance_name }})
           - alert: "Abnormal disk write speed"
-            expr: (sum by (instance_name) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            expr: (sum by (instance_name, cluster_id) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
             labels:
               group: infra
@@ -385,7 +385,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Host unusual disk write rate (instance_name {{ $labels.instance_name }})
           - alert: "High CPU load"
-            expr: (sum by (instance_name) (avg by (mode, instance_name) (rate(node_cpu_seconds_total{mode!="idle"}[2m]))) > 0.8) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            expr: (sum by (instance_name, cluster_id) (avg by (mode, instance_name, cluster_id) (rate(node_cpu_seconds_total{mode!="idle"}[2m]))) > 0.8) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
             labels:
               group: infra
@@ -409,7 +409,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Host unusual disk IO (instance_name {{ $labels.instance_name }})
           - alert: "High CPU I/O wait"
-            expr: (avg by (instance_name) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) * 100 > 10) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            expr: (avg by (instance_name, cluster_id) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) * 100 > 10) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
             labels:
               group: infra
@@ -447,7 +447,7 @@ server:
       - name: "Container Metrics"
         rules:
           - alert: "Container memory usage exceeds 80%"
-            expr: (sum(container_memory_working_set_bytes{name!="",namespace!~"apo|deepflow|originx"}) BY (container, pod, namespace, node_name) / sum(container_spec_memory_limit_bytes{namespace!~"apo|deepflow|originx"} > 0) BY (container, pod, namespace, node_name) * 100) > 80
+            expr: (sum(container_memory_working_set_bytes{name!="",namespace!~"apo|deepflow|originx"}) BY (container, pod, namespace, node_name, cluster_id) / sum(container_spec_memory_limit_bytes{namespace!~"apo|deepflow|originx"} > 0) BY (container, pod, namespace, node_name, cluster_id) * 100) > 80
             for: 2m
             labels:
               group: container
@@ -459,7 +459,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Container High Memory usage (instance_name {{ $labels.instance_name }})
           - alert: "High container cpu_cfs_throttled"
-            expr: sum(increase(container_cpu_cfs_throttled_periods_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace) / sum(increase(container_cpu_cfs_periods_total{namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace) > (25 / 100)
+            expr: sum(increase(container_cpu_cfs_throttled_periods_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace, cluster_id) / sum(increase(container_cpu_cfs_periods_total{namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace, cluster_id) > (25 / 100)
             for: 5m
             labels:
               group: container
@@ -471,7 +471,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Container high throttle rate (instance_name {{ $labels.instance_name }})
           - alert: "Container CPU usage exceeds 80%"
-            expr: (sum(rate(container_cpu_usage_seconds_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (namespace, pod, container) / sum(container_spec_cpu_quota{container!="", namespace!~"apo|deepflow|originx"}/container_spec_cpu_period{container!="", namespace!~"apo|deepflow|originx"}) by (namespace, pod, container) * 100) > 80
+            expr: (sum(rate(container_cpu_usage_seconds_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (namespace, pod, container, cluster_id) / sum(container_spec_cpu_quota{container!="", namespace!~"apo|deepflow|originx"}/container_spec_cpu_period{container!="", namespace!~"apo|deepflow|originx"}) by (namespace, pod, container, cluster_id) * 100) > 80
             for: 2m
             labels:
               group: container
@@ -486,18 +486,8 @@ server:
       groups:
       - name: 应用指标
         rules:
-          - alert: 平均请求延时相比昨天升高20%以上
-            expr: (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m])) / sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))) / (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m] offset 24h))/ sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m] offset 24h))) - 1 > 0.2
-            for: 1m
-            labels:
-              group: app
-              severity: warning
-            annotations:
-              description: |-
-                  VALUE = {{ $value }}
-                  LABELS = {{ $labels }}
           - alert: 请求错误率相比昨天升高20%以上
-            expr: ((sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m])) / sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m]))) or (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m])) * 0)) / ((sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m] offset 24h)) / sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m] offset 24h))) or (sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m] offset 24h)) * 0)) - 1 > 0.2
+            expr: ((sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m])) / sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m]))) or (sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m])) * 0)) / ((sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m] offset 24h)) / sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m] offset 24h))) or (sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{}[1m] offset 24h)) * 0)) - 1 > 0.2
             for: 1m
             labels:
               group: app
@@ -507,7 +497,7 @@ server:
                   VALUE = {{ $value }}
                   LABELS = {{ $labels }}
           - alert: 请求错误率超过0%
-            expr: sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m]))/ sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m])) > 0
+            expr: sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count{is_error="true"}[1m]))/ sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count[1m])) > 0
             for: 1m
             labels:
               group: app
@@ -519,7 +509,7 @@ server:
                     LABELS = {{ $labels }}
               summary: 请求错误率超过0% (服务名 {{ $labels.svc_name }}, 服务端点 {{ $labels.content_key }})
           - alert: 日志错误数相比昨天升高20%以上
-            expr: ((sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name) + sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name)) or sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name) or sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name)) / ((sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name) + sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name)) or sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name) or sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name)) > 1.2
+            expr: ((sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id) + sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id)) or sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id) or sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m])) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id)) / ((sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id) + sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id)) or sum(increase(originx_logparser_level_count_total{level=~"error|critical", namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id) or sum(increase(originx_logparser_exception_count_total{namespace!~"apo|deepflow|originx"}[1m] offset 24h)) by(container_id, container, node_name, pid, namespace, pod_name, cluster_id)) > 1.2
             for: 1m
             labels:
               group: app
@@ -529,7 +519,17 @@ server:
                   VALUE = {{ $value }}
                   LABELS = {{ $labels }}
           - alert: 平均请求延时超过1s
-            expr: sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_sum[1m]))/ sum by (svc_name, content_key) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))/1000000 > 1000
+            expr: sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_sum[1m]))/ sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))/1000000 > 1000
+            for: 1m
+            labels:
+              group: app
+              severity: warning
+            annotations:
+              description: |-
+                  VALUE = {{ $value }}
+                  LABELS = {{ $labels }}
+          - alert: 平均请求延时相比昨天升高50%以上
+            expr: (sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_sum[1m])) / sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count[1m]))) / (sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_sum[1m] offset 24h))/ sum by (svc_name, content_key, cluster_id) (increase(kindling_span_trace_duration_nanoseconds_count[1m] offset 24h))) - 1 > 0.5
             for: 1m
             labels:
               group: app
@@ -540,76 +540,6 @@ server:
                   LABELS = {{ $labels }}
       - name: 主机相关
         rules:
-          - alert: 主机内存使用率持续10分钟超过90%
-            expr: sum((node_memory_MemTotal_bytes{job="integrations/unix"} - node_memory_MemAvailable_bytes{job="integrations/unix"}) / node_memory_MemTotal_bytes{job="integrations/unix"}) by (instance_name) > 0.9
-            for: 10m
-            labels:
-              group: infra
-              severity: warning
-            annotations:
-              description: |-
-                  VALUE = {{ $value }}
-                  LABELS = {{ $labels }}
-          - alert: 磁盘不足20%
-            expr: ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 20 and ON (instance_name, device, mountpoint) node_filesystem_readonly == 0) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
-            for: 1m
-            labels:
-              group: infra
-              severity: warning
-            annotations:
-              description: |-
-                  Disk is almost full (< 20% left)
-                    VALUE = {{ $value }}
-                    LABELS = {{ $labels }}
-              summary: Host out of disk space (instance_name {{ $labels.instance_name }})
-          - alert: 异常网络入吞吐量
-            expr: (sum by (instance_name) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
-            for: 1m
-            labels:
-              group: infra
-              severity: warning
-            annotations:
-              description: |-
-                  Host network interfaces are probably receiving too much data (> 100 MB/s)
-                    VALUE = {{ $value }}
-                    LABELS = {{ $labels }}
-              summary: Host unusual network throughput in (instance_name {{ $labels.instance_name }})
-          - alert: 异常磁盘读速度
-            expr: (sum by (instance_name) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
-            for: 1m
-            labels:
-              group: infra
-              severity: warning
-            annotations:
-              description: |-
-                  Disk is probably reading too much data (> 50 MB/s)
-                    VALUE = {{ $value }}
-                    LABELS = {{ $labels }}
-              summary: Host unusual disk read rate (instance_name {{ $labels.instance_name }})
-          - alert: 异常磁盘写速度
-            expr: (sum by (instance_name) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
-            for: 1m
-            labels:
-              group: infra
-              severity: warning
-            annotations:
-              description: |-
-                  Disk is probably writing too much data (> 50 MB/s)
-                    VALUE = {{ $value }}
-                    LABELS = {{ $labels }}
-              summary: Host unusual disk write rate (instance_name {{ $labels.instance_name }})
-          - alert: CPU高负载
-            expr: (sum by (instance_name) (avg by (mode, instance_name) (rate(node_cpu_seconds_total{mode!="idle"}[2m]))) > 0.8) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
-            for: 1m
-            labels:
-              group: infra
-              severity: warning
-            annotations:
-              description: |-
-                  CPU load is > 80%
-                    VALUE = {{ $value }}
-                    LABELS = {{ $labels }}
-              summary: Host high CPU load (instance_name {{ $labels.instance_name }})
           - alert: 异常磁盘IO利用率
             expr: (rate(node_disk_io_time_seconds_total[1m]) > 0.5) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
@@ -622,18 +552,6 @@ server:
                     VALUE = {{ $value }}
                     LABELS = {{ $labels }}
               summary: Host unusual disk IO (instance_name {{ $labels.instance_name }})
-          - alert: CPU高IO Wait
-            expr: (avg by (instance_name) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) * 100 > 10) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
-            for: 1m
-            labels:
-              group: infra
-              severity: warning
-            annotations:
-              description: |-
-                  CPU iowait > 10%. A high iowait means that you are disk or network bound.
-                    VALUE = {{ $value }}
-                    LABELS = {{ $labels }}
-              summary: Host CPU high iowait (instance_name {{ $labels.instance_name }})
           - alert: 文件描述符使用率超过85%
             expr: (100 * node_filefd_allocated / node_filefd_maximum > 85) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
             for: 1m
@@ -644,24 +562,106 @@ server:
               description: |-
                   VALUE = {{ $value }}
                   LABELS = {{ $labels }}
+          - alert: 磁盘不足20%
+            expr: ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance_name, device, mountpoint) node_filesystem_readonly == 0) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            for: 1m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  Disk is almost full (< 20% left)
+                    VALUE = {{ $value }}
+                    LABELS = {{ $labels }}
+              summary: Host out of disk space (instance_name {{ $labels.instance_name }})
+          - alert: 异常网络入吞吐量
+            expr: (sum by (instance_name, cluster_id) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            for: 1m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  Host network interfaces are probably receiving too much data (> 100 MB/s)
+                    VALUE = {{ $value }}
+                    LABELS = {{ $labels }}
+              summary: Host unusual network throughput in (instance_name {{ $labels.instance_name }})
+          - alert: 异常磁盘读速度
+            expr: (sum by (instance_name, cluster_id) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            for: 1m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  Disk is probably reading too much data (> 50 MB/s)
+                    VALUE = {{ $value }}
+                    LABELS = {{ $labels }}
+              summary: Host unusual disk read rate (instance_name {{ $labels.instance_name }})
+          - alert: 异常磁盘写速度
+            expr: (sum by (instance_name, cluster_id) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            for: 1m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  Disk is probably writing too much data (> 50 MB/s)
+                    VALUE = {{ $value }}
+                    LABELS = {{ $labels }}
+              summary: Host unusual disk write rate (instance_name {{ $labels.instance_name }})
+          - alert: CPU高负载
+            expr: (sum by (instance_name, cluster_id) (avg by (mode, instance_name) (rate(node_cpu_seconds_total{mode!="idle"}[2m]))) > 0.8) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            for: 1m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  CPU load is > 80%
+                    VALUE = {{ $value }}
+                    LABELS = {{ $labels }}
+              summary: Host high CPU load (instance_name {{ $labels.instance_name }})
+          - alert: CPU高IO Wait
+            expr: (avg by (instance_name, cluster_id) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) * 100 > 10) * on(instance_name) group_left (nodename) node_uname_info{nodename=~".+"}
+            for: 1m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  CPU iowait > 10%. A high iowait means that you are disk or network bound.
+                    VALUE = {{ $value }}
+                    LABELS = {{ $labels }}
+              summary: Host CPU high iowait (instance_name {{ $labels.instance_name }})
+          - alert: 主机内存使用率持续10分钟超过90%
+            expr: sum((node_memory_MemTotal_bytes{job="integrations/unix"} - node_memory_MemAvailable_bytes{job="integrations/unix"}) / node_memory_MemTotal_bytes{job="integrations/unix"}) by (instance_name, cluster_id) > 0.9
+            for: 10m
+            labels:
+              group: infra
+              severity: warning
+            annotations:
+              description: |-
+                  VALUE = {{ $value }}
+                  LABELS = {{ $labels }}
       - name: 网络相关
         rules:
-          - alert: 网络RTT延时超过50ms
-            expr: kindling_network_rtt{namespace!~"apo|deepflow|originx"} * 1000 > 50
+          - alert: 网络RTT延时超过200ms
+            expr: kindling_network_rtt{namespace!~"apo|deepflow|originx"} * 1000 > 200
             for: 1m
             labels:
               group: network
               severity: warning
             annotations:
               description: |-
-                  RTT is high (> 50 ms)
+                  RTT is high (> 200 ms)
                     VALUE = {{ $value }}
                     LABELS = {{ $labels }}
               summary: RTT is high (src_ip {{ $labels.src_ip }} dst_ip {{ $labels.dst_ip }})
       - name: 容器相关
         rules:
           - alert: 容器内存使用率超过80%
-            expr: (sum(container_memory_working_set_bytes{name!="",namespace!~"apo|deepflow|originx"}) BY (container, pod, namespace, node_name) / sum(container_spec_memory_limit_bytes{namespace!~"apo|deepflow|originx"} > 0) BY (container, pod, namespace, node_name) * 100) > 80
+            expr: (sum(container_memory_working_set_bytes{name!="",namespace!~"apo|deepflow|originx"}) BY (container, pod, namespace, node_name, cluster_id) / sum(container_spec_memory_limit_bytes{namespace!~"apo|deepflow|originx"} > 0) BY (container, pod, namespace, node_name, cluster_id) * 100) > 80
             for: 2m
             labels:
               group: container
@@ -673,7 +673,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Container High Memory usage (instance_name {{ $labels.instance_name }})
           - alert: 容器高cpu_cfs_throttled
-            expr: sum(increase(container_cpu_cfs_throttled_periods_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace) / sum(increase(container_cpu_cfs_periods_total{namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace) > (25 / 100)
+            expr: sum(increase(container_cpu_cfs_throttled_periods_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace, cluster_id) / sum(increase(container_cpu_cfs_periods_total{namespace!~"apo|deepflow|originx"}[5m])) by (container, pod, namespace, cluster_id) > (25 / 100)
             for: 5m
             labels:
               group: container
@@ -685,7 +685,7 @@ server:
                     LABELS = {{ $labels }}
               summary: Container high throttle rate (instance_name {{ $labels.instance_name }})
           - alert: 容器CPU使用率超过80%
-            expr: (sum(rate(container_cpu_usage_seconds_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (namespace, pod, container) / sum(container_spec_cpu_quota{container!="", namespace!~"apo|deepflow|originx"}/container_spec_cpu_period{container!="", namespace!~"apo|deepflow|originx"}) by (namespace, pod, container) * 100) > 80
+            expr: (sum(rate(container_cpu_usage_seconds_total{container!="", namespace!~"apo|deepflow|originx"}[5m])) by (namespace, pod, container, cluster_id) / sum(container_spec_cpu_quota{container!="", namespace!~"apo|deepflow|originx"}/container_spec_cpu_period{container!="", namespace!~"apo|deepflow|originx"}) by (namespace, pod, container, cluster_id) * 100) > 80
             for: 2m
             labels:
               group: container
@@ -696,6 +696,28 @@ server:
                     VALUE = {{ $value }}
                     LABELS = {{ $labels }}
               summary: Container High CPU utilization (instance_name {{ $labels.instance_name }})
+      - name: 数据库和中间件相关
+        rules:
+          - alert: 数据库调用平均耗时超过200毫秒
+            expr: increase(kindling_db_duration_nanoseconds_sum[1m])/increase(kindling_db_duration_nanoseconds_count[1m])/1000000 > 200
+            for: 2m
+            labels:
+              group: middleware
+              severity: warning
+            annotations:
+              description: |-
+                  VALUE = {{ $value }}
+                  LABELS = {{ $labels }}
+          - alert: 数据库调用平均耗时相比昨天升高100%以上
+            expr: (increase(kindling_db_duration_nanoseconds_sum[1m])/increase(kindling_db_duration_nanoseconds_count[1m]))/(increase(kindling_db_duration_nanoseconds_sum[1m] offset 24h)/increase(kindling_db_duration_nanoseconds_count[1m] offset 24h)) - 1 > 1
+            for: 5m
+            labels:
+              group: middleware
+              severity: warning
+            annotations:
+              description: |-
+                  VALUE = {{ $value }}
+                  LABELS = {{ $labels }}
 
   # -- Vertical Pod Autoscaler
   verticalPodAutoscaler:

@@ -49,6 +49,10 @@ data:
       username: {{ tpl .Values.config.clickhouseUsername . }}
       password: {{ tpl .Values.config.clickhousePassword . }}
       database: {{ .Values.global.clickhouse.database }}
+      max_open_conns: {{ .Values.config.max_open_conns }}
+      max_idle_conns: {{ .Values.config.max_idle_conns }}
+      conn_max_lifetime_minutes: {{ .Values.config.conn_max_lifetime_minutes }}
+      dial_timeout_seconds: {{.Values.config.dial_timeout_seconds}}
       replication: {{ .Values.global.clickhouse.replication }}
       cluster: "{{ .Values.global.clickhouse.clusterName }}"
 
@@ -121,3 +125,6 @@ data:
     alert_receiver:
       enabled: true
       external_url: "{{ tpl .Values.global.baseURL . }}"
+    data_group:
+      init_look_back_days: 3
+      refresh_seconds: 600

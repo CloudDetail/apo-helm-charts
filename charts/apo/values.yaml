@@ -1,12 +1,18 @@
 global:
   edition: ee
-  language: en # en | zh
+
+  # language：en | zh. Adjust the default language used in internal initialization of certain components, excluding browser-based page settings.
+  language: en 
+
   baseURL: ""
+
+  # .Values.global.clusterId must be defined and non-empty when apo-one-agent is enabled
+  clusterId: ""
 
   image:
     # -- Docker image repository
-    # docker.io/clouddetail (default)
-    # registry.cn-hangzhou.aliyuncs.com/kindlingx
+    # docker.io/clouddetail (default/amd64)
+    # registry.cn-hangzhou.aliyuncs.com/kindlingx (amd64)
     repository: "docker.io/clouddetail"
     eeRepository: "docker.io/clouddetail"
     pullPolicy: "Always"
@@ -27,6 +33,7 @@ global:
     - trace
     - metrics
     - log
+
   victoriaMetrics:
     # victoriaMetrics-single(single) or victoriaMetrics-cluster(cluster)
     # After switching modes, the corresponding URL for the mode needs to be provided.
@@ -115,7 +122,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.9.1"
+      tag: "v1.10.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -128,7 +135,7 @@ apo-backend:
       repository: "{{ .Values.global.image.repository }}/polaris-analyzer"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.1.4"
+      tag: "v1.1.5"
     resources:
       limits:
         # cpu: 1000m
@@ -144,6 +151,10 @@ apo-backend:
     clickhouseUsername: "{{ .Values.global.clickhouse.username }}"
     clickhousePassword: "{{ .Values.global.clickhouse.password }}"
     anonymousUserEnabled: "true"
+    max_open_conns: 20
+    max_idle_conns: 10
+    conn_max_lifetime_minutes: 60
+    dial_timeout_seconds: 5
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -159,7 +170,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.8.4"
+      tag: "v1.9.0"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -184,7 +195,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apm-adapter"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.9.2"
+      tag: "v1.9.3"
     # resources: 
     #   limits:
     #     cpu: 1000m
@@ -244,6 +255,28 @@ apo-collector:
   tolerations: []
   affinity: {}
 
+apo-dataplane:
+  enabled: true
+
+  initImage:
+    repository: "{{ .Values.global.image.repository }}/busybox"
+    pullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.36.1"
+
+  image:
+    repository: "{{ .Values.global.image.repository }}/apo-dataplane"
+    imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
+    tag: "v1.0.0"
+
+  config:
+    clickhouseUrl: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"
+    clickhouseUsername: "{{ .Values.global.clickhouse.username }}"
+    clickhousePassword: "{{ .Values.global.clickhouse.password }}"
+    clickhouseDatabase: "{{ .Values.global.clickhouse.database }}"
+    clickhouseReplication: "{{ .Values.global.clickhouse.replication }}"
+    clickhouseCluster: "{{ .Values.global.clickhouse.clusterName }}"
+
 apo-dify:
   enabled: true
 
@@ -255,7 +288,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-13"
+      tag: "v1.0.0-14"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -305,7 +338,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-13"
+      tag: "v1.0.0-14"
 
   nodeSelector: {}
   tolerations: []
@@ -317,7 +350,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.9.1"
+    tag: "v1.10.0"
   # resources: 
   #   limits:
   #     cpu: 1000m
@@ -395,7 +428,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.9.7"
+      tag: "v1.9.9"
     resources: 
       limits:
         cpu: 1000m
@@ -427,7 +460,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ilogtail"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.5.2"
+      tag: "v1.8.4-6"
     resources: 
       limits:
         cpu: 1000m
@@ -491,7 +524,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.3.2"
+      tag: "v1.3.3"
       resources: 
         limits:
           cpu: 2000m
@@ -571,16 +604,16 @@ apo-one-agent:
       # value:  
       #   enabled: Inject all existing services but do not inject newly added applications  
       #   enabledFuture: Inject both current and future services  
-      #   disabled: Do not inject services in the specified namespace; used to exclude specific namespaces when instrument-all-namespace is enabled  
+      #   disabled: Do not inject services in the specified namespace; used to exclude specific namespaces when instrumentAllNamespace is enabled
       # targetNamespace:  
       # - name: default  
       #   value: disabled  
-      # instrument-all-namespace Whether to inject all namespaces  
+      # instrumentAllNamespace Whether to inject all namespaces
       # Equivalent to setting enabledFuture for all namespaces  
       # However, if disabled is already set for a namespace or workload, it will not be injected  
       instrumentAllNamespace: true
-      # force-instrument-all-namespace Whether to force inject all namespaces  
-      # Similar to instrument-all-namespace, sets enabledFuture for all namespaces  
+      # force-instrumentAllNamespace Whether to force inject all namespaces
+      # Similar to instrumentAllNamespace, sets enabledFuture for all namespaces
       # Ignores all disabled settings  
       forceInstrumentAllNamespace: false
       # enableOverwriteUserDefinedEnvs: Whether to overwrite user-defined environment variables
@@ -617,7 +650,7 @@ apo-otel-collector-gateway:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.3.2"
+    tag: "v1.3.3"
   config:
     apoBackendUrl: "apo-backend-svc"
     apoBackendPort: "8080"
@@ -799,7 +832,7 @@ originx-root-cause-infer:
     tag: "1.36.1"
   image:
     repository: "{{ .Values.global.image.eeRepository }}/root-cause-infer"
-    tag: "v1.6.6"
+    tag: "v1.6.7"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   resources: 
     limits:

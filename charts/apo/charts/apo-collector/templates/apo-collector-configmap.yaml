@@ -30,6 +30,7 @@ data:
       address: {{ .Values.global.victoriaMetrics.single.url }}
       {{- else if eq .Values.global.victoriaMetrics.mode "cluster" }}
       address: {{ .Values.global.victoriaMetrics.cluster.selectUrl }}
+      send_address: {{ .Values.global.victoriaMetrics.cluster.insertUrl }}
       {{- end }}
       storage: "vm"
       # 每个Histogram最多保存多少个不同Labels，超过则清理
@@ -41,13 +42,15 @@ data:
       # Prom - /api/v1/write
       send_api: "/api/v1/import/prometheus"
       # 主动发送指标间隔（秒），设置为0则表示关闭主动推送.
-      send_interval: 0
+
       {{- if has "trace-sidecar" .Values.global.agentCollectorMode }}
       # 是否生成Client的Red指标
       generate_client_metric: true
+      send_interval: 30
       {{- else}}
       # 是否生成Client的Red指标
       generate_client_metric: false
+      send_interval: 0
       {{- end }}
       # 生成的Client Red指标是否补充URL信息
       client_metric_with_url: true

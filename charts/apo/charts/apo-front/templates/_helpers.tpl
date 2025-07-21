@@ -49,7 +49,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "apo-front.image" -}}
 {{- if eq .Values.global.edition "ee" }}
+{{- if eq (tpl .Values.image.registry .) (tpl .Values.global.image.repository .) }}
 {{- printf "%s/apo-front-ee:%s" (tpl .Values.global.image.eeRepository .) (tpl .Values.image.tag .) -}}
+{{- else }}
+{{- printf "%s/apo-front-ee:%s" (tpl .Values.image.registry .) (tpl .Values.image.tag .) -}}
+{{- end }}
 {{- else }}
 {{- printf "%s/apo-front:%s" (tpl .Values.image.registry .) (tpl .Values.image.tag .) -}}
 {{- end }}
