@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "apo-dataplane.name" . }}
-  namespace: {{ include "apo-dataplane.namespace" . }}
   labels:
       {{- include "apo-dataplane.labels" . | nindent 4 }}
 spec:

@@ -6,17 +6,6 @@ Expand the name of the chart
 {{- end }}
 
 {{/*
-Allow the release namespace to be overridden for multi-namespace deployments in combined charts
-*/}}
-{{- define "apo-dataplane.namespace" -}}
-{{- if .Values.namespaceOverride }}
-{{- .Values.namespaceOverride}}
-{{- else }}
-{{- .Release.Namespace}}
-{{- end }}
-{{- end }}
-
-{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "apo-dataplane.chart" -}}
