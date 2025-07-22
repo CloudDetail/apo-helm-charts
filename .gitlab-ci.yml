@@ -1,0 +1,29 @@
+stages:
+  - package
+  - trigger-release-images
+
+variables:
+  CHARTS_DIR: "charts"
+  MINIO_REPO_URL: "http://192.168.1.125:9001/apo-charts"
+  MINIO_OSS_URL: "local/apo-charts"
+
+package_chart:
+  stage: package
+  tags:
+    - raspberrypi
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+  script:
+    - cp -r $CHARTS_DIR/apo-one-agent $CHARTS_DIR/apo/charts/
+    - helm package $CHARTS_DIR/*
+    - mc cp $MINIO_OSS_URL/index.yaml .
+    - helm repo index . --merge index.yaml --url=$MINIO_REPO_URL
+    - mc cp index.yaml $MINIO_OSS_URL/
+    - mc cp *.tgz $MINIO_OSS_URL/
+trigger-release-images:
+  stage: trigger-release-images
+  trigger:
+    project: kindling/BashLibs  # B 项目的完整路径
+    branch: automatic-release-images
+
