@@ -70,7 +70,7 @@ data:
     home_page = /grafana/
   datasources.yaml: |-
     apiVersion: 1
-    datasources: 
+    datasources:
     - name: APO-VictoriaMetric
       type: prometheus
       {{- if eq .Values.global.victoriaMetrics.mode "single" }}

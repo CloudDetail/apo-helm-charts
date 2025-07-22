@@ -2,7 +2,7 @@ global:
   edition: ee
 
   # language：en | zh. Adjust the default language used in internal initialization of certain components, excluding browser-based page settings.
-  language: en 
+  language: en
 
   baseURL: ""
 
@@ -16,19 +16,19 @@ global:
     repository: "docker.io/clouddetail"
     eeRepository: "docker.io/clouddetail"
     pullPolicy: "Always"
-  
+
   persistence:
     enabled: false
     storageClass: ""
 
-  # APO Collection Modes  
-  # - trace              Full data collection, automatically injects trace collection probes  
-  # - trace-collector    Use collector to receive trace data from external probes  
+  # APO Collection Modes
+  # - trace              Full data collection, automatically injects trace collection probes
+  # - trace-collector    Use collector to receive trace data from external probes
   # - trace-sidecar      Do not accept external trace data, directly retrieve data from external APIs, this mode requires configuring external API data sources
   # - no-trace           Do not collect trace data
-  # - metrics            Full metrics data collection  
-  # - log                Full log collection, including fault scenario logs  
-  # - log-sample         Fault scenario log collection, without collecting full logs  
+  # - metrics            Full metrics data collection
+  # - log                Full log collection, including fault scenario logs
+  # - log-sample         Fault scenario log collection, without collecting full logs
   agentCollectorMode:
     - trace
     - metrics
@@ -37,7 +37,7 @@ global:
   victoriaMetrics:
     # victoriaMetrics-single(single) or victoriaMetrics-cluster(cluster)
     # After switching modes, the corresponding URL for the mode needs to be provided.
-    mode: single 
+    mode: single
     single:
       url: "http://apo-victoria-metrics-single-server-svc:8428"
     cluster:
@@ -65,14 +65,14 @@ global:
     apoDifyPluginDatabase: apo_dify_plugin
     apoGrafanaDatabase: apo_grafana
     apoBackendDatabase: apo_backend
-  
+
   redis:
     host: "apo-redis-svc"
     port: 6379
     username: ""
     password: Redis@123456
 
-  # deepflow integration configuration, requires a separate installation of the deepflow v6.4 TLS version  
+  # deepflow integration configuration, requires a separate installation of the deepflow v6.4 TLS version
   deepflow:
     enabled: false
     mysql:
@@ -171,7 +171,7 @@ apo-collector:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.9.0"
-    # resources: 
+    # resources:
     #   limits:
     #     cpu: 1000m
     #     memory: 1024Mi
@@ -196,7 +196,7 @@ apo-collector:
       repository: "{{ .Values.global.image.repository }}/apm-adapter"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.9.3"
-    # resources: 
+    # resources:
     #   limits:
     #     cpu: 1000m
     #     memory: 1024Mi
@@ -207,50 +207,50 @@ apo-collector:
       port: 8079
     config:
       adapter:
-        # Expose HTTP port. 
+        # Expose HTTP port.
         http_port: 8079
-        # Set HTTP request timeout; if it times out, a response is returned directly.  
-        timeout: 10  
-        # APM system integration.  
-        trace_api:  
-          # Enable the APM integration list  
-          apm_list: [jaeger]  
-          datadog:  
+        # Set HTTP request timeout; if it times out, a response is returned directly.
+        timeout: 10
+        # APM system integration.
+        trace_api:
+          # Enable the APM integration list
+          apm_list: [jaeger]
+          datadog:
             site: "datadoghq.com"
             api_key: ""
             app_key: ""
           # Skywalking configuration
           skywalking:
             # No need to include the http or https protocol prefix.
-            address: ""  
-            user: ""  
-            password: ""  
-          # Jaeger configuration  
+            address: ""
+            user: ""
+            password: ""
+          # Jaeger configuration
           jaeger:
             # No need to include the http or https protocol prefix.
-            address: apo-jaeger-collector-svc:16686/jaeger  
-          # Tingyun3-related configuration  
+            address: apo-jaeger-collector-svc:16686/jaeger
+          # Tingyun3-related configuration
           nbs3:
             # No need to include the http or https protocol prefix.
-            address: ""  
-            user: ""  
-            password: ""  
-          # Arms-related configuration  
+            address: ""
+            user: ""
+            password: ""
+          # Arms-related configuration
           arms:
             # No need to include the http or https protocol prefix.
             address: "arms.cn-hangzhou.aliyuncs.com"
             regionId: "cn-hangzhou"
-            access_key: ""  
-            access_secret: ""  
-          elastic:  
-            # You can add protocol prefixes 'https://' or 'http://', default is http  
-            address: ""  
-            user: ""  
-            password: ""  
-          # Pinpoint configuration  
+            access_key: ""
+            access_secret: ""
+          elastic:
+            # You can add protocol prefixes 'https://' or 'http://', default is http
+            address: ""
+            user: ""
+            password: ""
+          # Pinpoint configuration
           pinpoint:
             # No need to include the http or https protocol prefix.
-            address: ""  
+            address: ""
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -351,7 +351,7 @@ apo-front:
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v1.10.0"
-  # resources: 
+  # resources:
   #   limits:
   #     cpu: 1000m
   #     memory: 1024Mi
@@ -382,7 +382,7 @@ apo-jaeger-collector:
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
       tag: "v1.0.0"
-    # resources: 
+    # resources:
     #   limits:
     #     cpu: 1000m
     #     memory: 1024Mi
@@ -394,7 +394,7 @@ apo-jaeger-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/jaeger-query"
       tag: 1.58
-    # resources: 
+    # resources:
     #   limits:
     #     cpu: 1000m
     #     memory: 1024Mi
@@ -406,7 +406,7 @@ apo-jaeger-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/jaeger-collector"
       tag: "1.59-latest"
-    # resources: 
+    # resources:
     #   limits:
     #     cpu: 1000m
     #     memory: 1024Mi
@@ -429,7 +429,7 @@ apo-one-agent:
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
       tag: "v1.9.9"
-    resources: 
+    resources:
       limits:
         cpu: 1000m
         memory: 1024Mi
@@ -461,7 +461,7 @@ apo-one-agent:
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
       tag: "v1.8.4-6"
-    resources: 
+    resources:
       limits:
         cpu: 1000m
         memory: 512Mi
@@ -477,7 +477,7 @@ apo-one-agent:
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
       tag: "v1.4.2-1"
-    resources: 
+    resources:
       limits:
         cpu: 500m
         memory: 512Mi
@@ -487,14 +487,14 @@ apo-one-agent:
     config:
       apoOtelCollectorGrpcUrl: "apo-otel-collector-gateway-svc:4315"
       apoOtelCollectorHttpUrl: "apo-otel-collector-gateway-svc:4316"
-  
+
   grafanaBeyla:
     enabled: false
     image:
       repository: "{{ .Values.global.image.repository }}/apo-beyla"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.8.4-1"
-    resources: 
+    resources:
       limits:
         cpu: 1000m
         memory: 1024Mi
@@ -509,7 +509,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/apo-odiglet"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.0.3"
-      resources: 
+      resources:
         limits:
           cpu: 200m
           memory: 200Mi
@@ -525,7 +525,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       tag: "v1.3.3"
-      resources: 
+      resources:
         limits:
           cpu: 2000m
           memory: 1024Mi
@@ -599,22 +599,22 @@ apo-one-agent:
         requests:
           cpu: 10m
           memory: 64Mi
-      # targetNamespace  
-      # name: Target namespace  
-      # value:  
-      #   enabled: Inject all existing services but do not inject newly added applications  
-      #   enabledFuture: Inject both current and future services  
+      # targetNamespace
+      # name: Target namespace
+      # value:
+      #   enabled: Inject all existing services but do not inject newly added applications
+      #   enabledFuture: Inject both current and future services
       #   disabled: Do not inject services in the specified namespace; used to exclude specific namespaces when instrumentAllNamespace is enabled
-      # targetNamespace:  
-      # - name: default  
-      #   value: disabled  
+      # targetNamespace:
+      # - name: default
+      #   value: disabled
       # instrumentAllNamespace Whether to inject all namespaces
-      # Equivalent to setting enabledFuture for all namespaces  
-      # However, if disabled is already set for a namespace or workload, it will not be injected  
+      # Equivalent to setting enabledFuture for all namespaces
+      # However, if disabled is already set for a namespace or workload, it will not be injected
       instrumentAllNamespace: true
       # force-instrumentAllNamespace Whether to force inject all namespaces
       # Similar to instrumentAllNamespace, sets enabledFuture for all namespaces
-      # Ignores all disabled settings  
+      # Ignores all disabled settings
       forceInstrumentAllNamespace: false
       # enableOverwriteUserDefinedEnvs: Whether to overwrite user-defined environment variables
       enableOverwriteUserDefinedEnvs: false
@@ -676,7 +676,7 @@ apo-otel-collector-gateway:
       targetPort: 4321
       nodePort: 30321
     type: NodePort
-  resources: 
+  resources:
     limits:
       cpu: 3000m
       memory: 3072Mi
@@ -714,7 +714,7 @@ altinity-clickhouse-operator:
     persistence:
       # -- Create/use Persistent Volume Claim for server component. Empty dir if false
       enabled: "{{ .Values.global.persistence.enabled }}"
-      
+
       data:
         # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
         accessModes:
@@ -728,7 +728,7 @@ altinity-clickhouse-operator:
 
         # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
         size: 16Gi
-      
+
       log:
         # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
         accessModes:
@@ -755,7 +755,7 @@ grafana:
     # Overrides the Grafana image tag whose default is the chart appVersion
     tag: "10.4.1"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-  extraInitContainers: 
+  extraInitContainers:
   - name: init-postgres
     image: "{{ .Values.global.image.repository }}/apo-init-postgres:v1.0.0"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
@@ -783,7 +783,7 @@ grafana:
   grafana.ini:
     server:
       domain: "localhost"
-  # resources: 
+  # resources:
   #   limits:
   #     cpu: 1000m
   #     memory: 1024Mi
@@ -834,7 +834,7 @@ originx-root-cause-infer:
     repository: "{{ .Values.global.image.eeRepository }}/root-cause-infer"
     tag: "v1.6.7"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-  resources: 
+  resources:
     limits:
       cpu: 1000m
       memory: 512Mi
@@ -895,7 +895,7 @@ vector:
       targetPort: 4310
       nodePort: 30310
       protocol: TCP
-  resources: 
+  resources:
     requests:
       cpu: 100m
       memory: 128Mi
@@ -962,7 +962,7 @@ victoria-metrics-alert:
           continue: false
           routes:
               - receiver: APO异常检测告警
-                matchers: 
+                matchers:
                 - group=~"mutation.*"
                 continue: false
               - receiver: alert-collector
@@ -1064,7 +1064,7 @@ victoria-metrics-single:
   nodeSelector: {}
   affinity: {}
   tolerations: []
-  
+
 weaviate:
   enabled: true
   image:

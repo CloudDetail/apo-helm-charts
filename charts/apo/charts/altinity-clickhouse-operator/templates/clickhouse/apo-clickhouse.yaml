@@ -46,7 +46,7 @@ spec:
     #       resources:
     #         requests:
     #           storage: 1Gi
-    
+
     volumeClaimTemplates:
       - name: data-storage-vc-template
         reclaimPolicy: Retain

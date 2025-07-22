@@ -71,7 +71,7 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      
+
       - name: Check no chart changes
         run: |
           if compgen -G ".cr-release-packages/apo-*.tgz" > /dev/null; then
@@ -95,6 +95,6 @@ jobs:
           helm repo index .cr-release-packages/ --url https://apo-charts.oss-cn-hangzhou.aliyuncs.com/ --merge index.current
           ossutil cp -rf .cr-release-packages/index.yaml oss://apo-charts/
           for file in $(ls  .cr-release-packages/apo-*.tgz)
-            do 
+            do
                ossutil cp -rf $file oss://apo-charts/
             done

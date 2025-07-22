@@ -20,7 +20,7 @@ data:
       k8s_events:
         auth_type: serviceAccount
         namespaces: []
-      signalfxgatewayprometheusremotewrite: 
+      signalfxgatewayprometheusremotewrite:
         endpoint: 0.0.0.0:4321
       prometheus:
         config:

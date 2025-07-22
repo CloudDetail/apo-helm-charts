@@ -30,7 +30,7 @@ spec:
         - name: HTTP_PORT
           value: "3128"
         - name: COREDUMP_DIR
-          value: "/var/spool/squid"    
+          value: "/var/spool/squid"
         - name: REVERSE_PROXY_PORT
           value: "8194"
         - name: SANDBOX_HOST

@@ -31,7 +31,7 @@ data:
             max_recv_msg_size_mib: 999999999
           http:
             endpoint: 0.0.0.0:4320
-      signalfxgatewayprometheusremotewrite: 
+      signalfxgatewayprometheusremotewrite:
         endpoint: 0.0.0.0:4321
       prometheus:
         config:

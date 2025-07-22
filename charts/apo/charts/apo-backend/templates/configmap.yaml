@@ -80,7 +80,7 @@ data:
           enable_query_server: true
         exporter:
           enable_fetch_server: true
-    
+
     jaeger:
       address: "http://apo-jaeger-collector-svc:16686"
 
@@ -110,7 +110,7 @@ data:
         alert_check: app-x0mOJKUvhr35BOISSeNmsfXj
         alert_classify: app-s8e5CusGAqNcjyTUbPCoJcu4
         alert_analyze: app-JDtZH1DfQtQb1SjzC3as680C
-      flow_ids: 
+      flow_ids:
         alert_check: dcfeddd2-d6e7-4dc4-a284-e48ab56bf6af
         alert_event_analyze: a2d4d3aa-3401-4393-859e-df051bdd5cd1
       auto_check: true

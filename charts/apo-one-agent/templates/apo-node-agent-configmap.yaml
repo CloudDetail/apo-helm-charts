@@ -6,7 +6,7 @@ metadata:
     {{- include "apo-one-agent.labels" . | nindent 4 }}
 data:
   config.yaml: |
-    metric: 
+    metric:
       ping_span: 5 # get network rtt every 5s
       pid_span: 1 # get process info every 1min
       lru_cache_size: 50000 # metric cache size
@@ -22,7 +22,7 @@ data:
       kube_config: # kube_auth_config, kubeConfig file path, only used when kube_auth_type is kubeConfig
 
     middleware_port: # match middleware port
-      rabbitmq: [5672] 
+      rabbitmq: [5672]
       kafka: [9092]
       activemq: [61616]
       rocketmq: [10911]

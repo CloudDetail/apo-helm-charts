@@ -28,7 +28,7 @@ data:
             max_recv_msg_size_mib: 999999999
           http:
             endpoint: 0.0.0.0:4318
-      signalfxgatewayprometheusremotewrite: 
+      signalfxgatewayprometheusremotewrite:
         endpoint: 0.0.0.0:4321
       skywalking:
         fillproc_extension: fill_proc
@@ -165,4 +165,4 @@ data:
           receivers: [otlp]
           processors: [batch]
           exporters: [otlp]
-      {{- end }}     
+      {{- end }}
