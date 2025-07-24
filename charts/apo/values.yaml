@@ -288,7 +288,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-14"
+      tag: "v1.0.0-15"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -338,7 +338,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-14"
+      tag: "v1.0.0-15"
 
   nodeSelector: {}
   tolerations: []
