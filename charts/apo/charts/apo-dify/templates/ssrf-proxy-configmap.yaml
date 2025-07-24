@@ -45,10 +45,10 @@ data:
     refresh_pattern \/InRelease$ 0 0% 0 refresh-ims
     refresh_pattern \/(Translation-.*)(|\.bz2|\.gz|\.xz)$ 0 0% 0 refresh-ims
     refresh_pattern .		0	20%	4320
-    
+
 
     # upstream proxy, set to your own upstream proxy IP to avoid SSRF attacks
-    # cache_peer 172.1.1.1 parent 3128 0 no-query no-digest no-netdb-exchange default 
+    # cache_peer 172.1.1.1 parent 3128 0 no-query no-digest no-netdb-exchange default
 
 
     ################################## Reverse Proxy To Sandbox ################################

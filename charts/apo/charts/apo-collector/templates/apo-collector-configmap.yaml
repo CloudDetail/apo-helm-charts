@@ -122,7 +122,7 @@ data:
       timeout: 10
       # 设置需要执行GetDetail()的apmType类型.
       get_detail_types: ["arms"]
-    
+
     redis:
       # 单实例可考虑不引入Redis, 多实例则需要引入中间件Redis.
       enable: false

@@ -171,7 +171,7 @@ extraConfigmapMounts: []
   #   readOnly: true
 
 
-extraEmptyDirMounts: 
+extraEmptyDirMounts:
   - name: apo-dashboards
     mountPath: /var/lib/grafana/dashboards
   - name: apo-plugins
@@ -340,7 +340,7 @@ topologySpreadConstraints: []
 ## Additional init containers (evaluated as template)
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
 ##
-extraInitContainers: 
+extraInitContainers:
   - name: apo-grafana-init-dashboard
     image: docker.io/clouddetail/apo-grafana-init-dashboards:v0.4.0
     imagePullPolicy: Always

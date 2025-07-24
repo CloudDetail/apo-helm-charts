@@ -72,15 +72,15 @@ zh:
     - 规则2
       从应用接口层告警出发,沿着业务入口的拓扑结构，从上游向下游每个节点依次追踪（使用拓扑图数据，不要搞错上下游）。 请输出推理过程
       分析下游节点的时候一定要比较与下游节点的数字大小。
-      在追踪过程中分析每个节点： 
+      在追踪过程中分析每个节点：
       如果存在接口层告警，继续向该节点前面数字到与它相同数字之间大于节点前面数字的节点追踪，
-      如果没有接口层告警，停止追踪，返回上一级节点，当前节点排除。 
+      如果没有接口层告警，停止追踪，返回上一级节点，当前节点排除。
       该节点在以下情况下作为疑似根因节点：
       1. 存在其它类型的告警
       2. 该节点前面数字到与它相同数字之间大于节点前面数字的节点没有跟该节点相同类型的告警
       3. 如果节点是深度最深（节点前面数字最大）的节点，同时节点存在接口告警
-      4. 在追踪过程中，对于每个有1或者5类型类型接口告警的节点：{ 
-      检查是否存在出了1或者5类型类型的其他类型的告警，如果存在，则该节点是疑似根因，记录并继续分析下游节点追踪。 
+      4. 在追踪过程中，对于每个有1或者5类型类型接口告警的节点：{
+      检查是否存在出了1或者5类型类型的其他类型的告警，如果存在，则该节点是疑似根因，记录并继续分析下游节点追踪。
       如果不存在1或者5类型类型的其他告警，同时该节点前面数字到与它相同数字之间大于节点前面数字的节点告警没有1或者5类型类型接口告警，则该节点是疑似根因节点。
       '注意'
       在拓扑图中节点前面数字表示拓扑图中的深度，拓扑图中的深度与文本中节点的先后顺序没有关系，相同数字表示兄弟关系没有上下游关系
@@ -117,7 +117,7 @@ zh:
 en:
   system: |
     You are an intelligent reasoning assistant. Your task is to analyze the root cause nodes based on the data and rules provided by the user, and deliver the results as requested.
-  
+
   topology: |
     #background#
     Here is a microservice topology diagram with node names at each layer. Upper-layer nodes and lower-layer nodes form upstream and downstream relationships, where the upstream calls the downstream. Please remember the topology structure based on the provided data.

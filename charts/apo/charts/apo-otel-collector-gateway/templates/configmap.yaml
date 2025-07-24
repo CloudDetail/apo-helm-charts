@@ -31,8 +31,10 @@ data:
             max_recv_msg_size_mib: 999999999
           http:
             endpoint: 0.0.0.0:4320
-      signalfxgatewayprometheusremotewrite: 
+      signalfxgatewayprometheusremotewrite/gateway:
         endpoint: 0.0.0.0:4321
+      signalfxgatewayprometheusremotewrite:
+        endpoint: 0.0.0.0:4322
       prometheus:
         config:
           scrape_configs:
@@ -55,7 +57,7 @@ data:
         attributes:
         - key: cluster_id
           value: {{ .Values.global.clusterId | quote }}
-          action: upsert
+          action: insert
       {{- end }}
       batch:
         send_batch_size: 5000
@@ -161,15 +163,15 @@ data:
           exporters: [otlp]
         traces/gateway:
           receivers: [otlp/gateway]
-          processors: [resource,batch]
+          processors: [batch]
           exporters: [otlp]
         metrics:
-          receivers: [signalfxgatewayprometheusremotewrite, otlp]
+          receivers: [signalfxgatewayprometheusremotewrite, otlp, prometheus]
           processors: [resource,batch, metadata]
           exporters: [prometheusremotewrite]
         metrics/gateway:
-          receivers: [otlp/gateway, prometheus]
-          processors: [resource,batch]
+          receivers: [otlp/gateway, signalfxgatewayprometheusremotewrite/gateway]
+          processors: [batch]
           exporters: [prometheusremotewrite]
         logs:
           receivers: [otlp]
@@ -177,7 +179,7 @@ data:
           exporters: [clickhouse/logs]
         logs/gateway:
           receivers: [otlp/gateway]
-          processors: [resource,batch]
+          processors: [batch]
           exporters: [clickhouse/logs]
         logs/k8sevent:
           receivers: [otlp/k8sevent,k8s_events]

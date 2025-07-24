@@ -7,7 +7,7 @@ data:
   infer-config.yml: |
     controller:
       port: 8080
-      portal_address: 
+      portal_address:
 
     configserver:
       address: center-api-server-svc:8080

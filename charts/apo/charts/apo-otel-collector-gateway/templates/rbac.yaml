@@ -22,7 +22,7 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "apo-otel-collector-gateway.fullname" . }}
+  name: {{ .Release.Name }}-{{ include "apo-otel-collector-gateway.fullname" . }}
   labels:
     {{- include "apo-otel-collector-gateway.labels" . | nindent 4 }}
     app.kubernetes.io/component: rbac
@@ -47,14 +47,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "apo-otel-collector-gateway.fullname" . }}
+  name: {{ .Release.Name }}-{{ include "apo-otel-collector-gateway.fullname" . }}
   labels:
     {{- include "apo-otel-collector-gateway.labels" . | nindent 4 }}
     app.kubernetes.io/component: rbac
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "apo-otel-collector-gateway.fullname" . }}
+  name: {{ .Release.Name }}-{{ include "apo-otel-collector-gateway.fullname" . }}
 subjects:
   - kind: ServiceAccount
     name: {{ include "apo-otel-collector-gateway.serviceAccountName" . }}

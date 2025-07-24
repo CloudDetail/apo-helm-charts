@@ -46,7 +46,7 @@ data:
         inputs:
         - flatten_logs
         route:
-          default_java_route: | 
+          default_java_route: |
             !is_null(."k8s.namespace.name") && starts_with(string!(."k8s.namespace.name"), "apo")
         type: route
     sinks:

@@ -47,10 +47,14 @@ service:
     protocol: TCP
     port: 4319
     targetPort: 4319
-  - name: remote-write
+  - name: remote-write-gateway
     protocol: TCP
     port: 4321
     targetPort: 4321
+  - name: remote-write
+    protocol: TCP
+    port: 4322
+    targetPort: 4322
   - name: sk-receiver
     protocol: TCP
     port: 11800

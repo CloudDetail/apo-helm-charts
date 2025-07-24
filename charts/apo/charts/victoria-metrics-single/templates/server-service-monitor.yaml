@@ -21,7 +21,7 @@ spec:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      {{- include "victoria-metrics.server.matchLabels" . | nindent 6 }} 
+      {{- include "victoria-metrics.server.matchLabels" . | nindent 6 }}
   endpoints:
     - port: http
       {{- if .Values.server.serviceMonitor.scheme }}

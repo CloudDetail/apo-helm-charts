@@ -8,7 +8,7 @@ image:
   repository: originx-copilot
   tag: "v0.1.0"
   pullPolicy: IfNotPresent
-  
+
 resources:
   limits:
     cpu: 1000m
@@ -44,11 +44,11 @@ config:
 
     # spark:
     #   url: wss://spark-api.xf-yun.com/v1.1/chat
-    #   app_id: 
-    #   api_key: 
-    #   api_secret: 
+    #   app_id:
+    #   api_key:
+    #   api_secret:
     #   domain: lite
-    #   stream: true  
+    #   stream: true
 
     # coze:
     #   api_key:
@@ -59,13 +59,13 @@ config:
     #   stream:
 
     # qianfan:
-    #   api_key: 
-    #   secret_key: 
+    #   api_key:
+    #   secret_key:
     #   model: ERNIE-Speed-Pro-128K
-    #   stream: true  
+    #   stream: true
 
     # zhipu:
-    #   api_key: 
+    #   api_key:
     #   model: glm-4-air
     #   stream: true
     #   temperature: 0.7

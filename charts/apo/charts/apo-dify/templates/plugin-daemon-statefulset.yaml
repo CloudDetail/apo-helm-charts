@@ -52,7 +52,7 @@ spec:
         - containerPort: 5003
           protocol: TCP
           name: debug-port
-          
+
         - containerPort: 5002
           protocol: TCP
           name: service-port

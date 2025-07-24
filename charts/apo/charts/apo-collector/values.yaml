@@ -59,45 +59,45 @@ apoApmAdapter:
     port: 8079
   config:
     adapter:
-      # Expose HTTP port. 
+      # Expose HTTP port.
       http_port: 8079
-      # Set HTTP request timeout; if it times out, a response is returned directly.  
-      timeout: 10  
-      # APM system integration.  
+      # Set HTTP request timeout; if it times out, a response is returned directly.
+      timeout: 10
+      # APM system integration.
       trace_api:
-        # Enable the APM integration list  
+        # Enable the APM integration list
         apm_list: [skywalking, jaeger, elastic]
         # Skywalking configuration
         skywalking:
           # No need to include the http or https protocol prefix.
-          address: ""  
-          user: ""  
-          password: ""  
-        # Jaeger configuration  
+          address: ""
+          user: ""
+          password: ""
+        # Jaeger configuration
         jaeger:
           # No need to include the http or https protocol prefix.
-          address: apo-jaeger-collector-svc:16686/jaeger  
-        # Tingyun3-related configuration  
+          address: apo-jaeger-collector-svc:16686/jaeger
+        # Tingyun3-related configuration
         nbs3:
           # No need to include the http or https protocol prefix.
-          address: ""  
-          user: ""  
-          password: ""  
-        # Arms-related configuration  
+          address: ""
+          user: ""
+          password: ""
+        # Arms-related configuration
         arms:
           # No need to include the http or https protocol prefix.
-          address: "arms.cn-hangzhou.aliyuncs.com"  
-          access_key: ""  
-          access_secret: ""  
-        elastic:  
-          # You can add protocol prefixes 'https://' or 'http://', default is http  
-          address: ""  
-          user: ""  
-          password: ""  
-        # Pinpoint configuration  
+          address: "arms.cn-hangzhou.aliyuncs.com"
+          access_key: ""
+          access_secret: ""
+        elastic:
+          # You can add protocol prefixes 'https://' or 'http://', default is http
+          address: ""
+          user: ""
+          password: ""
+        # Pinpoint configuration
         pinpoint:
           # No need to include the http or https protocol prefix.
-          address: ""  
+          address: ""
 
 imagePullSecrets: []
 nameOverride: ""

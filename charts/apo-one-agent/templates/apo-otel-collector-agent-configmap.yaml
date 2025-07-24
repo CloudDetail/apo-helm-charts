@@ -28,7 +28,7 @@ data:
             max_recv_msg_size_mib: 999999999
           http:
             endpoint: 0.0.0.0:4318
-      signalfxgatewayprometheusremotewrite: 
+      signalfxgatewayprometheusremotewrite:
         endpoint: 0.0.0.0:4321
       skywalking:
         fillproc_extension: fill_proc
@@ -147,15 +147,15 @@ data:
       pipelines:
         traces/red:
           receivers: [otlp, skywalking]
-          processors: [batch]
+          processors: [resource, batch]
           exporters: [redmetrics]
         traces:
           receivers: [otlp, skywalking]
-          processors: [backsampling, batch]
+          processors: [resource, backsampling, batch]
           exporters: [otlp]
         metrics:
           receivers: [signalfxgatewayprometheusremotewrite, otlp, redmetrics, prometheus/own_metrics]
-          processors: [batch]
+          processors: [resource, batch]
           exporters: [otlp]
         metrics/sw:
           receivers: [signalfxgatewayprometheusremotewrite, skywalking]
@@ -163,6 +163,6 @@ data:
           exporters: [nop]
         logs:
           receivers: [otlp]
-          processors: [batch]
+          processors: [resource, batch]
           exporters: [otlp]
-      {{- end }}     
+      {{- end }}

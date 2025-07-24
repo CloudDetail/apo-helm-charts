@@ -67,7 +67,7 @@ data:
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection "upgrade";
       }
-      
+
       {{- if eq .Values.global.edition "ee" }}
       location /originx/api/ {
           rewrite ^/originx/api/(.*) /$1 break;
@@ -162,7 +162,7 @@ data:
         proxy_read_timeout 3600s;
         proxy_send_timeout 3600s;
       }
-      
+
       location /dify/e/ {
         proxy_pass http://apo-dify-plugin-daemon-svc:5002/e/;
         proxy_set_header Dify-Hook-Url ://;
@@ -238,7 +238,7 @@ data:
         proxy_read_timeout 3600s;
         proxy_send_timeout 3600s;
       }
-      
+
       location /datasets/ {
         rewrite ^/datasets/(.*)$ /dify/datasets/$1 break;
         proxy_pass http://apo-dify-web-svc:3000;
@@ -251,7 +251,7 @@ data:
         proxy_read_timeout 3600s;
         proxy_send_timeout 3600s;
       }
-      
+
       #error_page  404              /404.html;
 
       # redirect server error pages to the static page /50x.html

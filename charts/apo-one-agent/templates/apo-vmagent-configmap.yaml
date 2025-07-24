@@ -23,7 +23,7 @@ data:
         - action: replace
           source_labels: ["job"]
           target_label: "job_name"
-    
+
     - job_name: integrations/unix
       static_configs:
         - targets: ["%{VM_MY_NODE_IP}:12345/api/v0/component/prometheus.exporter.unix.local_system/metrics"]

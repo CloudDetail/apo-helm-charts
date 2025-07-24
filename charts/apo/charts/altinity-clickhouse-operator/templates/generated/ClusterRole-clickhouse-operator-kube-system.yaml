@@ -9,7 +9,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "altinity-clickhouse-operator.fullname" . }}
+  name: {{ .Release.Name }}-{{ include "altinity-clickhouse-operator.fullname" . }}
   #namespace: kube-system
   labels: {{ include "altinity-clickhouse-operator.labels" . | nindent 4 }}
   namespace: {{ .Release.Namespace }}
@@ -104,7 +104,7 @@ rules:
     resources:
       - deployments
     resourceNames:
-      - {{ include "altinity-clickhouse-operator.fullname" . }}
+      - {{ .Release.Name }}-{{ include "altinity-clickhouse-operator.fullname" . }}
     verbs:
       - get
       - patch

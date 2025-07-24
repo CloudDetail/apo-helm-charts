@@ -11,24 +11,24 @@ global:
     repository: "docker.io/clouddetail"
     eeRepository: "docker.io/clouddetail"
     pullPolicy: "Always"
-  
-  # APO Collection Modes  
-  # - trace              Full data collection, automatically injects trace collection probes  
-  # - trace-collector    Use collector to receive trace data from external probes  
-  # - trace-sidecar      Do not accept external trace data, directly retrieve data from external APIs, this mode requires configuring external API data sources  
+
+  # APO Collection Modes
+  # - trace              Full data collection, automatically injects trace collection probes
+  # - trace-collector    Use collector to receive trace data from external probes
+  # - trace-sidecar      Do not accept external trace data, directly retrieve data from external APIs, this mode requires configuring external API data sources
   # - no-trace           Do not collect trace data
-  # - metrics            Full metrics data collection  
-  # - log                Full log collection, including fault scenario logs  
-  # - log-sample         Fault scenario log collection, without collecting full logs  
+  # - metrics            Full metrics data collection
+  # - log                Full log collection, including fault scenario logs
+  # - log-sample         Fault scenario log collection, without collecting full logs
   agentCollectorMode:
     - trace
     - metrics
     - log
-  
+
   victoriaMetrics:
     # victoriaMetrics-single(single) or victoriaMetrics-cluster(cluster)
     # After switching modes, the corresponding URL for the mode needs to be provided.
-    mode: single 
+    mode: single
     single:
       url: "http://apo-victoria-metrics-single-server-svc:8428"
     cluster:
@@ -45,7 +45,7 @@ global:
   apoOtelCollectorGatewayGRPCPort: 30317
   apoOtelCollectorGatewayK8SPort: 30319
   apoVectorLogPort: 30310
-  
+
   # -- Pod's node selector. Ref: [https://kubernetes.io/docs/user-guide/node-selection/](https://kubernetes.io/docs/user-guide/node-selection/)
   nodeSelector: {}
   # nodeSelector:
@@ -83,7 +83,7 @@ apoOneAgent:
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v1.9.9"
-  resources: 
+  resources:
     limits:
       cpu: 1000m
       memory: 1024Mi
@@ -115,7 +115,7 @@ apoIlogtail:
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v1.8.4-6"
-  resources: 
+  resources:
     limits:
       cpu: 1000m
       memory: 512Mi
@@ -131,7 +131,7 @@ grafanaAlloy:
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
     tag: "v1.4.2-1"
-  resources: 
+  resources:
     limits:
       cpu: 500m
       memory: 512Mi
@@ -148,7 +148,7 @@ grafanaBeyla:
     repository: "{{ .Values.global.image.repository }}/apo-beyla"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     tag: "v1.8.4-1"
-  resources: 
+  resources:
     limits:
       cpu: 1000m
       memory: 1024Mi
@@ -179,7 +179,7 @@ apoOtelCollectorAgent:
     repository: "{{ .Values.global.image.repository }}/apo-otel-collector"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     tag: "v1.3.3"
-  resources: 
+  resources:
     limits:
       cpu: 2000m
       memory: 1024Mi
@@ -253,22 +253,22 @@ odigos:
       requests:
         cpu: 10m
         memory: 64Mi
-    # targetNamespace  
-    # name: Target namespace  
-    # value:  
-    #   enabled: Inject all existing services but do not inject newly added applications  
-    #   enabledFuture: Inject both current and future services  
-    #   disabled: Do not inject services in the specified namespace; used to exclude specific namespaces when instrument-all-namespace is enabled  
-    # targetNamespace:  
-    # - name: default  
-    #   value: disabled  
-    # instrument-all-namespace Whether to inject all namespaces  
-    # Equivalent to setting enabledFuture for all namespaces  
-    # However, if disabled is already set for a namespace or workload, it will not be injected  
+    # targetNamespace
+    # name: Target namespace
+    # value:
+    #   enabled: Inject all existing services but do not inject newly added applications
+    #   enabledFuture: Inject both current and future services
+    #   disabled: Do not inject services in the specified namespace; used to exclude specific namespaces when instrument-all-namespace is enabled
+    # targetNamespace:
+    # - name: default
+    #   value: disabled
+    # instrument-all-namespace Whether to inject all namespaces
+    # Equivalent to setting enabledFuture for all namespaces
+    # However, if disabled is already set for a namespace or workload, it will not be injected
     instrumentAllNamespace: true
-    # force-instrument-all-namespace Whether to force inject all namespaces  
-    # Similar to instrument-all-namespace, sets enabledFuture for all namespaces  
-    # Ignores all disabled settings  
+    # force-instrument-all-namespace Whether to force inject all namespaces
+    # Similar to instrument-all-namespace, sets enabledFuture for all namespaces
+    # Ignores all disabled settings
     forceInstrumentAllNamespace: false
     # enableOverwriteUserDefinedEnvs: Whether to overwrite user-defined environment variables
     enableOverwriteUserDefinedEnvs: false
@@ -336,7 +336,7 @@ apo-otel-collector:
       port: 11800
       targetPort: 11800
     type: ClusterIP
-  resources: 
+  resources:
     limits:
       cpu: 3000m
       memory: 3072Mi

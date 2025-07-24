@@ -66,7 +66,7 @@ clickhouse:
   persistence:
     # -- Create/use Persistent Volume Claim for server component. Empty dir if false
     enabled: false
-    
+
     data:
       # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
       accessModes:
@@ -80,7 +80,7 @@ clickhouse:
 
       # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
       size: 16Gi
-    
+
     log:
       # -- Array of access modes. Must match those of existing PV or dynamic provisioner. Ref: [http://kubernetes.io/docs/user-guide/persistent-volumes/](http://kubernetes.io/docs/user-guide/persistent-volumes/)
       accessModes:
@@ -94,7 +94,7 @@ clickhouse:
 
       # -- Size of the volume. Should be calculated based on the metrics you send and retention policy you set.
       size: 1Gi
-  
+
   # nodeSelector -- node for scheduler pod assignment, look `kubectl explain pod.spec.nodeSelector` for details
   nodeSelector: {}
 

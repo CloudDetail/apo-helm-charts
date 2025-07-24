@@ -132,7 +132,7 @@ spec:
                   - status
                   - type
                   type: object
-                type: array          
+                type: array
             type: object
         type: object
     served: true

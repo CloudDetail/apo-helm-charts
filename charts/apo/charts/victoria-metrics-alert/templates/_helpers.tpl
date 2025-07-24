@@ -297,7 +297,7 @@ Return license volume mount for container
 {{- end -}}
 {{- end -}}
 
-{{/* 
+{{/*
 Return true if the detected platform is Openshift
 Usage:
 {{- include "common.compatibility.isOpenshift" . -}}
