@@ -127,4 +127,4 @@ data:
       external_url: "{{ tpl .Values.global.baseURL . }}"
     data_group:
       init_look_back_days: 3
-      refresh_seconds: 600
+      refresh_seconds: 60

@@ -122,7 +122,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.10.0"
+      tag: "v1.10.1"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -583,7 +583,7 @@ apo-one-agent:
       requests:
         cpu: 10m
         memory: 64Mi
-    remoteWriteUrls: "http://apo-otel-collector-gateway-svc:4321"
+    remoteWriteUrls: "http://apo-otel-collector-gateway-svc:4322"
 
   odigos:
     enabled: true
