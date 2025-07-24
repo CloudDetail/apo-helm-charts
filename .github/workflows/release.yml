@@ -39,7 +39,7 @@ jobs:
 
       - name: Sync image
         run: |
-          IMAGES=$(helm template apo charts/apo -n apo --set apo-one-agent.enabled=true --set apo-one-agent.grafanaBeyla.enabled=true --set global.image.repository="registry.cn-hangzhou.aliyuncs.com/kindlingx" --set global.image.eeRepository="registry.cn-hangzhou.aliyuncs.com/kindlingx" | grep "image:" | awk -F': ' '{print $2}' | sed "s/'//g" | sed 's/"//g' | sort | uniq)
+          IMAGES=$(helm template apo charts/apo -n apo --set global.clusterId="demo" --set apo-one-agent.enabled=true --set apo-one-agent.grafanaBeyla.enabled=true --set global.image.repository="registry.cn-hangzhou.aliyuncs.com/kindlingx" --set global.image.eeRepository="registry.cn-hangzhou.aliyuncs.com/kindlingx" | grep "image:" | awk -F': ' '{print $2}' | sed "s/'//g" | sed 's/"//g' | sort | uniq)
           IMAGE_COUNT=0
           IMAGE_PLATFORM="linux/amd64"
           IMAGE_NEW_REPO="docker.io/clouddetail"
