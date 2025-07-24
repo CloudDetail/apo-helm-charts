@@ -28,7 +28,7 @@ spec:
         - name: GIN_MODE
           value: "release"
         - name: WORKER_TIMEOUT
-          value: "15"
+          value: "60"
         - name: ENABLE_NETWORK
           value: "true"
         - name: SANDBOX_PORT
