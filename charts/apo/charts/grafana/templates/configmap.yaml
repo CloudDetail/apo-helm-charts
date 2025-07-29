@@ -81,6 +81,16 @@ data:
       access: proxy
       isDefault: true
       uid: APO-VictoriaMetric
+    - name: APO-PostgreSQL
+      type: grafana-postgresql-datasource
+      uid: APO-PostgreSQL
+      url: apo-postgres-svc:5432
+      user: postgres # 后续最好创建单独的postgres只读账户
+      secureJsonData:
+        password: 'Postgres@123456'
+      jsonData:
+        database: apo_backend
+        sslmode: 'disable'
     - jsonData:
         port: "{{ .Values.global.clickhouse.nativePort }}"
         server: "{{ .Values.global.clickhouse.host }}"

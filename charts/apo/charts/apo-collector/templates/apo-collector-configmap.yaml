@@ -139,7 +139,6 @@ data:
           source_addr: {{ tpl .Values.apoCollector.config.apoBackendUrl . }}/metadata
         querier:
           query_server_port: 8082
-          is_single_cluster: true
 
     sample:
       enable: false
