@@ -15,7 +15,7 @@ spec:
     clickhouse.altinity.com/app: chop
     clickhouse.altinity.com/chi: apo
     clickhouse.altinity.com/cluster: clickhouse
-    clickhouse.altinity.com/namespace: apo
+    clickhouse.altinity.com/namespace: {{ .Release.Namespace }}
     clickhouse.altinity.com/replica: '0'
     clickhouse.altinity.com/shard: '0'
   type: "{{ .Values.clickhouse.service.type }}"
