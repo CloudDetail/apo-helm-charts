@@ -170,7 +170,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.9.1"
+      tag: "v1.9.2"
     # resources:
     #   limits:
     #     cpu: 1000m
