@@ -428,7 +428,7 @@ apo-one-agent:
       repository: "{{ .Values.global.image.repository }}/ebpf-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.9.9"
+      tag: "v1.9.10"
     resources:
       limits:
         cpu: 1000m
