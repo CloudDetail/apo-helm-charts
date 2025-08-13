@@ -30,7 +30,7 @@ data:
               {{- end }},
               "promStorage": "vm"
             }
-          capabilities: [RedMetric, ServiceInstance, Topology]
+          capabilities: [RedMetric, ServiceInstance, Topology, Metrics, Log, Trace]
           cluster: ""
     database:
       connection: postgres
