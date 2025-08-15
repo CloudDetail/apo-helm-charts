@@ -40,6 +40,8 @@ data:
         BeginLineCheckLength: 10
         BeginLineRegex: "\\d+.*"
     processors:
+      - Type: processor_log_to_prom_metric
+        PromPort: ":9499"
       - Type: processor_wait_for_signal
         DisableSignalSampler: true
         ContentsRename:
