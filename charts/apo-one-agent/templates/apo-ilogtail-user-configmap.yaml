@@ -6,7 +6,7 @@ metadata:
     {{- include "apo-one-agent.labels" . | nindent 4 }}
 data:
   pod_stdout_file.yaml: |
-    enable: true
+    enable: false
     inputs:
       - Type: service_docker_stdout
         ExcludeK8sLabel:
@@ -24,9 +24,11 @@ data:
     flushers:
       # - Type: flusher_stdout    # 标准输出流输出类型
       #   OnlyStdout: true
-      - Type: flusher_otlp
-        Logs:
-          Endpoint: {{ tpl .Values.apoIlogtail.apoOtelCollectorGrpcUrl . }}
+      - Type: flusher_http  #统一走vector入库
+        RemoteURL: http://{{ tpl .Values.apoIlogtail.apoVectorLogUrl . }}
+        Convert:
+          Protocol: custom_single
+          Encoding: json
   {{- if (has "log" .Values.global.agentCollectorMode) }}
   pod_stdout_all.yaml: |
     enable: true

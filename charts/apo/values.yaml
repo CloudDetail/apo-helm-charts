@@ -122,7 +122,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.10.3"
+      tag: "v1.11.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -267,7 +267,7 @@ apo-dataplane:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-dataplane"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v1.0.0"
+    tag: "v1.1.0"
 
   config:
     clickhouseUrl: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"
@@ -288,7 +288,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-16"
+      tag: "v1.0.0-17"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -338,7 +338,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-16"
+      tag: "v1.0.0-17"
 
   nodeSelector: {}
   tolerations: []
@@ -350,7 +350,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.10.2"
+    tag: "v1.11.0"
   # resources:
   #   limits:
   #     cpu: 1000m
@@ -832,7 +832,7 @@ originx-root-cause-infer:
     tag: "1.36.1"
   image:
     repository: "{{ .Values.global.image.eeRepository }}/root-cause-infer"
-    tag: "v1.6.7"
+    tag: "v1.6.8"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   resources:
     limits:
