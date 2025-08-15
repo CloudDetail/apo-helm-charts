@@ -1,7 +1,7 @@
 apiVersion: v2
 name: apo-one-agent
-version: "1.10.007"
-appVersion: "1.10.4"
+version: "1.11.000"
+appVersion: "1.11.0"
 type: application
 description: apo-one-agent deployment charts
 

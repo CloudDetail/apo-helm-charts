@@ -52,6 +52,11 @@ data:
         database: "{{ .Values.global.postgres.apoBackendDatabase }}"
         username: "{{ .Values.global.postgres.username }}"
         password: "{{ .Values.global.postgres.password }}"
+    apo:
+      prom_address: http://apo-victoria-metrics-single-server-svc:8428
+      prom_storage: vm
+      jaeger_address: http://apo-jaeger-collector-svc:16686/jaeger
+      backend_address: http://apo-backend-svc:8080
     clickhouse:
       address: "{{ tpl .Values.config.clickhouseUrl . }}"
       username: "{{ tpl .Values.config.clickhouseUsername . }}"
