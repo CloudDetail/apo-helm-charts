@@ -281,7 +281,6 @@ apo-dify:
   enabled: true
 
   api:
-    DATAPLANE_URL: "apo-dataplane-svc:8089"
     initImage:
       repository: "{{ .Values.global.image.repository }}/apo-init-postgres"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"

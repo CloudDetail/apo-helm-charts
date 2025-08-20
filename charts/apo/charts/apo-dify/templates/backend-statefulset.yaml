@@ -211,6 +211,8 @@ spec:
           value: 'true'
         - name: 'MARKETPLACE_API_URL'
           value: 'https://marketplace.dify.ai'
+        - name: 'DATAPLANE_URL'
+          value: 'apo-dataplane-svc:8089'
         startupProbe:
             exec:
               command:
