@@ -122,7 +122,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.11.0"
+      tag: "v1.12.0"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -170,7 +170,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.9.2"
+      tag: "v1.9.3"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -350,7 +350,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.11.0"
+    tag: "v1.12.0"
   # resources:
   #   limits:
   #     cpu: 1000m
@@ -457,10 +457,10 @@ apo-one-agent:
 
   apoIlogtail:
     image:
-      repository: "{{ .Values.global.image.repository }}/ilogtail"
+      repository: "{{ .Values.global.image.repository }}/loongcollector-alpha"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.8.4-6"
+      tag: "v3.14.0-1"
     resources:
       limits:
         cpu: 1000m
@@ -508,7 +508,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-odiglet"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.3"
+      tag: "v1.0.7"
       resources:
         limits:
           cpu: 200m
@@ -559,7 +559,7 @@ apo-one-agent:
     image:
       repository: "{{ .Values.global.image.eeRepository }}/profile-agent"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0"
+      tag: "v1.0.1"
     resources:
       limits:
         cpu: 500m
@@ -832,7 +832,7 @@ originx-root-cause-infer:
     tag: "1.36.1"
   image:
     repository: "{{ .Values.global.image.eeRepository }}/root-cause-infer"
-    tag: "v1.6.8"
+    tag: "v1.6.9"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   resources:
     limits:

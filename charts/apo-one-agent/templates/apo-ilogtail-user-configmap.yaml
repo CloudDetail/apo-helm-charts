@@ -32,6 +32,8 @@ data:
   {{- if (has "log" .Values.global.agentCollectorMode) }}
   pod_stdout_all.yaml: |
     enable: true
+    global:
+      UsingOldContentTag: true
     inputs:
       - Type: service_docker_stdout
         ExcludeK8sLabel:

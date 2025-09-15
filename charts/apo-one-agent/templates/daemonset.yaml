@@ -84,6 +84,8 @@ spec:
           image: "{{ tpl .Values.apoIlogtail.image.repository . }}:{{ tpl (toString .Values.apoIlogtail.image.tag) . }}"
           imagePullPolicy: "{{ tpl .Values.apoIlogtail.image.pullPolicy . }}"
           env:
+            - name: LOGTAIL_MODE
+              value: "true"
             - name: cluster_id
               value: {{ .Values.global.clusterId | quote }}
             - name: HOST_DIR
@@ -114,14 +116,14 @@ spec:
               mountPath: /logtail_host
               mountPropagation: HostToContainer
             - name: checkpoint
-              mountPath: /usr/local/ilogtail/checkpoint
+              mountPath: /usr/local/loongcollector/checkpoint
             - name: signal-uds
               mountPath: /opt/signal
             - name: apo-ilogtail-user-config
+              mountPath: /usr/local/loongcollector/config/local
               readOnly: true
-              mountPath: /usr/local/ilogtail/user_yaml_config.d
             - name: apo-ilogtail-logger-config
-              mountPath: /usr/local/ilogtail/plugin_logger.xml
+              mountPath: /usr/local/loongcollector/conf/plugin_logger.xml
               subPath: plugin_logger.xml
         {{- end }}
         {{- if has "metrics" .Values.global.agentCollectorMode }}

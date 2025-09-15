@@ -111,10 +111,10 @@ apoNodeAgent:
 
 apoIlogtail:
   image:
-    repository: "{{ .Values.global.image.repository }}/ilogtail"
+    repository: "{{ .Values.global.image.repository }}/loongcollector-alpha"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.8.4-6"
+    tag: "v3.14.0-1"
   resources:
     limits:
       cpu: 1000m
@@ -162,7 +162,7 @@ odiglet:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-odiglet"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v1.0.3"
+    tag: "v1.0.7"
   resources:
     limits:
       cpu: 200m
@@ -213,7 +213,7 @@ profileAgent:
   image:
     repository: "{{ .Values.global.image.eeRepository }}/profile-agent"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v1.0.0"
+    tag: "v1.0.1"
   resources:
     limits:
       cpu: 500m
