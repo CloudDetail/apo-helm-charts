@@ -290,7 +290,8 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          resources: {}
+          resources:
+            {{- toYaml .Values.apoOtelCollectorAgent.resources | nindent 12 }}
           volumeMounts:
             - name: apo-otel-collector-agent-config
               mountPath: /app/conf
