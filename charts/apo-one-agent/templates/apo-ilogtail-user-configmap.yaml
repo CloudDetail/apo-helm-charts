@@ -6,7 +6,7 @@ metadata:
     {{- include "apo-one-agent.labels" . | nindent 4 }}
 data:
   pod_stdout_file.yaml: |
-    enable: false
+    enable: false #默认禁用故障现场日志采集
     inputs:
       - Type: service_docker_stdout
         ExcludeK8sLabel:
@@ -32,6 +32,8 @@ data:
   {{- if (has "log" .Values.global.agentCollectorMode) }}
   pod_stdout_all.yaml: |
     enable: true
+    global:
+      UsingOldContentTag: true
     inputs:
       - Type: service_docker_stdout
         ExcludeK8sLabel:

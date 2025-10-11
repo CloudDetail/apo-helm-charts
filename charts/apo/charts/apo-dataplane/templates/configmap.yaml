@@ -53,7 +53,11 @@ data:
         username: "{{ .Values.global.postgres.username }}"
         password: "{{ .Values.global.postgres.password }}"
     apo:
-      prom_address: http://apo-victoria-metrics-single-server-svc:8428
+      {{ if eq .Values.global.victoriaMetrics.mode "cluster" -}}
+      prom_address: "{{ .Values.global.victoriaMetrics.cluster.selectUrl}}"
+      {{- else -}}
+      prom_address: "{{ .Values.global.victoriaMetrics.single.url}}"
+      {{- end }}
       prom_storage: vm
       jaeger_address: http://apo-jaeger-collector-svc:16686/jaeger
       backend_address: http://apo-backend-svc:8080

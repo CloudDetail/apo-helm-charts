@@ -77,6 +77,8 @@ spec:
           value: "{{ tpl .Values.global.baseURL . }}/dify"
         - name: APO_BACKEND_URL
           value: "{{ tpl .Values.global.baseURL . }}"
+        - name: DATAPLANE_URL
+          value: http://apo-dataplane-svc:8089
         - name: MIGRATION_ENABLED
           value: "true"
         - name: DB_USERNAME
@@ -211,6 +213,8 @@ spec:
           value: 'true'
         - name: 'MARKETPLACE_API_URL'
           value: 'https://marketplace.dify.ai'
+        - name: 'DATAPLANE_URL'
+          value: 'http://apo-dataplane-svc:8089'
         startupProbe:
             exec:
               command:
