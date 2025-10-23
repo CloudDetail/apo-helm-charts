@@ -1,6 +1,6 @@
 apiVersion: v2
 name: apo-one-agent
-version: "1.12.000"
+version: "1.12.002"
 appVersion: "1.12.0"
 type: application
 description: apo-one-agent deployment charts
@@ -18,3 +18,4 @@ dependencies:
     condition: odigos.enabled
     repository: ""
     version: '*.*.*'
+
