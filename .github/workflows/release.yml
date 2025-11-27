@@ -50,21 +50,21 @@ jobs:
               docker pull --platform $IMAGE_PLATFORM $IMAGE
               docker tag $IMAGE $IMAGE_NEW_REPO/$SORTIMAGE
               docker push $IMAGE_NEW_REPO/$SORTIMAGE
-              if [[ $SORTIMAGE == apo-backend-ee:* ]]; then
-                  IMAGE_CE=$(echo $IMAGE|sed 's/apo-backend-ee/apo-backend/g')
-                  SORTIMAGE=$(echo $IMAGE_CE|awk -F/ '{print $NF}')
-                  echo $SORTIMAGE
-                  docker pull --platform $IMAGE_PLATFORM $IMAGE_CE
-                  docker tag $IMAGE_CE $IMAGE_NEW_REPO/$SORTIMAGE
-                  docker push $IMAGE_NEW_REPO/$SORTIMAGE
-              elif [[ $SORTIMAGE == apo-front-ee:* ]]; then
-                  IMAGE_CE=$(echo $IMAGE|sed 's/apo-front-ee/apo-front/g')
-                  SORTIMAGE=$(echo $IMAGE_CE|awk -F/ '{print $NF}')
-                  echo $SORTIMAGE
-                  docker pull --platform $IMAGE_PLATFORM $IMAGE_CE
-                  docker tag $IMAGE_CE $IMAGE_NEW_REPO/$SORTIMAGE
-                  docker push $IMAGE_NEW_REPO/$SORTIMAGE
-              fi
+              # if [[ $SORTIMAGE == apo-backend-ee:* ]]; then
+              #     IMAGE_CE=$(echo $IMAGE|sed 's/apo-backend-ee/apo-backend/g')
+              #     SORTIMAGE=$(echo $IMAGE_CE|awk -F/ '{print $NF}')
+              #     echo $SORTIMAGE
+              #     docker pull --platform $IMAGE_PLATFORM $IMAGE_CE
+              #     docker tag $IMAGE_CE $IMAGE_NEW_REPO/$SORTIMAGE
+              #     docker push $IMAGE_NEW_REPO/$SORTIMAGE
+              # elif [[ $SORTIMAGE == apo-front-ee:* ]]; then
+              #     IMAGE_CE=$(echo $IMAGE|sed 's/apo-front-ee/apo-front/g')
+              #     SORTIMAGE=$(echo $IMAGE_CE|awk -F/ '{print $NF}')
+              #     echo $SORTIMAGE
+              #     docker pull --platform $IMAGE_PLATFORM $IMAGE_CE
+              #     docker tag $IMAGE_CE $IMAGE_NEW_REPO/$SORTIMAGE
+              #     docker push $IMAGE_NEW_REPO/$SORTIMAGE
+              # fi
           done
 
       - name: Run chart-releaser
