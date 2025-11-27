@@ -25,6 +25,7 @@ service:
 
 config:
   apoBackendUrl: http://apo-backend-svc:8080
+  dataplane: http://apo-dataplane-svc:8089
   apoPolarisBackendUrl: http://apo-polaris-analyzer-svc:5000
   originxRootCauseInferUrl: http://originx-root-cause-infer-svc:8080
   configmap:

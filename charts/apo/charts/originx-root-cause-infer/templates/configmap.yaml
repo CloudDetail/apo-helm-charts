@@ -24,6 +24,9 @@ data:
       waterline_filter_type: "p99"
 
     datasource:
+      datasource: dataplane
+      dataplane:
+        address: apo-dataplane-svc:8089
       profiling:
         ch_config:
           address: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"

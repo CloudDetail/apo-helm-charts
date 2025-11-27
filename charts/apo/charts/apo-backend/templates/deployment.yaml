@@ -86,6 +86,8 @@ spec:
           {{- end }}
         - name: PROMETHEUS_STORAGE
           value: vm
+        - name: DATAPLANE_ADDRESS
+          value: http://apo-dataplane-svc:8089
         resources:
             {{- toYaml .Values.apoPolarisAnalyzer.resources | nindent 12 }}
         volumeMounts:
