@@ -3,6 +3,7 @@ llm_type: {{ .Values.config.configmap.llmType }}
 {{ toYaml .Values.config.configmap.llmConfig }}
 
 apo_backend: {{ tpl .Values.config.apoBackendUrl . }}
+dataplane: {{ tpl .Values.config.dataplane . }}
 polaris_backend: {{ tpl .Values.config.apoPolarisBackendUrl . }}
 originx_backend: {{ tpl .Values.config.originxRootCauseInferUrl . }}
 

@@ -122,7 +122,7 @@ apo-backend:
       registry: "{{ .Values.global.image.repository }}"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
       # Overrides the image tag whose default is the chart appVersion.
-      tag: "v1.12.0"
+      tag: "v1.12.3"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -170,7 +170,7 @@ apo-collector:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-collector"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.9.3"
+      tag: "v1.9.4"
     # resources:
     #   limits:
     #     cpu: 1000m
@@ -267,7 +267,7 @@ apo-dataplane:
   image:
     repository: "{{ .Values.global.image.repository }}/apo-dataplane"
     imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
-    tag: "v1.1.0"
+    tag: "v1.3.0"
 
   config:
     clickhouseUrl: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"
@@ -288,7 +288,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-api"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-17"
+      tag: "v1.0.0-19"
     persistent:
       enabled: "{{ .Values.global.persistence.enabled }}"
       accessModes:
@@ -332,7 +332,7 @@ apo-dify:
     image:
       repository: "{{ .Values.global.image.repository }}/apo-dify-web"
       pullPolicy: "{{ .Values.global.image.pullPolicy }}"
-      tag: "v1.0.0-6"
+      tag: "v1.0.0-7"
 
   worker:
     image:
@@ -350,7 +350,7 @@ apo-front:
     registry: "{{ .Values.global.image.repository }}"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v1.12.0"
+    tag: "v1.12.1"
   # resources:
   #   limits:
   #     cpu: 1000m
@@ -417,6 +417,33 @@ apo-jaeger-collector:
     clickhouseUrl: "{{ .Values.global.clickhouse.host }}:{{ .Values.global.clickhouse.nativePort }}"
     clickhouseUsername: "{{ .Values.global.clickhouse.username }}"
     clickhousePassword: "{{ .Values.global.clickhouse.password }}"
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+ragManagement:
+  enabled: true
+  initImage:
+    registry: "{{ .Values.global.image.repository }}"
+    repository: "apo-init-postgres"
+    tag: "v1.0.0"
+  ragManagement:
+    image:
+      registry: "{{ .Values.global.image.repository }}"
+      repository: "rag-management"
+      tag: "v0.1.0"
+      pullPolicy: ""
+    service:
+      type: ClusterIP
+      port: 5000
+      nodePort: ""
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 10m
+        memory: 16Mi
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -801,7 +828,7 @@ originx-copilot-ai:
   image:
     registry: "{{ .Values.global.image.eeRepository }}"
     repository: originx-copilot
-    tag: "v1.1.5"
+    tag: "v1.1.6"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   resources:
     limits:
@@ -832,7 +859,7 @@ originx-root-cause-infer:
     tag: "1.36.1"
   image:
     repository: "{{ .Values.global.image.eeRepository }}/root-cause-infer"
-    tag: "v1.6.9"
+    tag: "v1.7.0"
     pullPolicy: "{{ .Values.global.image.pullPolicy }}"
   resources:
     limits:

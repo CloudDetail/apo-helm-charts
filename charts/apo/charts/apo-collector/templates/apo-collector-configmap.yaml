@@ -24,6 +24,9 @@ data:
     slo:
       enable: true
       debug: true
+    
+    dataplane:
+      address: http://apo-dataplane-svc:8089
 
     promethues:
       {{- if eq .Values.global.victoriaMetrics.mode "single" }}

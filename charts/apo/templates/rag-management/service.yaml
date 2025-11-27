@@ -1,0 +1,19 @@
+{{- if .Values.ragManagement.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rag-management.name" . }}-svc
+  labels:
+    {{- include "rag-management.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.ragManagement.ragManagement.service.type }}
+  ports:
+    - port: {{ .Values.ragManagement.ragManagement.service.port }}
+      protocol: TCP
+      name: http
+      {{- if (eq .Values.ragManagement.ragManagement.service.type "NodePort") }}
+      nodePort: {{ .Values.ragManagement.ragManagement.service.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "rag-management.selectorLabels" . | nindent 4 }}
+{{- end }}
