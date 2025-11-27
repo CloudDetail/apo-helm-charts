@@ -1,0 +1,97 @@
+{{- if .Values.ragManagement.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rag-management.name" . }}
+  labels:
+    {{- include "rag-management.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "rag-management.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/rag-management/configmap.yaml") . | sha256sum }}
+      labels:
+        {{- include "rag-management.labels" . | nindent 8 }}
+    spec:
+      initContainers:
+        - name: init-postgres
+          image: {{ include "rag-management-init-postgres.image" . | quote }}
+          imagePullPolicy: {{ include "rag-management.imagePullPolicy" . | quote }}
+          env:
+            - name: POSTGRES_HOST
+              value: {{ .Values.global.postgres.host }}
+            - name: POSTGRES_PORT
+              value: "{{ .Values.global.postgres.port }}"
+            - name: POSTGRES_USER
+              value: {{ .Values.global.postgres.username }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.global.postgres.password }}
+            - name: INIT_DB_NAME
+              value: {{ .Values.global.postgres.ragManagementDatabase }}
+      containers:
+        - name: {{ include "rag-management.name" . | quote }}
+          image: {{ include "rag-management.image" . | quote }}
+          imagePullPolicy: {{ include "rag-management.imagePullPolicy" . | quote }}
+          command:
+            - gunicorn
+            - '-w'
+            - '1'
+            - '-b'
+            - 0.0.0.0:{{ .Values.ragManagement.ragManagement.service.port }}
+            - app:app
+            - '--timeout'
+            - '1000'
+            - '--max-requests'
+            - '100'
+          ports:
+            - name: http
+              containerPort: {{ .Values.ragManagement.ragManagement.service.port }}
+              protocol: TCP
+          env:
+            - name: PORT
+              value: {{ .Values.ragManagement.ragManagement.service.port | quote }}
+            - name: ENABLE_OPENTELEMETRY
+              value: "false"
+            - name: TRACELOOP_BASE_URL
+              value: ""
+            - name: EMBEDDING_MODEL
+              value: /Users/misluyu/repos/embedding-test/Qwen3-0.6B
+          resources:
+            {{- toYaml .Values.ragManagement.ragManagement.resources | nindent 12 }}
+          volumeMounts:
+            - name: {{ include "rag-management.name" . }}-config
+              mountPath: /app/.env
+              subPath: .env
+      volumes:
+        - name: {{ include "rag-management.name" . }}-config
+          configMap:
+            name: {{ include "rag-management.name" . }}-config
+            defaultMode: 420
+      {{- if .Values.ragManagement.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.ragManagement.nodeSelector | indent 8 }}
+      {{- else if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.ragManagement.affinity }}
+      {{- with .Values.ragManagement.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.affinity }}
+      {{- with .Values.global.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.ragManagement.tolerations }}
+      tolerations:
+{{ toYaml .Values.ragManagement.tolerations | indent 8 }}
+      {{- else if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+      {{- end }}
+{{- end }}

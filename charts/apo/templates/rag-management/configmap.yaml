@@ -1,0 +1,31 @@
+{{- if .Values.ragManagement.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rag-management.name" . }}-config
+data:
+  .env: |
+    POSTGRES_HOST={{ .Values.global.postgres.host }}
+    POSTGRES_PORT={{ .Values.global.postgres.port }}
+    POSTGRES_DB={{ .Values.global.postgres.ragManagementDatabase }}
+    POSTGRES_USER={{ .Values.global.postgres.username }}
+    POSTGRES_PASSWORD={{ .Values.global.postgres.password }}
+
+    VECTOR_STORE_TYPE=weaviate
+
+    WEAVIATE_URL=http://apo-dify-weaviate-svc:8080
+    WEAVIATE_INDEX_NAME=ApoRag
+    WEAVIATE_API_KEY=WVF5YThaHlkYwhGUSmCRgsX3tD5ngdN8pkih
+    WEAVIATE_TIMEOUT=10,60
+    WEAVIATE_SKIP_INIT_CHECKS=True
+
+    TEXT_KEY=text
+    # no model
+    # EMBEDDING_MODEL_TYPE=huggingface
+    # EMBEDDING_MODEL=./embedding_model/Qwen/Qwen3-Embedding-0.6B
+    EMBEDDING_MODEL_TYPE=openai_api
+    EMBEDDING_MODEL=./embedding_model/Qwen/Qwen3-Embedding-0.6B
+    OPENAI_API_KEY=sk-xxxxxxxxxxxxxxx
+    OPENAI_API_MODEL_NAME=text-embedding-v4
+    OPENAI_API_BASE_URL=https://xxxxxxx/v1
+{{- end }}

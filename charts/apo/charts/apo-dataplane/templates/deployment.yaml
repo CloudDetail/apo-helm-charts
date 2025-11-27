@@ -3,22 +3,17 @@ kind: Deployment
 metadata:
   name: {{ include "apo-dataplane.name" . }}
   labels:
-      {{- include "apo-dataplane.labels" . | nindent 4 }}
+    {{- include "apo-dataplane.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: apo-dataplane
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+      {{- include "apo-dataplane.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         checksum/apo-dataplane-config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        app: apo-dataplane
+        {{- include "apo-dataplane.labels" . | nindent 8 }}
     spec:
       initContainers:
         - name: check-clickhouse-ready
